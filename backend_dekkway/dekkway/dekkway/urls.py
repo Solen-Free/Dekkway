@@ -16,7 +16,32 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from Dekkway_app.views import BailleurListCreateView, BailleurDetailView, LocataireListCreateView, LocataireDetailView, AdministrateurListCreateView, AdministrateurDetailView, LogementListCreateView, LogementDetailView, LocationListCreateView, LocationDetailView, NotificationListCreateView, NotificationDetailView, ServiceListCreateView, ServiceDetailView, FavorisListCreateView, FavorisDetailView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    
+    path('bailleurs/', BailleurListCreateView.as_view(), name='bailleur-list-create'),
+    path('bailleurs/<int:pk>/', BailleurDetailView.as_view(), name='bailleur-detail'),
+
+    path('locataires/', LocataireListCreateView.as_view(), name='locataire-list-create'),
+    path('locataires/<int:pk>/', LocataireDetailView.as_view(), name='locataire-detail'),
+
+    path('administrateurs/', AdministrateurListCreateView.as_view(), name='administrateur-list-create'),
+    path('administrateurs/<int:pk>/', AdministrateurDetailView.as_view(), name='administrateur-detail'),
+
+    path('logements/', LogementListCreateView.as_view(), name='logement-list-create'),
+    path('logements/<int:pk>/', LogementDetailView.as_view(), name='logement-detail'),
+
+    path('locations/', LocationListCreateView.as_view(), name='location-list-create'),
+    path('locations/<int:pk>/', LocationDetailView.as_view(), name='location-detail'),
+
+    path('notifications/', NotificationListCreateView.as_view(), name='notification-list-create'),
+    path('notifications/<int:pk>/', NotificationDetailView.as_view(), name='notification-detail'),
+
+    path('services/', ServiceListCreateView.as_view(), name='service-list-create'),
+    path('services/<int:pk>/', ServiceDetailView.as_view(), name='service-detail'),
+
+    path('favoris/', FavorisListCreateView.as_view(), name='favoris-list-create'),
+    path('favoris/<int:pk>/', FavorisDetailView.as_view(), name='favoris-detail'),
 ]
