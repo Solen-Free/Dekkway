@@ -48,20 +48,23 @@ class Administrateur(Utilisateur):
 # Modèle Logement
 class Logement(models.Model):
     bailleur = models.ForeignKey(Bailleur, on_delete=models.CASCADE, related_name="logements")
-    adresse = models.CharField(max_length=255)
+    quartier = models.CharField(max_length=255)
     prix = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField()
     type = models.CharField(max_length=50)
     nombre_de_chambres = models.IntegerField()
     disponibilite = models.BooleanField(default=True)
-    localisation = models.CharField(max_length=255)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    region = models.CharField(max_length=255, null=True, blank=True)
     date_ajout = models.DateTimeField(auto_now_add=True)
     date_modification = models.DateTimeField(auto_now=True)
-    medias = models.JSONField(default=dict, blank=True)  
+    medias = models.JSONField(default=dict, blank=True)
     equipements = models.JSONField(default=dict, blank=True)
 
     def __str__(self):
-        return f"{self.type} - {self.adresse} ({self.prix}CFA)"
+        return f"{self.type} - {self.region} - {self.quartier} ({self.prix} CFA)"
+
 
 # Modèle Location (Louer un logement)
 class Location(models.Model):
@@ -72,7 +75,7 @@ class Location(models.Model):
     statut = models.CharField(max_length=50, choices=[("Confirmé", "Confirmé"), ("Annulé", "Annulé"), ("En attente", "En attente")])
     montant = models.DecimalField(max_digits=10, decimal_places=2)
     methode_paiement = models.CharField(max_length=50)
-    date_transaction = models.DateTimeField(auto_now_add=True)
+    date_location = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Location {self.logement} par {self.locataire} ({self.statut})"
@@ -99,7 +102,15 @@ class Service(models.Model):
     def __str__(self):
         return self.nom
 
-# Modèle Favoris (Logements ajoutés en favoris par les locataires)
+
+class LocataireService(models.Model):
+    locataire = models.ForeignKey(Locataire, on_delete=models.CASCADE)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    date_pris = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('locataire', 'service')
+
 class Favoris(models.Model):
     locataire = models.ForeignKey(Locataire, on_delete=models.CASCADE)
     logement = models.ForeignKey(Logement, on_delete=models.CASCADE)
@@ -110,3 +121,25 @@ class Favoris(models.Model):
 
     def __str__(self):
         return f"{self.locataire} - {self.logement}"
+# class Service(models.Model):
+#     nom = models.CharField(max_length=100)
+#     description = models.TextField()
+#     prix = models.DecimalField(max_digits=10, decimal_places=2)
+#     disponibilite = models.BooleanField(default=True)
+#     date_ajout = models.DateTimeField(auto_now_add=True)
+#     date_modification = models.DateTimeField(auto_now=True)
+
+#     def __str__(self):
+#         return self.nom
+
+# # Modèle Favoris (Logements ajoutés en favoris par les locataires)
+# class Favoris(models.Model):
+#     locataire = models.ForeignKey(Locataire, on_delete=models.CASCADE)
+#     logement = models.ForeignKey(Logement, on_delete=models.CASCADE)
+#     date_ajout = models.DateTimeField(auto_now_add=True)
+
+#     class Meta:
+#         unique_together = ("locataire", "logement")
+
+#     def __str__(self):
+#         return f"{self.locataire} - {self.logement}"

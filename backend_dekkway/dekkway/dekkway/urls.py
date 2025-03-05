@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from Dekkway_app.views import BailleurListCreateView, BailleurDetailView, LocataireListCreateView, LocataireDetailView, AdministrateurListCreateView, AdministrateurDetailView, LogementListCreateView, LogementDetailView, LocationListCreateView, LocationDetailView, NotificationListCreateView, NotificationDetailView, ServiceListCreateView, ServiceDetailView, FavorisListCreateView, FavorisDetailView
+from Dekkway_app.views import BailleurListCreateView, BailleurDetailView, LocataireListCreateView, LocataireDetailView, AdministrateurListCreateView, AdministrateurDetailView, LogementListCreateView, LogementDetailView, LocationListCreateView, LocationDetailView, NotificationListCreateView, NotificationDetailView, ServiceListCreateView, ServiceDetailView, FavorisListCreateView, FavorisDetailView, LocataireServiceDetailView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -44,4 +44,6 @@ urlpatterns = [
 
     path('favoris/', FavorisListCreateView.as_view(), name='favoris-list-create'),
     path('favoris/<int:pk>/', FavorisDetailView.as_view(), name='favoris-detail'),
+    
+    path('locataire_services/<int:pk>/', LocataireServiceDetailView.as_view(), name='locataire-service-detail'),
 ]

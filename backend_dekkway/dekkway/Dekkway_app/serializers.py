@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Bailleur, Locataire, Administrateur, Logement, Location, Notification, Service, Favoris
+from .models import Bailleur, Locataire, Administrateur, Logement, Location, Notification, Service, Favoris, LocataireService
 
 
 class BailleurSerializer(serializers.ModelSerializer):
@@ -40,4 +40,10 @@ class ServiceSerializer(serializers.ModelSerializer):
 class FavorisSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favoris
+        fields = '__all__'
+
+
+class LocataireServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LocataireService
         fields = '__all__'
