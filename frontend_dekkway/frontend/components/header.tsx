@@ -15,7 +15,7 @@ export default function Header() {
       {/* Logo */}
       <div className="flex items-leg">
       <Link
-          href="/"
+          href="/Acceuil"
           className="flex items-center gap-2 font-bold text-xl"
           onClick={() => setIsOpen(false)}>
                  
@@ -43,17 +43,17 @@ export default function Header() {
       {/* Liens & Boutons */}
       <div className="flex items-center space-x-6">
         <Link
-          href="/"
+          href="/Reservations"
           onClick={() => setIsOpen(false)}>
-          <span className=" font-bold text-[#014F86]">Reservation</span>
+          <span className=" font-bold text-[#014F86]">Reservations</span>
         </Link>
         <Link
-          href="/"
+          href="/Favoris"
           onClick={() => setIsOpen(false)}>
           <FaRegHeart className="text-xl text-[#014F86]" />
         </Link>
         <Link
-          href="/"
+          href="/Notifications"
           onClick={() => setIsOpen(false)}>
           <FaRegBell className="text-xl text-[#014F86]" />
         </Link>
