@@ -9,6 +9,8 @@ import { SlidersHorizontal } from "lucide-react";
 export default function Header({ onFilterClick }: { onFilterClick: () => void }) {
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [showFilter, setShowFilter] = useState(false);
+
 
   return (
     <header className="bg-white shadow-md py-4 px-6 flex justify-between items-center">
@@ -32,7 +34,8 @@ export default function Header({ onFilterClick }: { onFilterClick: () => void })
         {/* Bouton filtre */}
         <button
           className="absolute right-1 top-1/2 transform -translate-y-1/2 p-2 bg-[#FC9B89] hover:bg-[#014F86] rounded-full"
-          onClick={onFilterClick} // Appelle la fonction pour ouvrir le filtre
+          onClick={() => setShowFilter(true)}
+
         >
           <SlidersHorizontal className="h-5 w-5 text-[#014F86] hover:text-white" />
         </button>
@@ -56,6 +59,20 @@ export default function Header({ onFilterClick }: { onFilterClick: () => void })
           </button>       
         </Link>
       </div>
+      {showFilter && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+      <Filter onClose={() => setShowFilter(false)} />
+      <button 
+        className="mt-4 bg-[#FC9B89] hover:bg-[#014F86] text-white py-2 px-4 rounded"
+        onClick={() => setShowFilter(false)}
+      >
+        Fermer
+      </button>
+    </div>
+  </div>
+)}
+
     </header>
   );
 }
