@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 import { useState } from "react";
 import { FaInstagram, FaFacebookF, FaTwitter, FaYoutube, FaLinkedinIn } from "react-icons/fa";
@@ -22,7 +23,7 @@ import Image from "next/image";
               <div className="flex items-leg">
                  <Link
                    href="/Acceuil"
-                   className="flex items-center gap-2 font-bold text-xl"
+                   className="flex items-center gap-2 font-bold text-xl transition-transform duration-300 hover:scale-110"
                    onClick={() => setIsOpen(false)}>
                    <Image src="/icones/Logob.png" alt="Logo Dekkway" width={120} height={80} priority />
                  </Link>
@@ -37,7 +38,7 @@ import Image from "next/image";
                     rel="noopener noreferrer"
                     className="hover:underline"
                   >
-                    <FaFacebookF className="text-2xl rounded bg-[#FC9B89] text-white hover:text-gray-600 transition duration-300" />
+                    <FaFacebookF className="text-2xl rounded bg-[#FC9B89] text-white hover:text-gray-600 transition duration-300 hover:scale-110" />
                   </a>
                 </li>
                 <li>
@@ -47,7 +48,7 @@ import Image from "next/image";
                     rel="noopener noreferrer"
                     className="hover:underline"
                   >
-                    <FaTwitter className="text-2xl rounded bg-[#FC9B89] text-white hover:text-gray-600 transition duration-300" />
+                    <FaTwitter className="text-2xl rounded bg-[#FC9B89] text-white hover:text-gray-600 transition duration-300 hover:scale-110" />
                   </a>
                 </li>
                 <li>
@@ -57,7 +58,7 @@ import Image from "next/image";
                     rel="noopener noreferrer"
                     className="hover:underline"
                   >
-                  <FaInstagram className="text-2xl rounded bg-[#FC9B89] text-white hover:text-gray-600 transition duration-300" />
+                  <FaInstagram className="text-2xl rounded bg-[#FC9B89] text-white hover:text-gray-600 transition duration-300 hover:scale-110" />
                   </a>
                 </li>
                 <li>
@@ -67,7 +68,7 @@ import Image from "next/image";
                     rel="noopener noreferrer"
                     className="hover:underline"
                   >
-                  <FaLinkedinIn className="text-2xl rounded bg-[#FC9B89] text-white hover:text-gray-600 transition duration-300" />
+                  <FaLinkedinIn className="text-2xl rounded bg-[#FC9B89] text-white hover:text-gray-600 transition duration-300 hover:scale-110" />
                   </a>
                 </li>
                 <li>
@@ -77,7 +78,7 @@ import Image from "next/image";
                     rel="noopener noreferrer"
                     className="hover:underline"
                   >
-                  <FaYoutube className="text-2xl rounded bg-[#FC9B89] text-white hover:text-gray-600 transition duration-300" />
+                  <FaYoutube className="text-2xl rounded bg-[#FC9B89] text-white hover:text-gray-600 transition duration-300 hover:scale-110" />
                   </a>
                 </li>
                </ul>

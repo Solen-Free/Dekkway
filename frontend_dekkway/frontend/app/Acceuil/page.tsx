@@ -1,64 +1,74 @@
 "use client";
-import React, { useState } from "react";
-import Button from "@/components/button";
-import Header from "@/components/header";
+import Buttons from "@/components/buttons";
 import Carousel from "@/components/Carousel";
 import Card from "@/components/UI/Card";
 import { motion, AnimatePresence } from "framer-motion";
 import Filtre from "@/components/Filtre";
 import Footer from "@/components/footer";
+import GridCard from "@/components/UI/GridCard";
+import { useState } from 'react';
+import Link from "next/link";
 
 export default function Page() {
   
 
   return (
-    <div className="max-w-full mx-auto">
-      {/*Ajout du header avec le bouton de filtre */}
-      <Header />
+    <div className="w-full min-h-screen">
+     
 
-      <div className="flex flex-col items-center mt-6 gap-4">
+      {/* Carousel section */}
+      <div className="w-full">
         <Carousel />
-        <h1 className="text-4xl text-[#FC9B89] mt-8 font-bold">
+      </div>
+
+      {/* Main heading */}
+      <div className="flex flex-col items-center mt-6 px-4 sm:px-6 lg:px-8">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl text-[#FC9B89] font-bold text-center">
           Rechercher votre logement dès maintenant !
         </h1>
-        <Button text="Clique-moi" onClick={() => alert("Bouton cliqué !")} />
+      </div>
 
-        {/*Section "Les plus récents" */}
-        <div className="w-full p-6">
-          <h1 className="font-bold text-left mb-6 text-xl">Les plus récents</h1>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 gap-y-10">
-            <Card image="/images/maison.jpg" title="Maison à louer" location="Grand-Standing, Thiès" price="500000" />
-            <Card image="/images/maison1.jpg" title="Appart à louer" location="Centre-Ville, Dakar" price="300000" />
-            <Card image="/images/maison2.jpg" title="Villa à vendre" location="Plage, Mbour" price="1500000" />
-            <Card image="/images/maison3.jpg" title="Maison moderne" location="Banlieue, Rufisque" price="800000" />
-            <Card image="/images/maison.jpg" title="Maison à louer" location="Grand-Standing, Thiès" price="500000" />
-            <Card image="/images/maison1.jpg" title="Appart à louer" location="Centre-Ville, Dakar" price="300000" />
-            <Card image="/images/maison2.jpg" title="Villa à vendre" location="Plage, Mbour" price="1500000" />
-            <Card image="/images/maison3.jpg" title="Maison moderne" location="Banlieue, Rufisque" price="800000" />
-          </div>  
+      {/* Bailleur section */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-start px-4 sm:px-6 lg:px-8 mt-8 gap-4">
+        <Buttons 
+          text="Devenir Bailleur" 
+          fontWeight="font-bold" 
+          textSize="text-xl sm:text-2xl"  
+          href="/InscriptionBailleur"
+        />
+        <h1 className="text-lg sm:text-xl font-bold text-black">
+          <span className="animate-typewriter block">
+            Vous avez la possibilité de vendre vos propriétés sur notre plateforme !
+          </span>
+        </h1>
+      </div>
+
+      {/* Recent listings sections */}
+      <div className="flex flex-col w-full px-4 sm:px-6 lg:px-8 mt-8">
+        {/* First recent section */}
+        <div className="w-full mb-12">
+          <h1 className="font-bold text-[#014F86] text-lg sm:text-xl mb-6">
+            Les plus récents
+          </h1>
+          <div className="w-full">
+            <GridCard />
+          </div>
         </div>
 
-        <div className="w-3/4 h-[2px] border-[#FC9B89] mx-auto border"></div>
+        {/* Divider */}
+        <div className="w-full max-w-[90%] mx-auto h-[2px] border-[#FC9B89] border"></div>
 
-        {/*Deuxième section identique */}
-        <div className="w-full p-6">
-          <h1 className="font-bold text-left mb-6 text-xl">Les plus récents</h1>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 gap-y-10">
-            <Card image="/images/maison.jpg" title="Maison à louer" location="Grand-Standing, Thiès" price="500000" />
-            <Card image="/images/maison1.jpg" title="Appart à louer" location="Centre-Ville, Dakar" price="300000" />
-            <Card image="/images/maison2.jpg" title="Villa à vendre" location="Plage, Mbour" price="1500000" />
-            <Card image="/images/maison3.jpg" title="Maison moderne" location="Banlieue, Rufisque" price="800000" />
-            <Card image="/images/maison.jpg" title="Maison à louer" location="Grand-Standing, Thiès" price="500000" />
-            <Card image="/images/maison1.jpg" title="Appart à louer" location="Centre-Ville, Dakar" price="300000" />
-            <Card image="/images/maison2.jpg" title="Villa à vendre" location="Plage, Mbour" price="1500000" />
-            <Card image="/images/maison3.jpg" title="Maison moderne" location="Banlieue, Rufisque" price="800000" />
-          </div>  
+        {/* Second recent section */}
+        <div className="w-full mt-12">
+          <h1 className="font-bold text-[#014F86] text-lg sm:text-xl mb-6">
+            Les plus récents
+          </h1>
+          <div className="w-full">
+            <GridCard />
+          </div>
         </div>
       </div>
 
-     
-
-      <Footer />
     </div>
   );
 }
