@@ -1,4 +1,7 @@
-from math import radians, cos, sin, asin, sqrt
+from math import radians, cos  # Ajouté
+from django.db.models import Q
+from django.db.models import F, FloatField, ExpressionWrapper
+from django.db.models.functions import Radians, Sin, Cos, ATan2, Sqrt, Power
 from django.shortcuts import render
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
@@ -34,46 +37,71 @@ class AdministrateurListCreateView(generics.ListCreateAPIView):
 class AdministrateurDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Administrateur.objects.all()
     serializer_class = AdministrateurSerializer
-
-# class LogementListCreateView(generics.ListCreateAPIView):
-#     queryset = Logement.objects.all()
-#     serializer_class = LogementSerializer
-
-# class LogementDetailView(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Logement.objects.all()
-#     serializer_class = LogementSerializer
-
-# class LogementListCreateView(generics.ListCreateAPIView):
-#     queryset = Logement.objects.all()
-#     serializer_class = LogementSerializer
-#     filter_backends = [DjangoFilterBackend]
-#     filterset_class = LogementFilter
+    
 
 class LogementListCreateView(generics.ListCreateAPIView):
     queryset = Logement.objects.all()
     serializer_class = LogementSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = LogementFilter
+    
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if 'lat' in self.request.GET and 'lng' in self.request.GET:
-            user_lat = float(self.request.GET.get('lat'))
-            user_lng = float(self.request.GET.get('lng'))
-            queryset = sorted(queryset, key=lambda x: self.haversine(user_lat, user_lng, x.latitude, x.longitude))
-        return queryset
+        
+        
+        lat = self.request.GET.get('lat')
+        lng = self.request.GET.get('lng')
+        rayon = float(self.request.GET.get('rayon', 10))  # Par défaut : 10 km
+        
+        
+        
+        if lat and lng:
+            lat = float(lat)
+            lng = float(lng)
+            
+            # Filtre initial pour limiter la recherche à une boîte englobante
+            delta_lat = rayon / 111  # 1° de latitude ≈ 111 km
+            delta_lng = rayon / (111 * cos(radians(lat)))  # Ajustement selon la latitude
+            
+            queryset = queryset.filter(
+                latitude__range=(lat - delta_lat, lat + delta_lat),
+                longitude__range=(lng - delta_lng, lng + delta_lng)
+            )
 
-    def haversine(self, lat1, lon1, lat2, lon2):
-        # convert decimal degrees to radians
-        lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
-        # haversine formula
-        dlon = lon2 - lon1
-        dlat = lat2 - lat1
-        a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
-        c = 2 * asin(sqrt(a))
-        # Radius of earth in kilometers. Use 3956 for miles. Determines return value units.
-        r = 6371
-        return c * r
+            # Ajout de la distance Haversine pour affiner les résultats
+            queryset = queryset.annotate(
+                distance=self.haversine_sql(lat, lng)
+            ).filter(distance__lte=rayon).order_by('distance')
+
+        return queryset
+    
+    def haversine_sql(self, lat, lng):
+        """Génère une expression SQL pour calculer la distance Haversine corrigée"""
+        lat_rad = Radians(F('latitude'))
+        lng_rad = Radians(F('longitude'))
+        input_lat_rad = radians(lat)
+        input_lng_rad = radians(lng)
+
+        delta_lat = lat_rad - input_lat_rad
+        delta_lng = lng_rad - input_lng_rad
+
+        # Utilisation de Power() au lieu de l'opérateur **
+        a_expression = (
+            Power(Sin(delta_lat / 2.0), 2) + 
+            Cos(input_lat_rad) * 
+            Cos(lat_rad) * 
+            Power(Sin(delta_lng / 2.0), 2)
+        )
+
+        a = ExpressionWrapper(a_expression, output_field=FloatField())
+        sqrt_a = Sqrt(a)
+        sqrt_1_minus_a = Sqrt(1.0 - a)
+        c = ExpressionWrapper(2.0 * ATan2(sqrt_a, sqrt_1_minus_a), output_field=FloatField())
+
+        return ExpressionWrapper(6371.0 * c, output_field=FloatField())
+    
+
 
 class LogementDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Logement.objects.all()

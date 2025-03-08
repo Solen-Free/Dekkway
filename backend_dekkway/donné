@@ -155,7 +155,7 @@ Points à 2 km, 5 km, 10 km et 15 km
     "region": "Dakar",
     "medias": {"images": ["image1.jpg", "image2.jpg"]},
     "equipements": {"wifi": true, "climatisation": true, "piscine": false}
-  }11,
+  },
   {
     "bailleur": 4,
     "quartier": "Point 2 km",
@@ -169,7 +169,7 @@ Points à 2 km, 5 km, 10 km et 15 km
     "region": "Dakar",
     "medias": {"images": ["image3.jpg", "image4.jpg"]},
     "equipements": {"wifi": true, "climatisation": false, "piscine": false}
-  }10,
+  },
   {
     "bailleur": 4,
     "quartier": "Point 5 km",
@@ -183,7 +183,7 @@ Points à 2 km, 5 km, 10 km et 15 km
     "region": "Dakar",
     "medias": {"images": ["image5.jpg", "image6.jpg"]},
     "equipements": {"wifi": true, "climatisation": true, "piscine": true}
-  }9,
+  },
   {
     "bailleur": 4,
     "quartier": "Point 10 km",
@@ -197,7 +197,7 @@ Points à 2 km, 5 km, 10 km et 15 km
     "region": "Dakar",
     "medias": {"images": ["image7.jpg", "image8.jpg"]},
     "equipements": {"wifi": true, "climatisation": true, "piscine": false}
-  }8,
+  },
   {
     "bailleur": 4,
     "quartier": "Point 15 km",
@@ -211,7 +211,7 @@ Points à 2 km, 5 km, 10 km et 15 km
     "region": "Dakar",
     "medias": {"images": ["image9.jpg", "image10.jpg"]},
     "equipements": {"wifi": false, "climatisation": false, "piscine": false}
-  }7,
+  },
   {
     "bailleur": 4,
     "quartier": "Point Principal 2",
@@ -225,7 +225,7 @@ Points à 2 km, 5 km, 10 km et 15 km
     "region": "Dakar",
     "medias": {"images": ["image11.jpg", "image12.jpg"]},
     "equipements": {"wifi": true, "climatisation": true, "piscine": false}
-  }6,
+  },
   {
     "bailleur": 4,
     "quartier": "Point 2 km",
@@ -239,7 +239,7 @@ Points à 2 km, 5 km, 10 km et 15 km
     "region": "Dakar",
     "medias": {"images": ["image13.jpg", "image14.jpg"]},
     "equipements": {"wifi": true, "climatisation": false, "piscine": false}
-  }5,
+  },
   {
     "bailleur": 4,
     "quartier": "Point 5 km",
@@ -253,7 +253,7 @@ Points à 2 km, 5 km, 10 km et 15 km
     "region": "Dakar",
     "medias": {"images": ["image15.jpg", "image16.jpg"]},
     "equipements": {"wifi": true, "climatisation": true, "piscine": true}
-  }4,
+  },
   {
     "bailleur": 4,
     "quartier": "Point 10 km",
@@ -267,7 +267,7 @@ Points à 2 km, 5 km, 10 km et 15 km
     "region": "Dakar",
     "medias": {"images": ["image17.jpg", "image18.jpg"]},
     "equipements": {"wifi": true, "climatisation": true, "piscine": false}
-  }3,
+  },
   {
     "bailleur": 4,
     "quartier": "Point 15 km",
@@ -281,7 +281,7 @@ Points à 2 km, 5 km, 10 km et 15 km
     "region": "Dakar",
     "medias": {"images": ["image19.jpg", "image20.jpg"]},
     "equipements": {"wifi": false, "climatisation": false, "piscine": false}
-  }2,
+  },
   {
     "bailleur": 4,
     "quartier": "Point Principal 3",
@@ -295,7 +295,7 @@ Points à 2 km, 5 km, 10 km et 15 km
     "region": "Dakar",
     "medias": {"images": ["image21.jpg", "image22.jpg"]},
     "equipements": {"wifi": true, "climatisation": true, "piscine": false}
-  }1,
+  },
   {
     "bailleur": 4,
     "quartier": "Point 2 km",
@@ -310,4 +310,135 @@ Points à 2 km, 5 km, 10 km et 15 km
     "medias": {"images": ["image23.jpg", "image24.jpg"]},
     "equipements": {"wifi": true, "climatisation": false, "piscine":false}
     }
+]
+
+
+##teste 2
+[
+  {
+    "bailleur": 4,
+    "quartier": "Point 2 km",
+    "prix": 200000,
+    "description": "Appartement proche du centre",
+    "type": "Studio",
+    "nombre_de_chambres": 1,
+    "disponibilite": true,
+    "latitude": 40.7052,
+    "longitude": -74.0169,
+    "region": "New York",
+    "medias": {"images": ["image3.jpg", "image4.jpg"]},
+    "equipements": {"wifi": true, "climatisation": false, "piscine": false}
+  }1,
+  {
+    "bailleur": 4,
+    "quartier": "Point 5 km",
+    "prix": 300000,
+    "description": "Villa avec jardin",
+    "type": "Villa",
+    "nombre_de_chambres": 4,
+    "disponibilite": true,
+    "latitude": 40.7580,
+    "longitude": -73.9855,
+    "region": "New York",
+    "medias": {"images": ["image5.jpg", "image6.jpg"]},
+    "equipements": {"wifi": true, "climatisation": true, "piscine": true}
+  }2,
+  {
+    "bailleur": 4,
+    "quartier": "Point 7 km",
+    "prix": 150000,
+    "description": "Co-Location conviviale",
+    "type": "Co-Location",
+    "nombre_de_chambres": 2,
+    "disponibilite": true,
+    "latitude": 40.7003,
+    "longitude": -73.9950,
+    "region": "New York",
+    "medias": {"images": ["image7.jpg", "image8.jpg"]},
+    "equipements": {"wifi": true, "climatisation": true, "piscine": false}
+  }3,
+  {
+    "bailleur": 4,
+    "quartier": "Point 2 km",
+    "prix": 210000,
+    "description": "Appartement cosy",
+    "type": "Studio",
+    "nombre_de_chambres": 1,
+    "disponibilite": true,
+    "latitude": 48.8738,
+    "longitude": 2.2950,
+    "region": "Paris",
+    "medias": {"images": ["image13.jpg", "image14.jpg"]},
+    "equipements": {"wifi": true, "climatisation": false, "piscine": false}
+  }4,
+  {
+    "bailleur": 4,
+    "quartier": "Point 5 km",
+    "prix": 320000,
+    "description": "Grande villa",
+    "type": "Villa",
+    "nombre_de_chambres": 5,
+    "disponibilite": true,
+    "latitude": 48.8530,
+    "longitude": 2.3499,
+    "region": "Paris",
+    "medias": {"images": ["image15.jpg", "image16.jpg"]},
+    "equipements": {"wifi": true, "climatisation": true, "piscine": true}
+  }5,
+  {
+    "bailleur": 4,
+    "quartier": "Point 7 km",
+    "prix": 160000,
+    "description": "Chambre en co-location",
+    "type": "Co-Location",
+    "nombre_de_chambres": 1,
+    "disponibilite": true,
+    "latitude": 48.8867,
+    "longitude": 2.3431,
+    "region": "Paris",
+    "medias": {"images": ["image17.jpg", "image18.jpg"]},
+    "equipements": {"wifi": true, "climatisation": true, "piscine": false}
+  }6,
+  {
+    "bailleur": 4,
+    "quartier": "Point 2 km",
+    "prix": 220000,
+    "description": "Appartement charmant",
+    "type": "Studio",
+    "nombre_de_chambres": 1,
+    "disponibilite": true,
+    "latitude": 29.9753,
+    "longitude": 31.1376,
+    "region": "Gizeh",
+    "medias": {"images": ["image23.jpg", "image24.jpg"]},
+    "equipements": {"wifi": true, "climatisation": false, "piscine": false}
+  }7,
+  {
+    "bailleur": 4,
+    "quartier": "Point 5 km",
+    "prix": 280000,
+    "description": "Appartement spacieux",
+    "type": "Appartement",
+    "nombre_de_chambres": 4,
+    "disponibilite": true,
+    "latitude": 29.9950,
+    "longitude": 31.1252,
+    "region": "Gizeh",
+    "medias": {"images": ["image21.jpg", "image22.jpg"]},
+    "equipements": {"wifi": true, "climatisation": true, "piscine": false}
+  }8,
+  {
+    "bailleur": 4,
+    "quartier": "Point 7 km",
+    "prix": 120000,
+    "description": "Petite maison",
+    "type": "Maison",
+    "nombre_de_chambres": 2,
+    "disponibilite": true,
+    "latitude": 29.8500,
+    "longitude": 31.2500,
+    "region": "Gizeh",
+    "medias": {"images": ["image19.jpg", "image20.jpg"]},
+    "equipements": {"wifi": false, "climatisation": false, "piscine": false}
+  }
 ]

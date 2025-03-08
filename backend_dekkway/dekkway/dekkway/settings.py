@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'Dekkway_app',
     'rest_framework',
     'django_filters',
-    
+    'django.contrib.postgres',
 ]
 
 
