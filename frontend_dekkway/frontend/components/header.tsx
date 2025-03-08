@@ -1,26 +1,28 @@
-import React, { useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import Filter from "@/components/Filter";
+import * as React from "react";
+import { useState } from "react";
 import { FaSearch, FaUserCircle, FaUserEdit, FaHeart, FaBell, FaRegHeart, FaRegBell } from "react-icons/fa";
-import { SlidersHorizontal } from "lucide-react";
+import  Button  from "./button";
+import Image from "next/image";
+import AlertFiltre from "@/components/AlertFiltre";
+import Link from "next/link";
+import { Filter, Search, SlidersHorizontal } from "lucide-react";
 
-
-export default function Header({ onFilterClick }: { onFilterClick: () => void }) {
+export default function Header() {
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [showFilter, setShowFilter] = useState(false);
-
-
   return (
     <header className="bg-white shadow-md py-4 px-6 flex justify-between items-center">
       {/* Logo */}
       <div className="flex items-leg">
-        <Link href="/" className="flex items-center gap-2 font-bold text-xl" onClick={() => setIsOpen(false)}>
-          <Image src="/icones/Logo.png" alt="Logo Dekkway" width={120} height={80} priority />
-        </Link>
+      <Link
+          href="/Acceuil"
+          className="flex items-center gap-2 font-bold text-xl"
+          onClick={() => setIsOpen(false)}>
+                 
+        <Image src="/icones/Logo.png" alt="Logo Dekkway" width={120} height={80} priority />
+      </Link>
       </div>
-
+      
       {/* Barre de recherche */}
       <div className="relative flex-1 max-w-sm mx-4">
         <input
@@ -30,49 +32,39 @@ export default function Header({ onFilterClick }: { onFilterClick: () => void })
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+    
         <FaSearch className="absolute left-3 top-3 text-[#FC9B89]" />
-        {/* Bouton filtre */}
-        <button
-          className="absolute right-1 top-1/2 transform -translate-y-1/2 p-2 bg-[#FC9B89] hover:bg-[#014F86] rounded-full"
-          onClick={() => setShowFilter(true)}
-
-        >
-          <SlidersHorizontal className="h-5 w-5 text-[#014F86] hover:text-white" />
-        </button>
+        <AlertFiltre />
       </div>
-
+      
       {/* Liens & Boutons */}
       <div className="flex items-center space-x-6">
-        <Link href="/" onClick={() => setIsOpen(false)}>
-          <span className=" font-bold text-[#014F86]">Reservation</span>
+        <Link
+          href="/Reservations"
+          onClick={() => setIsOpen(false)}>
+          <span className=" font-bold text-[#014F86]">Reservations</span>
         </Link>
-        <Link href="/" onClick={() => setIsOpen(false)}>
+        <Link
+          href="/Favoris"
+          onClick={() => setIsOpen(false)}>
           <FaRegHeart className="text-xl text-[#014F86]" />
         </Link>
-        <Link href="/" onClick={() => setIsOpen(false)}>
+        <Link
+          href="/Notifications"
+          onClick={() => setIsOpen(false)}>
           <FaRegBell className="text-xl text-[#014F86]" />
         </Link>
-        <Link href="/" onClick={() => setIsOpen(false)}>
+        <Link
+          href="/"
+          onClick={() => setIsOpen(false)}>
           <button className="bg-[#FC9B89] hover:bg-white border border-[#FC9B89] flex items-center space-x-2 py-2 px-4 rounded-full">
-            <FaUserEdit className="text-xl text-[#014F86]" />
-            <span className="text-[#014F86]">Mon Compte</span>
-          </button>       
+          <FaUserEdit className="text-xl text-[#014F86]" />
+          <span className="text-[#014F86]">Mon Compte</span>
+        </button>       
         </Link>
+       
+        
       </div>
-      {showFilter && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-      <Filter onClose={() => setShowFilter(false)} />
-      <button 
-        className="mt-4 bg-[#FC9B89] hover:bg-[#014F86] text-white py-2 px-4 rounded"
-        onClick={() => setShowFilter(false)}
-      >
-        Fermer
-      </button>
-    </div>
-  </div>
-)}
-
     </header>
   );
 }
