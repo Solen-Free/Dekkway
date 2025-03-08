@@ -11,6 +11,8 @@ interface ButtonsProps {
   bgColor?: string; 
   textColor?: string; 
   hoverColor?: string; 
+  textSize?: string;  
+  fontWeight?: string; 
 }
 
 const Buttons: React.FC<ButtonsProps> = ({ 
@@ -21,30 +23,29 @@ const Buttons: React.FC<ButtonsProps> = ({
   href, 
   bgColor = "#014F86", 
   textColor = "white", 
-  hoverColor = "#FC9B89" 
+  hoverColor = "#FC9B89",
+  textSize = "text-lg",
+  fontWeight = "font-bold"
 }) => {
-  const content = (
-    <div 
-      className={`flex items-center space-x-2 px-10 py-2 rounded-3xl transition-all duration-300 ${className}`}
-      style={{ backgroundColor: bgColor, color: textColor }}
-    >
-      {icon && <span className="text-xl">{icon}</span>}
-      <span>{text}</span>
-    </div>
-  );
-
-  return href ? (
-    <Link href={href}>
-      <div className="hover:opacity-50">{content}</div>
+  return (
+    <Link href={href || "#"} passHref>
+      <button
+        onClick={onClick}
+        className={`
+          flex items-center justify-center space-x-2 px-4 py-2 rounded-3xl transition-all duration-300 
+          shadow-md hover:shadow-lg hover:scale-105 border border-transparent 
+          ${textSize} ${fontWeight} ${className}
+          sm:px-3 sm:py-1 md:px-4 md:py-2 lg:px-4 lg:py-2
+          sm:text-base md:text-lg lg:text-xl
+        `}
+        style={{ backgroundColor: bgColor, color: textColor }}
+        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = hoverColor!)}
+        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = bgColor!)}
+      >
+        {icon && <span className="text-xl sm:text-xl md:text-xl">{icon}</span>}
+        <span>{text}</span>
+      </button>
     </Link>
-  ) : (
-    <button 
-      onClick={onClick} 
-      className="hover:opacity-50" 
-      style={{ backgroundColor: bgColor, color: textColor }}
-    >
-      {content}
-    </button>
   );
 };
 
