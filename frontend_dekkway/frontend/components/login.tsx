@@ -166,7 +166,7 @@ export default function Login() {
             <div className="text-center mt-6">
               <p className="text-sm sm:text-base text-gray-600">
                 Vous n'avez pas encore un compte ?{' '}
-                <a href="/register" className="text-[#014F86] hover:underline">
+                <a href=" ../Register" className="text-[#014F86] hover:underline">
                   S'inscrire
                 </a>
               </p>
