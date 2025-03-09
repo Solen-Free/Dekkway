@@ -119,7 +119,7 @@ export default function Login() {
 
               {/* Lien "Mot de passe oublié" */}
               <div className="text-right">
-                <a href="/forgot-password" className="text-sm text-[#014F86] hover:underline">
+                <a href="../mot-de-passe-oublie" className="text-sm text-[#014F86] hover:underline">
                   Mot de passe oublié ?
                 </a>
               </div>
