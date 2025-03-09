@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.db.models import F, FloatField, ExpressionWrapper
 from django.db.models.functions import Radians, Sin, Cos, ATan2, Sqrt, Power
 from django.shortcuts import render
-from rest_framework import generics
+from rest_framework import generics, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Logement
 from .filters import LogementFilter
@@ -42,7 +42,7 @@ class AdministrateurDetailView(generics.RetrieveUpdateDestroyAPIView):
 class LogementListCreateView(generics.ListCreateAPIView):
     queryset = Logement.objects.all()
     serializer_class = LogementSerializer
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_class = LogementFilter
     
 

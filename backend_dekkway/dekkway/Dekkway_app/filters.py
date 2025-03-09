@@ -1,6 +1,6 @@
-import django_filters
 import re
-from django.contrib.postgres.search import SearchVector, SearchQuery
+import django_filters
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.db import models
 from django.db.models import Q
 from .models import Logement
@@ -67,7 +67,266 @@ class LogementFilter(django_filters.FilterSet):
         return queryset.filter(**filters)
     
     
- 
+    def filter_natural_search(self, queryset, name, value):
+        search_query = value.strip()
+        remaining_query = search_query
+
+        # 1. Extraction de la localisation (version corrigée)
+        location_match = re.search(r'\b(?:à|a|dans)\s+([^\d,]+?)(?=\s|$)', remaining_query, re.IGNORECASE)
+        location_part = None
+        if location_match:
+            location_part = location_match.group(1).strip()
+            remaining_query = remaining_query.replace(location_match.group(0), '', 1).strip()  # Correction ici
+
+        # 2. Extraction des équipements 
+        equipments = []
+        equipment_matches = re.finditer(r'\b(avec|sans)\s+([^,]+?)(?=\s+avec|\s+sans|\s+\d|$)', remaining_query, re.IGNORECASE)
+        
+        for match in equipment_matches:
+            operator, eqs = match.groups()
+            for eq in re.split(r'\s+et\s+|\s+', eqs.strip()):
+                if eq:
+                    equipments.append((eq.strip().lower(), operator.lower() == 'avec'))
+            remaining_query = remaining_query.replace(match.group(0), '', 1).strip()
+
+        # 3. Extraction du nombre de chambres
+        nombre_de_chambres = None
+        chambres_match = re.search(r'\b(\d+|une?|deux|trois|quatre|cinq|six|sept|huit|neuf|dix)\s+chambres?\b', remaining_query, re.IGNORECASE)
+        if chambres_match:
+            number = chambres_match.group(1)
+            nombre_de_chambres = int(number) if number.isdigit() else {
+                'un': 1, 'une': 1, 'deux': 2, 'trois': 3, 'quatre': 4,
+                'cinq': 5, 'six': 6, 'sept': 7, 'huit': 8, 'neuf': 9, 'dix': 10
+            }.get(number.lower(), None)
+            remaining_query = remaining_query.replace(chambres_match.group(0), '', 1).strip()
+
+        # 4. Extraction des prix
+        prix_min = prix_max = None
+        if match := re.search(r'entre\s+(\d+)\s+et\s+(\d+)', remaining_query, re.IGNORECASE):
+            prix_min, prix_max = map(int, match.groups())
+            remaining_query = remaining_query.replace(match.group(0), '', 1).strip()
+        elif match := re.search(r'moins\s+de\s+(\d+)', remaining_query, re.IGNORECASE):
+            prix_max = int(match.group(1))
+            remaining_query = remaining_query.replace(match.group(0), '', 1).strip()
+        elif match := re.search(r'plus\s+de\s+(\d+)', remaining_query, re.IGNORECASE):
+            prix_min = int(match.group(1))
+            remaining_query = remaining_query.replace(match.group(0), '', 1).strip()
+
+        # 5. Application des filtres
+        if location_part:
+            queryset = queryset.filter(
+                Q(region__unaccent__icontains=location_part) |
+                Q(quartier__unaccent__icontains=location_part)
+            )
+
+        for eq, val in equipments:
+            queryset = queryset.filter(**{f'equipements__{eq}': val})
+
+        if prix_min is not None:
+            queryset = queryset.filter(prix__gte=prix_min)
+        if prix_max is not None:
+            queryset = queryset.filter(prix__lte=prix_max)
+        if nombre_de_chambres is not None:
+            queryset = queryset.filter(nombre_de_chambres=nombre_de_chambres)
+
+        # 6. Recherche plein texte
+        remaining_query = re.sub(r'\s+', ' ', remaining_query).strip()
+        if remaining_query:
+            vector = SearchVector(
+                'type',
+                'description',
+                'quartier',
+                'region',
+                config='french'
+            )
+            query = SearchQuery(remaining_query, config='french')
+            queryset = queryset.annotate(search=vector, rank=SearchRank(vector, query))\
+                    .filter(search=query)\
+                    .order_by('-rank')
+
+        return queryset
+    
+   
+    
+     ###############moins recent##############3
+    # def filter_natural_search(self, queryset, name, value):
+    #     search_query = value.strip()
+    #     remaining_query = search_query
+
+    #     # 1. Extraction de la localisation (ex: "à Dakar")
+    #     location_match = re.search(r'\b(?:à|dans|a)\s+([^,]+)', remaining_query, re.IGNORECASE)
+    #     location_part = None
+    #     if location_match:
+    #         location_part = location_match.group(1).strip()
+    #         remaining_query = re.sub(r'\b(?:à|dans|a)\s+([^,]+)', '', remaining_query, count=1, flags=re.IGNORECASE).strip()
+
+    #     # 2. Extraction des équipements (avec/sans)
+    #     equipments = []
+    #     for match in re.finditer(r'\b(avec|sans)\s+([^,]+)', remaining_query, re.IGNORECASE):
+    #         operator, eq = match.groups()
+    #         equipments.append((eq.strip().lower(), operator.lower() == 'avec'))
+    #         remaining_query = remaining_query.replace(match.group(0), '').strip()
+
+    #     # 3. Extraction du nombre de chambres (en chiffres ou en lettres)
+    #     nombre_de_chambres = None
+
+    #     # Dictionnaire de conversion mot -> nombre
+    #     number_words = {
+    #         'un': 1, 'deux': 2, 'trois': 3, 'quatre': 4,
+    #         'cinq': 5, 'six': 6, 'sept': 7, 'huit': 8,
+    #         'neuf': 9, 'dix': 10
+    #     }
+
+    #     # Recherche des nombres en lettres (ex: "deux chambres")
+    #     for word, num in number_words.items():
+    #         match = re.search(rf'\b{word}\s+chambres?\b', remaining_query, re.IGNORECASE)
+    #         if match:
+    #             nombre_de_chambres = num
+    #             remaining_query = re.sub(rf'\b{word}\s+chambres?\b', '', remaining_query, flags=re.IGNORECASE).strip()
+    #             break
+
+    #     # Recherche des nombres en chiffres (ex: "2 chambres")
+    #     if nombre_de_chambres is None:
+    #         chambres_match = re.search(r'\b(\d+)\s+chambres?\b', remaining_query, re.IGNORECASE)
+    #         if chambres_match:
+    #             nombre_de_chambres = int(chambres_match.group(1))
+    #             remaining_query = re.sub(r'\b\d+\s+chambres?\b', '', remaining_query, flags=re.IGNORECASE).strip()
+
+    #     # 4. Extraction des informations de prix
+    #     prix_min = None
+    #     prix_max = None
+        
+    #     # Moins de X CFA
+    #     match = re.search(r'moins de (\d+)\s*CFA?', remaining_query, re.IGNORECASE)
+    #     if match:
+    #         prix_max = int(match.group(1))
+    #         remaining_query = re.sub(r'moins de \d+\s*CFA?', '', remaining_query, flags=re.IGNORECASE).strip()
+        
+    #     # Plus de X CFA
+    #     match = re.search(r'plus de (\d+)\s*CFA?', remaining_query, re.IGNORECASE)
+    #     if match:
+    #         prix_min = int(match.group(1))
+    #         remaining_query = re.sub(r'plus de \d+\s*CFA?', '', remaining_query, flags=re.IGNORECASE).strip()
+        
+    #     # Entre X et Y CFA
+    #     match = re.search(r'entre (\d+) et (\d+)\s*CFA?', remaining_query, re.IGNORECASE)
+    #     if match:
+    #         prix_min = int(match.group(1))
+    #         prix_max = int(match.group(2))
+    #         remaining_query = re.sub(r'entre \d+ et \d+\s*CFA?', '', remaining_query, flags=re.IGNORECASE).strip()
+
+    #     # 5. Application des filtres
+    #     if location_part:
+    #         queryset = queryset.filter(
+    #             Q(region__unaccent__icontains=location_part) |
+    #             Q(quartier__unaccent__icontains=location_part)
+    #         )
+
+    #     for eq, val in equipments:
+    #         queryset = queryset.filter(**{f'equipements__{eq}': val})
+
+    #     if prix_min:
+    #         queryset = queryset.filter(prix__gte=prix_min)
+    #     if prix_max:
+    #         queryset = queryset.filter(prix__lte=prix_max)
+    #     if nombre_de_chambres is not None:
+    #         queryset = queryset.filter(nombre_de_chambres=nombre_de_chambres)
+
+    #     # 6. Recherche plein texte sur le reste
+    #     remaining_query = re.sub(r'\s+', ' ', remaining_query).strip()
+    #     if remaining_query:
+    #         vector = SearchVector(
+    #             'description',
+    #             'type',
+    #             'quartier',
+    #             'region',
+    #             config='french'
+    #         )
+    #         query = SearchQuery(remaining_query, config='french')
+    #         queryset = queryset.annotate(
+    #             search=vector,
+    #             rank=SearchRank(vector, query)
+    #         ).filter(search=query).order_by('-rank')
+
+    #     return queryset
+     
+     
+    #################ancien#################
+    # def filter_natural_search(self, queryset, name, value):
+    #     search_query = value.strip()
+    #     remaining_query = search_query
+
+    #     # 1. Extraction de la localisation (ex: "à Dakar")
+    #     location_match = re.search(r'\b(?:à|dans)\s+([^,]+)', remaining_query, re.IGNORECASE)
+    #     location_part = None
+    #     if location_match:
+    #         location_part = location_match.group(1).strip()
+    #         remaining_query = re.sub(r'\b(?:à|dans)\s+([^,]+)', '', remaining_query, count=1, flags=re.IGNORECASE).strip()
+
+    #     # 2. Extraction des équipements (avec/sans)
+    #     equipments = []
+    #     for match in re.finditer(r'\b(avec|sans)\s+([^,]+)', remaining_query, re.IGNORECASE):
+    #         operator, eq = match.groups()
+    #         equipments.append((eq.strip().lower(), operator.lower() == 'avec'))
+    #         remaining_query = remaining_query.replace(match.group(0), '').strip()
+
+    #     # 3. Extraction des informations de prix
+    #     prix_min = None
+    #     prix_max = None
+        
+    #     # Moins de X CFA
+    #     match = re.search(r'moins de (\d+)\s*CFA?', remaining_query, re.IGNORECASE)
+    #     if match:
+    #         prix_max = int(match.group(1))
+    #         remaining_query = re.sub(r'moins de \d+\s*CFA?', '', remaining_query, flags=re.IGNORECASE).strip()
+        
+    #     # Plus de X CFA
+    #     match = re.search(r'plus de (\d+)\s*CFA?', remaining_query, re.IGNORECASE)
+    #     if match:
+    #         prix_min = int(match.group(1))
+    #         remaining_query = re.sub(r'plus de \d+\s*CFA?', '', remaining_query, flags=re.IGNORECASE).strip()
+        
+    #     # Entre X et Y CFA
+    #     match = re.search(r'entre (\d+) et (\d+)\s*CFA?', remaining_query, re.IGNORECASE)
+    #     if match:
+    #         prix_min = int(match.group(1))
+    #         prix_max = int(match.group(2))
+    #         remaining_query = re.sub(r'entre \d+ et \d+\s*CFA?', '', remaining_query, flags=re.IGNORECASE).strip()
+
+    #     # 4. Application des filtres
+    #     if location_part:
+    #         queryset = queryset.filter(
+    #             Q(region__unaccent__icontains=location_part) |
+    #             Q(quartier__unaccent__icontains=location_part)
+    #         )
+
+    #     for eq, val in equipments:
+    #         queryset = queryset.filter(**{f'equipements__{eq}': val})
+
+    #     if prix_min:
+    #         queryset = queryset.filter(prix__gte=prix_min)
+    #     if prix_max:
+    #         queryset = queryset.filter(prix__lte=prix_max)
+
+    #     # 5. Recherche plein texte sur le reste
+    #     remaining_query = re.sub(r'\s+', ' ', remaining_query).strip()
+    #     if remaining_query:
+    #         vector = SearchVector(
+    #             'description',
+    #             'type',
+    #             'quartier',
+    #             'region',
+    #             config='french'
+    #         )
+    #         query = SearchQuery(remaining_query, config='french')
+    #         queryset = queryset.annotate(
+    #             search=vector,
+    #             rank=SearchRank(vector, query)
+    #         ).filter(search=query).order_by('-rank')
+
+    #     return queryset
+    
+    
 
     class Meta:
         model = Logement

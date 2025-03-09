@@ -7,6 +7,5 @@ utilisateur: dekkway_user
 mot de pass: Dekkway2025
 
 //django administrateur
-
 utilisateur: dekkway_admin
 mot de pass: Dekkway2025
