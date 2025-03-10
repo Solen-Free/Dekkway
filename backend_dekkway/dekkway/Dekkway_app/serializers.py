@@ -75,7 +75,7 @@ class InscriptionLocataireSerializer(serializers.ModelSerializer):
         fields = ['username', 'email', 'password', 'nom', 'prenom', 'adresse', 'telephone']
 
     def create(self, validated_data):
-        user = Bailleur.objects.create_user(
+        user = Locataire.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password'],

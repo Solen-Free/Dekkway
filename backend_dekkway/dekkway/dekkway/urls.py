@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from Dekkway_app.views import BailleurListCreateView, BailleurDetailView, LocataireListCreateView, LocataireDetailView, AdministrateurListCreateView, AdministrateurDetailView, LogementListCreateView,LogementDetailView, LocationListCreateView, LocationDetailView, NotificationListCreateView, NotificationDetailView, ServiceListCreateView, ServiceDetailView, FavorisListCreateView, FavorisDetailView, LocataireServiceDetailView, LogementDetailsListCreateView, InscriptionLocataireView, ConnexionLocataireView
+from Dekkway_app.views import BailleurListCreateView, BailleurDetailView, LocataireListCreateView, LocataireDetailView, AdministrateurListCreateView, AdministrateurDetailView, LogementListCreateView,LogementDetailView, LocationListCreateView, LocationDetailView, NotificationListCreateView, NotificationDetailView, ServiceListCreateView, ServiceDetailView, FavorisListCreateView, FavorisDetailView, LocataireServiceDetailView, LogementDetailsListCreateView, InscriptionLocataireView, ConnexionLocataireView, ProfilLocataireView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -51,6 +51,8 @@ urlpatterns = [
     path('locataire_services/<int:pk>/', LocataireServiceDetailView.as_view(), name='locataire-service-detail'),
 
     path('loca-inscription/', InscriptionLocataireView.as_view(), name='inscription locataire'),
-    path('loca-connexion/', ConnexionLocataireView.as_view(), name='connexion'),
+    path('loca-connexion/', ConnexionLocataireView.as_view(), name='connexion locataire'),
+    
+    path('profil-locataire/', ProfilLocataireView.as_view(), name='profil locataire'),
     
 ]
