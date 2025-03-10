@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'django.contrib.postgres',
+    'rest_framework.authtoken',
 ]
 
 
@@ -49,7 +50,11 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
     ],
-    'SEARCH_PARAM': 'search'  # Paramètre GET pour la recherche
+    'SEARCH_PARAM': 'search',  # Paramètre GET pour la recherche
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
 }
 
 

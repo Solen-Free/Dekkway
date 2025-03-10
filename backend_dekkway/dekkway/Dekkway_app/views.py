@@ -1,14 +1,18 @@
 from math import radians, cos  # Ajouté
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
 from django.db.models import F, FloatField, ExpressionWrapper
 from django.db.models.functions import Radians, Sin, Cos, ATan2, Sqrt, Power
 from django.shortcuts import render
-from rest_framework import generics, filters
+from rest_framework import generics, filters, status
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Logement
 from .filters import LogementFilter
 from .models import Bailleur, Locataire, Administrateur, Logement, Location, Notification, Service, Favoris, LocataireService
-from .serializers import BailleurSerializer, LocataireSerializer, AdministrateurSerializer, LocationSerializer, NotificationSerializer, ServiceSerializer, FavorisSerializer, LocataireServiceSerializer, LogementsRechercheSerializer, LogementsRechercheSerializer, LogementSerializer
+from .serializers import BailleurSerializer, LocataireSerializer, AdministrateurSerializer, LocationSerializer, NotificationSerializer, ServiceSerializer, FavorisSerializer, LocataireServiceSerializer, LogementsRechercheSerializer, LogementsRechercheSerializer, LogementSerializer, InscriptionLocataireSerializer, ConnexionLocataireSerializer
 
 
 # Create your views here.
@@ -102,6 +106,8 @@ class LogementListCreateView(generics.ListCreateAPIView):
     
 
 
+
+
 class LogementDetailsListCreateView(generics.ListCreateAPIView):
     queryset = Logement.objects.all()
     serializer_class = LogementSerializer
@@ -158,6 +164,37 @@ class LogementListView(generics.ListAPIView):
     serializer_class = LogementsRechercheSerializer
 
 
+# Vue pour inscription
+class InscriptionLocataireView(APIView):
+    def post(self, request):
+        serializer = InscriptionLocataireSerializer(data=request.data)
+        if serializer.is_valid():
+            utilisateur = serializer.save()
+            token, _ = Token.objects.get_or_create(user=utilisateur)
+            return Response({
+                'message': 'Compte créé avec succès',
+                'token': token.key
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# Vue pour connexion
+class ConnexionLocataireView(APIView):
+    def post(self, request):
+        serializer = ConnexionLocataireSerializer(data=request.data)
+        if serializer.is_valid():
+            utilisateur = serializer.validated_data['user']
+            token, _ = Token.objects.get_or_create(user=utilisateur)
+            return Response({
+                'message': 'Connexion réussie',
+                'token': token.key
+            }, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+class ProfilLocataireView(APIView):
+    permission_classes = [IsAuthenticated]
 
-
+    def get(self, request):
+        utilisateur = request.user
+        serializer = LocataireSerializer(utilisateur)
+        return Response(serializer.data)

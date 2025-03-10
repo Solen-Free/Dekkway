@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from Dekkway_app.views import BailleurListCreateView, BailleurDetailView, LocataireListCreateView, LocataireDetailView, AdministrateurListCreateView, AdministrateurDetailView, LogementListCreateView,LogementDetailView, LocationListCreateView, LocationDetailView, NotificationListCreateView, NotificationDetailView, ServiceListCreateView, ServiceDetailView, FavorisListCreateView, FavorisDetailView, LocataireServiceDetailView, LogementDetailsListCreateView
+from Dekkway_app.views import BailleurListCreateView, BailleurDetailView, LocataireListCreateView, LocataireDetailView, AdministrateurListCreateView, AdministrateurDetailView, LogementListCreateView,LogementDetailView, LocationListCreateView, LocationDetailView, NotificationListCreateView, NotificationDetailView, ServiceListCreateView, ServiceDetailView, FavorisListCreateView, FavorisDetailView, LocataireServiceDetailView, LogementDetailsListCreateView, InscriptionLocataireView, ConnexionLocataireView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -47,10 +47,10 @@ urlpatterns = [
     path('favoris/', FavorisListCreateView.as_view(), name='favoris-list-create'),
     path('favoris/<int:pk>/', FavorisDetailView.as_view(), name='favoris-detail'),
     
+    
     path('locataire_services/<int:pk>/', LocataireServiceDetailView.as_view(), name='locataire-service-detail'),
-    #endpoint connection: email mot de pass
-    #endpoint inscriptiontion:nom prenom nom d'utilisateur email mot de pass
-    #endpoint mot de pass oublier: mots de pass
-    #endpoint page d'acceuil: titre, prix, quartier, region, image
+
+    path('loca-inscription/', InscriptionLocataireView.as_view(), name='inscription locataire'),
+    path('loca-connexion/', ConnexionLocataireView.as_view(), name='connexion'),
     
 ]
