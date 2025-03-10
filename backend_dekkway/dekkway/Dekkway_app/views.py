@@ -7,9 +7,8 @@ from rest_framework import generics, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Logement
 from .filters import LogementFilter
-from .serializers import LogementSerializer
 from .models import Bailleur, Locataire, Administrateur, Logement, Location, Notification, Service, Favoris, LocataireService
-from .serializers import BailleurSerializer, LocataireSerializer, AdministrateurSerializer, LogementSerializer, LocationSerializer, NotificationSerializer, ServiceSerializer, FavorisSerializer, LocataireServiceSerializer
+from .serializers import BailleurSerializer, LocataireSerializer, AdministrateurSerializer, LocationSerializer, NotificationSerializer, ServiceSerializer, FavorisSerializer, LocataireServiceSerializer, LogementsRechercheSerializer, LogementsRechercheSerializer, LogementSerializer
 
 
 # Create your views here.
@@ -41,7 +40,7 @@ class AdministrateurDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class LogementListCreateView(generics.ListCreateAPIView):
     queryset = Logement.objects.all()
-    serializer_class = LogementSerializer
+    serializer_class = LogementsRechercheSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_class = LogementFilter
     
@@ -103,9 +102,14 @@ class LogementListCreateView(generics.ListCreateAPIView):
     
 
 
+class LogementDetailsListCreateView(generics.ListCreateAPIView):
+    queryset = Logement.objects.all()
+    serializer_class = LogementSerializer
+
 class LogementDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Logement.objects.all()
     serializer_class = LogementSerializer
+
 
 class LocationListCreateView(generics.ListCreateAPIView):
     queryset = Location.objects.all()
@@ -147,6 +151,11 @@ class LocataireServiceListCreateView(generics.ListCreateAPIView):
 class LocataireServiceDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = LocataireService.objects.all()
     serializer_class = LocataireServiceSerializer
+    
+    
+class LogementListView(generics.ListAPIView):
+    queryset = Logement.objects.all()
+    serializer_class = LogementsRechercheSerializer
 
 
 

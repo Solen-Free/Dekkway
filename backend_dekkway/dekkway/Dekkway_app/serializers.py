@@ -17,10 +17,25 @@ class AdministrateurSerializer(serializers.ModelSerializer):
         model = Administrateur
         fields = '__all__'
 
+
+class LogementsRechercheSerializer(serializers.ModelSerializer):
+    banniere = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Logement
+        fields = ['id', 'type', 'region', 'quartier', 'prix', 'banniere']
+
+    def get_banniere(self, obj):
+        if obj.medias and len(obj.medias.get('images', [])) > 0:
+            return obj.medias['images'][0]
+        return None
+        
+
 class LogementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Logement
-        fields = '__all__'
+        fields = ['type', 'description' 'region', 'quartier', 'prix', 'nombre_de_chambres' 'medias', 'equipements']
+
 
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
