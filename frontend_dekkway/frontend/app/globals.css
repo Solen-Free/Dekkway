@@ -5,6 +5,29 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* Animation du texte */
+@keyframes slide-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.animate-slide-in {
+  animation: slide-in 1s ease-out;
+}
+
+/* Responsivité améliorée */
+@media (max-width: 767px) {
+  .mobile-scale {
+    transform: scale(0.95);
+    transform-origin: center;
+  }
+  
+  .mobile-padding {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -225,5 +248,14 @@ body {
 
 .animate-bounced {
   animation: bounceText 1s ease-in-out infinite;
+}
+
+/* Masquer la scrollbar tout en gardant le scroll actif */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari et Opera */
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;     /* Firefox */
 }
 

@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Filtre from "@/components/Filtre";
 import Footer from "@/components/footer";
 import GridCard from "@/components/UI/GridCard";
+import ButtonsBar from "@/components/ButtonsBar";
 import { useState } from 'react';
 import Link from "next/link";
 
@@ -14,12 +15,13 @@ export default function Page() {
 
   return (
     <div className="w-full min-h-screen">
-     
 
       {/* Carousel section */}
       <div className="w-full">
         <Carousel />
       </div>
+
+      <ButtonsBar /> 
 
       {/* Main heading */}
       <div className="flex flex-col items-center mt-6 px-4 sm:px-6 lg:px-8">

@@ -5,7 +5,8 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FaUser } from 'react-icons/fa';
-import { Menu, Search, SlidersHorizontal, Heart, Bell, FolderEdit as UserEdit, X } from "lucide-react";
+import { Menu, Search, Heart, Bell, FolderEdit as UserEdit, X } from "lucide-react";
+import Filtre from "./Filtre"; // Importez votre composant Filtre
 
 export default function Header() {
   const [search, setSearch] = useState("");
@@ -39,22 +40,20 @@ export default function Header() {
 
           {/* Desktop Search Bar */}
           <div className="hidden md:flex flex-1 max-w-md mx-6">
-            <div className="relative w-full">
+            <div className="relative w-full flex items-center">
               <input
                 type="text"
                 placeholder="Que cherchez-vous ?"
-                className="w-full h-10 text-[#014F86] border-2 border-[#014F86] rounded-full py-2 px-4 pl-10 pr-12
+                className="w-full h-10 text-[#014F86] border-2 border-[#014F86] rounded-full py-3 px-4 pl-10 pr-12
                          focus:outline-none focus:border-[#FC9B89] focus:ring-1 focus:ring-[#FC9B89] transition-colors"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#FC9B89]" />
-              <button 
-                className="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 bg-[#FC9B89] hover:bg-[#014F86] 
-                         rounded-full transition-colors duration-200"
-              >
-                <SlidersHorizontal className="h-4 w-4 text-white" />
-              </button>
+              {/* Ajoutez le composant Filtre ici */}
+              <div className="absolute right-1 top-0 bottom-0 flex items-center">
+                <Filtre />
+              </div>
             </div>
           </div>
 
@@ -115,12 +114,10 @@ export default function Header() {
                 onChange={(e) => setSearch(e.target.value)}
               />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#FC9B89]" />
-              <button 
-                className="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 bg-[#FC9B89] hover:bg-[#014F86] 
-                         rounded-full transition-colors duration-200"
-              >
-                <SlidersHorizontal className="h-4 w-4 text-white" />
-              </button>
+              {/* Ajoutez le composant Filtre ici pour la version mobile */}
+              <div className="absolute right-1 top-0 bottom-0 flex items-center">
+                <Filtre />
+              </div>
             </div>
           </div>
         )}

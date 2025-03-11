@@ -1,29 +1,30 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoClose } from "react-icons/io5";
 import { GrPowerReset } from "react-icons/gr";
-import { Filter, Search, SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 
 const Filtre = () => {
-  const [isFilterVisible, setIsFilterVisible] = useState(false); // État pour gérer la visibilité du filtre
-  const [selectedPropertyType, setSelectedPropertyType] = useState<string>("");
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
+  const [selectedPropertyType, setSelectedPropertyType] = useState("");
   const [priceRange, setPriceRange] = useState<[number, number]>([50000, 1000000]);
-  const [bedrooms, setBedrooms] = useState<number>(1);
+  const [bedrooms, setBedrooms] = useState(1);
   const [equipments, setEquipments] = useState<string[]>([]);
-  const [city, setCity] = useState<string>("");
-  const [showAllEquipments, setShowAllEquipments] = useState(false);
+  const [city, setCity] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Fonction pour ouvrir/fermer le filtre
-  const toggleFilter = () => {
-    setIsFilterVisible(!isFilterVisible);
-  };
+  // Détection de la taille d'écran
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
-  const handleSelectPropertyType = (type: string) => {
-    setSelectedPropertyType(type);
-  };
+  const toggleFilter = () => setIsFilterVisible(!isFilterVisible);
 
   const handleReset = () => {
     setSelectedPropertyType("");
@@ -35,339 +36,277 @@ const Filtre = () => {
 
   const handleApply = () => {
     console.log({ selectedPropertyType, priceRange, bedrooms, equipments, city });
-    setIsFilterVisible(false); // Fermer le filtre après application
+    setIsFilterVisible(false);
+  };
+
+  // Animations responsive
+  const mobileAnimation = {
+    initial: { x: '100%' },
+    animate: { x: 0 },
+    exit: { x: '100%' },
+    transition: { type: "spring", stiffness: 300, damping: 30 }
+  };
+
+  const desktopAnimation = {
+    initial: { scale: 0.9, opacity: 0 },
+    animate: { scale: 1, opacity: 1 },
+    exit: { scale: 0.9, opacity: 0 },
+    transition: { type: "spring", stiffness: 200, damping: 25 }
   };
 
   return (
     <>
-      {/* Bouton pour ouvrir le filtre */}
+      {/* Bouton d'ouverture */}
       <button
         onClick={toggleFilter}
-        className="bg-[#FC9B89] rounded-full p-2 text-[#014F86] hover:text-[#FFFFFF] hover:bg-[#014F86] transition-colors"
+        className="bg-[#FC9B89] p-2 rounded-full text-[#014F86] hover:bg-[#014F86] hover:text-white transition-colors"
+        aria-label="Ouvrir les filtres"
       >
         <SlidersHorizontal className="w-5 h-5" />
       </button>
 
-      {/* Contenu du filtre (affiché conditionnellement) */}
       <AnimatePresence>
         {isFilterVisible && (
           <>
-            {/* Fond semi-transparent */}
+            {/* Overlay */}
             <motion.div
-              key="filtre-backdrop"
+              key="overlay"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/20 z-40"
-              
-              onClick={toggleFilter} // Fermer le filtre en cliquant à l'extérieur
+              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+              onClick={toggleFilter}
             />
 
-            {/* Contenu du filtre */}
+            {/* Contenu principal */}
             <motion.div
-              key="filtre-content"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="fixed inset-0 flex items-center justify-center z-50"
+              key="filter-content"
+              {...(isMobile ? mobileAnimation : desktopAnimation)}
+              className={`fixed top-0 h-full bg-white shadow-xl z-50 ${
+                isMobile 
+                  ? 'right-0 w-full max-w-xs' 
+                  : 'inset-0 m-auto max-w-md rounded-xl'
+              }`}
             >
-              <div className="bg-white rounded-lg shadow-lg w-full max-w-md max-h-[80vh] flex flex-col overflow-hidden">
-                {/* En-tête du filtre */}
-                <div className="relative p-4 border-b border-[#FC9B89] shadow-sm flex items-center justify-between bg-gradient-to-r from-[#FC9B89] to-[#FF6B6B]">
-                  <button
-                    onClick={handleReset}
-                    className="text-white hover:text-gray-200 transition-colors"
+              <div className="flex flex-col h-full">
+                {/* En-tête */}
+                <div className="p-4 bg-gradient-to-r from-[#FC9B89] to-[#FF6B6B] flex items-center justify-between">
+                  <button 
+                    onClick={handleReset} 
+                    className="text-white hover:text-gray-200"
+                    aria-label="Réinitialiser"
                   >
                     <GrPowerReset size={24} />
                   </button>
-                  <h2 className="text-lg font-bold text-white">Filtres</h2>
-                  <button
-                    onClick={toggleFilter}
-                    className="text-white hover:text-gray-200 transition-colors"
+                  <h2 className="text-xl font-bold text-white">Filtres</h2>
+                  <button 
+                    onClick={toggleFilter} 
+                    className="text-white hover:text-gray-200"
+                    aria-label="Fermer"
                   >
                     <IoClose size={24} />
                   </button>
                 </div>
 
                 {/* Contenu défilable */}
-                <div className="p-6 overflow-y-auto flex-1">
+                <div className="flex-1 overflow-y-auto p-4">
                   {/* Type de propriété */}
-                  <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="mb-6"
-                  >
-                    <h3 className="text-black font-semibold mb-4">Type de Propriété</h3>
-                    <div className="grid grid-cols-3 gap-2">
-                      {["Tout", "Maison", "Appartement", "Co-Location", "Studio", "Villa", "Longue Durée", "Courte durée"].map(
-                        (type) => (
-                          <motion.button
-                            key={type}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => handleSelectPropertyType(type)}
-                            className={`p-2 text-xs rounded-3xl transition-all ${
-                              selectedPropertyType === type
-                                ? "bg-gradient-to-r from-[#FC9B89] to-[#FF6B6B] text-white shadow-lg"
-                                : "bg-[#014F86] text-white hover:bg-[#013A63] hover:shadow-md"
-                            }`}
-                          >
-                            {type}
-                          </motion.button>
-                        )
-                      )}
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold mb-4">Type de propriété</h3>
+                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                      {["Tout", "Maison", "Appartement", "Co-Location", "Studio", "Villa", "Longue Durée", "Courte durée"].map((type) => (
+                        <motion.button
+                          key={type}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => setSelectedPropertyType(type)}
+                          className={`p-2 text-sm rounded-xl transition-colors ${
+                            selectedPropertyType === type
+                              ? "bg-gradient-to-r from-[#FC9B89] to-[#FF6B6B] text-white"
+                              : "bg-[#014F86] text-white hover:bg-[#013A63]"
+                          }`}
+                        >
+                          {type}
+                        </motion.button>
+                      ))}
                     </div>
-                  </motion.div>
+                  </div>
 
                   {/* Fourchette de prix */}
-                  <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: 0.1 }}
-                    className="mb-6"
-                  >
-                    <h3 className="text-black font-semibold mb-4">Fourchette de prix</h3>
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold mb-4">Fourchette de prix</h3>
                     <Slider
                       range
                       min={50000}
                       max={1000000}
-                      defaultValue={priceRange}
+                      value={priceRange}
                       onChange={(value) => setPriceRange(value as [number, number])}
-                      styles={{
-                        track: { backgroundColor: "#FC9B89" },
-                        rail: { backgroundColor: "#E5E7EB" },
-                        handle: {
-                          backgroundColor: "#FC9B89",
-                          borderColor: "#FFFFFF",
-                          boxShadow: "0 3px 4px rgba(0, 0, 0, 0.2)",
-                        },
+                      trackStyle={{ backgroundColor: "#FC9B89" }}
+                      railStyle={{ backgroundColor: "#E5E7EB" }}
+                      handleStyle={{
+                        backgroundColor: "#FC9B89",
+                        borderColor: "#FFFFFF",
+                        boxShadow: "0 3px 4px rgba(0, 0, 0, 0.2)"
                       }}
                     />
                     <div className="flex justify-between text-sm text-gray-600 mt-2">
-                      <span>{priceRange[0]} FCFA</span>
-                      <span>{priceRange[1]} FCFA</span>
+                      <span>{priceRange[0].toLocaleString()} FCFA</span>
+                      <span>{priceRange[1].toLocaleString()} FCFA</span>
                     </div>
-                  </motion.div>
+                  </div>
 
                   {/* Nombre de chambres */}
-                  <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: 0.2 }}
-                    className="mb-6"
-                  >
-                    <h3 className="text-black font-semibold mb-4">Nombre de chambres</h3>
-                    <div className="flex gap-3">
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold mb-4">Nombre de chambres</h3>
+                    <div className="flex flex-wrap gap-2">
                       {[1, 2, 3, 4, 5].map((num) => (
                         <motion.button
                           key={num}
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
+                          whileHover={{ scale: 1.05 }}
                           onClick={() => setBedrooms(num)}
-                          className={`w-10 h-10 flex items-center justify-center rounded-full text-white text-lg font-semibold transition ${
+                          className={`w-12 h-12 rounded-lg text-lg font-semibold transition-colors ${
                             bedrooms === num
-                              ? "bg-gradient-to-r from-[#FC9B89] to-[#FF6B6B] shadow-lg"
-                              : "bg-[#014F86] hover:bg-[#013A63] hover:shadow-md"
+                              ? "bg-gradient-to-r from-[#FC9B89] to-[#FF6B6B] text-white"
+                              : "bg-[#014F86] text-white hover:bg-[#013A63]"
                           }`}
                         >
                           {num}
                         </motion.button>
                       ))}
                     </div>
-                  </motion.div>
+                  </div>
 
                   {/* Équipements */}
-                  <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: 0.3 }}
-                    className="mb-6"
-                  >
-                    <h3 className="font-semibold mb-2">Équipements</h3>
-                    <div className="border-2 border-[#FC9B89] rounded-lg p-4 bg-gray-50 shadow-sm">
-                      <div className="grid grid-cols-2 gap-4">
-                        {[
-                          "Climatiseur",
-                          "Electricité",
-                          "Réfrigérateur",
-                          "Garage",
-                          "Piscine",
-                          "Chauffe-eau",
-                          "Ménagères",
-                          "Micro-onde",
-                          "Meubles",
-                        ].map((equipment) => (
-                          <motion.label
-                            key={equipment}
-                            whileHover={{ scale: 1.02 }}
-                            className="flex items-center gap-3 cursor-pointer"
-                          >
-                            <input
-                              type="checkbox"
-                              checked={equipments.includes(equipment)}
-                              onChange={(e) => {
-                                if (e.target.checked) {
-                                  setEquipments([...equipments, equipment]);
-                                } else {
-                                  setEquipments(equipments.filter((e) => e !== equipment));
-                                }
-                              }}
-                              className="hidden"
-                            />
-                            <div
-                              className={`w-5 h-5 border-2 rounded flex items-center justify-center transition ${
-                                equipments.includes(equipment)
-                                  ? "border-[#014F86] bg-[#FC9B89]"
-                                  : "border-[#014F86] bg-white"
-                              }`}
-                            >
-                              {equipments.includes(equipment) && (
-                                <svg
-                                  className="w-3 h-3 text-white"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke="currentColor"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M5 13l4 4L19 7"
-                                  />
-                                </svg>
-                              )}
-                            </div>
-                            <span className="text-sm">{equipment}</span>
-                          </motion.label>
-                        ))}
-                      </div>
-                      {equipments.length > 4 && (
-                        <button
-                          onClick={() => setShowAllEquipments(!showAllEquipments)}
-                          className="text-[#014F86] hover:text-[#FC9B89] text-sm mt-2 transition-colors"
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold mb-4">Équipements</h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      {[
+                        "Climatiseur", "Electricité", "Réfrigérateur",
+                        "Garage", "Piscine", "Chauffe-eau",
+                        "Ménagères", "Micro-onde", "Meubles"
+                      ].map((equipment) => (
+                        <label
+                          key={equipment}
+                          className="flex items-center gap-2 cursor-pointer"
                         >
-                          {showAllEquipments ? "Voir moins" : "Voir plus"}
-                        </button>
-                      )}
+                          <input
+                            type="checkbox"
+                            checked={equipments.includes(equipment)}
+                            onChange={(e) => {
+                              const newEquipments = e.target.checked
+                                ? [...equipments, equipment]
+                                : equipments.filter(e => e !== equipment);
+                              setEquipments(newEquipments);
+                            }}
+                            className="sr-only"
+                          />
+                          <div className={`w-5 h-5 border-2 rounded flex items-center justify-center 
+                            ${equipments.includes(equipment) 
+                              ? "bg-[#FC9B89] border-[#014F86]" 
+                              : "bg-white border-[#014F86]"}`}>
+                            {equipments.includes(equipment) && (
+                              <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                              </svg>
+                            )}
+                          </div>
+                          <span className="text-sm">{equipment}</span>
+                        </label>
+                      ))}
                     </div>
-                  </motion.div>
+                  </div>
 
                   {/* Ville */}
-                  <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: 0.4 }}
-                    className="mb-6"
-                  >
-                    <h3 className="font-semibold mb-2">Ville</h3>
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold mb-4">Ville</h3>
                     <select
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
-                      className="w-full p-2 border-2 border-[#FC9B89] rounded-xl focus:outline-none focus:border-[#FF6B6B] transition-colors"
+                      className="w-full p-2 border-2 border-[#FC9B89] rounded-lg focus:outline-none focus:border-[#FF6B6B]"
                     >
                       <option value="">Sélectionnez une ville</option>
                       {["Thiès", "Dakar", "Saint-Louis", "Diourbel", "Kaolack", "Matam"].map((ville) => (
-                        <option key={ville} value={ville}>
-                          {ville}
-                        </option>
+                        <option key={ville} value={ville}>{ville}</option>
                       ))}
                     </select>
-                  </motion.div>
+                  </div>
 
                   {/* Filtres sélectionnés */}
-                  <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: 0.5 }}
-                    className="mb-6"
-                  >
-                    <h3 className="font-semibold mb-2">Filtres sélectionnés :</h3>
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold mb-4">Filtres actifs :</h3>
                     <div className="flex flex-wrap gap-2">
-                      {/* Filtre : Type de propriété */}
                       {selectedPropertyType && (
                         <motion.span
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer"
-                          onClick={() => setSelectedPropertyType("")} // Supprimer le filtre
+                          initial={{ opacity: 0, scale: 0.5 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
+                          onClick={() => setSelectedPropertyType("")}
                         >
                           {selectedPropertyType}
-                          <IoClose className="text-blue-600 cursor-pointer" size={14} />
+                          <IoClose className="text-[#014F86]" size={14} />
                         </motion.span>
                       )}
 
-                      {/* Filtre : Fourchette de prix */}
                       {(priceRange[0] !== 50000 || priceRange[1] !== 1000000) && (
                         <motion.span
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer"
-                          onClick={() => setPriceRange([50000, 1000000])} // Réinitialiser la fourchette de prix
+                          initial={{ opacity: 0, scale: 0.5 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
+                          onClick={() => setPriceRange([50000, 1000000])}
                         >
-                          {priceRange[0]} FCFA - {priceRange[1]} FCFA
-                          <IoClose className="text-blue-600 cursor-pointer" size={14} />
+                          {priceRange[0].toLocaleString()} - {priceRange[1].toLocaleString()} FCFA
+                          <IoClose className="text-[#014F86]" size={14} />
                         </motion.span>
                       )}
 
-                      {/* Filtre : Nombre de chambres */}
                       {bedrooms > 1 && (
                         <motion.span
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer"
-                          onClick={() => setBedrooms(1)} // Réinitialiser le nombre de chambres
+                          initial={{ opacity: 0, scale: 0.5 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
+                          onClick={() => setBedrooms(1)}
                         >
-                          {bedrooms} chambres
-                          <IoClose className="text-blue-600 cursor-pointer" size={14} />
+                          {bedrooms} chambre{bedrooms > 1 && 's'}
+                          <IoClose className="text-[#014F86]" size={14} />
                         </motion.span>
                       )}
 
-                      {/* Filtre : Équipements */}
-                      {equipments.length > 0 &&
-                        equipments.map((item) => (
-                          <motion.span
-                            key={item}
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer"
-                            onClick={() => setEquipments(equipments.filter((e) => e !== item))} // Supprimer l'équipement
-                          >
-                            {item}
-                            <IoClose className="text-blue-600 cursor-pointer" size={14} />
-                          </motion.span>
-                        ))}
+                      {equipments.map((item) => (
+                        <motion.span
+                          key={item}
+                          initial={{ opacity: 0, scale: 0.5 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
+                          onClick={() => setEquipments(equipments.filter(e => e !== item))}
+                        >
+                          {item}
+                          <IoClose className="text-[#014F86]" size={14} />
+                        </motion.span>
+                      ))}
 
-                      {/* Filtre : Ville */}
                       {city && (
                         <motion.span
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer"
-                          onClick={() => setCity("")} // Réinitialiser la ville
+                          initial={{ opacity: 0, scale: 0.5 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
+                          onClick={() => setCity("")}
                         >
                           {city}
-                          <IoClose className="text-blue-600 cursor-pointer" size={14} />
+                          <IoClose className="text-[#014F86]" size={14} />
                         </motion.span>
                       )}
                     </div>
-                  </motion.div>
+                  </div>
                 </div>
 
                 {/* Bouton Appliquer */}
-                <div className="flex justify-start p-4 border-t border-[#FC9B89] bg-gray-50">
+                <div className="p-4 border-t border-[#FC9B89]">
                   <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={handleApply}
-                    className="w-full p-2 bg-gradient-to-r from-[#FC9B89] to-[#FF6B6B] text-white rounded-3xl shadow-lg hover:shadow-xl transition-all"
+                    className="w-full py-3 bg-[#014F86] text-white rounded-lg font-semibold hover:bg-[#013A63] transition-colors"
                   >
-                    Appliquer
+                    Appliquer les filtres
                   </motion.button>
                 </div>
               </div>
