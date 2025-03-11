@@ -72,7 +72,7 @@ class InscriptionLocataireSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Locataire
-        fields = ['username', 'email', 'password', 'nom', 'prenom', 'adresse', 'telephone']
+        fields = ['username', 'email', 'password', 'nom', 'prenom', 'adresse', 'telephone', 'date_de_naissance']
 
     def create(self, validated_data):
         user = Locataire.objects.create_user(
@@ -83,7 +83,7 @@ class InscriptionLocataireSerializer(serializers.ModelSerializer):
             prenom=validated_data.get('prenom', ''),
             adresse=validated_data.get('adresse', ''),
             telephone=validated_data.get('telephone', ''),
-            date_modification=validated_data.get('date_modification', ''),
+            date_de_naissance=validated_data.get('date_de_naissance', ''),
         )
         return user
 
