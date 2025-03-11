@@ -1,0 +1,54 @@
+1. Amérique du Nord
+
+📍 Point Principal : Statue de la Liberté, New York, USA
+Coordonnées : (40.6892, -74.0445)
+
+2. Europe
+
+📍 Point Principal : Tour Eiffel, Paris, France
+Coordonnées : (48.8584, 2.2945)
+
+3. Afrique
+
+📍 Point Principal : Pyramide de Khéops, Gizeh, Égypte
+Coordonnées : (29.9792, 31.1342)
+
+# Recherche des logements les plus proches d'un point principal
+http://127.0.0.1:8000/logements/?lat=14.692&lng=-17.446&rayon=10
+
+# Point Principal 1
+http://127.0.0.1:8000/logements/?lat=40.6892&lng=-74.0445
+
+
+# Point Principal 2
+http://127.0.0.1:8000/logements/?lat=48.8584&lng=2.2945
+
+
+# Point Principal 3
+http://127.0.0.1:8000/logements/?lat=29.9792&lng=31.1342
+
+
+# Filtrer les logements par différents critères
+
+# 1. Filtrer par type de logement (exemple : appartement)
+GET http://127.0.0.1:8000/1/logements/?type=appartement
+
+# 2. Filtrer par fourchette de prix (exemple : entre 200.000 et 500.000)
+GET http://127.0.0.1:8000/logements/?prix_min=200000&prix_max=500000
+
+# 3. Filtrer par nombre de chambres (exemple : 3 chambres)
+GET http://127.0.0.1:8000/logements/?nombre_de_chambres=3
+
+
+# 5. Filtrer par région (exemple : Thiès)
+GET http://127.0.0.1:8000/logements/?region=Thies
+
+# 6. Filtrer par équipements (exemple : piscine)
+GET http://127.0.0.1:8000/logements/?equipements=piscine:true
+
+# Combiner plusieurs filtres
+# Exemple : appartements à Dakar avec piscine, 3 chambres, prix entre 300.000 et 700.000
+GET http://127.0.0.1:8000/logements/?type=Appartement&region=Dakar&nombre_de_chambres=3&prix_min=100000&prix_max=700000&equipements=piscine:true,climatisation:false
+PUT http://127.0.0.1:8000/logements/1/?type=Appartement&region=Dakar&nombre_de_chambres=3&prix_min=100000&prix_max=700000&equipements=piscine:true,climatisation:false
+
+

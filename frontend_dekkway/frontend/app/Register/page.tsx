@@ -94,6 +94,8 @@ export default function Register() {
         body: JSON.stringify(formData),
       });
 
+      console.log("Réponse brute :", response);
+
       if (response.ok) {
         const data = await response.json();
         console.log("Inscription réussie :", data);
