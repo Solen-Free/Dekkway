@@ -83,6 +83,7 @@ class InscriptionLocataireSerializer(serializers.ModelSerializer):
             prenom=validated_data.get('prenom', ''),
             adresse=validated_data.get('adresse', ''),
             telephone=validated_data.get('telephone', ''),
+            date_modification=validated_data.get('date_modification', ''),
         )
         return user
 
