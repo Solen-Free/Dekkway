@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header"; // Importation du Header
 import Footer from "@/components/footer"; // Importation du Footer
+import ToastProvider from "@/components/ToastProvider"; // Importation du ToastProvider
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,11 +32,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
         <Header />
-        <main className="flex-1 mt-16"> {/* Ajout d'un margin-top pour éviter que le header cache le contenu */}
+        <main className="flex-1 mt-16">
           {children}
         </main>
-        <div className = "w-full mt-20">
-        <Footer/>
+        <ToastProvider /> {/* Ajout du ToastProvider ici */}
+        <div className="w-full mt-20">
+          <Footer />
         </div>
       </body>
     </html>

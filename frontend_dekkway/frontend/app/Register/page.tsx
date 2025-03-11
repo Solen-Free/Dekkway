@@ -1,6 +1,9 @@
+// Par exemple, dans Register.tsx
+
 "use client";
 
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import {
   FaGoogle,
   FaFacebook,
@@ -24,9 +27,9 @@ interface FormData {
   nom: string;
   prenom: string;
   username: string;
-  birthDate: string;
+  birthDate: string; // Ce champ sera mappé à "date_de_naissance" côté backend
   email: string;
-  phone?: E164Number;
+  phone: E164Number; // Ce champ sera mappé à "telephone"
   password: string;
   confirmPassword: string;
 }
@@ -73,35 +76,52 @@ export default function Register() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Vérification que les mots de passe correspondent
     if (formData.password !== formData.confirmPassword) {
       alert("Les mots de passe ne correspondent pas");
       return;
     }
 
-    // Vérification de l'acceptation des conditions
     if (!acceptConditions) {
       alert("Veuillez accepter les conditions d'utilisation.");
       return;
     }
 
+    // Mapping des champs pour correspondre au serializer du backend
+    const dataToSend = {
+      username: formData.username,
+      email: formData.email,
+      password: formData.password,
+      nom: formData.nom,
+      prenom: formData.prenom,
+      telephone: formData.phone,
+      date_de_naissance: formData.birthDate,
+    };
+
     try {
-      const response = await fetch("http://localhost:8000/api/register/", {
+      const response = await fetch("http://localhost:8000/loca-inscription/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(dataToSend),
       });
+
+      console.log("Réponse brute :", response);
 
       if (response.ok) {
         const data = await response.json();
         console.log("Inscription réussie :", data);
+
+        // Afficher le toast de succès
+        toast.success("Inscription réussie !");
         // Rediriger l'utilisateur ou afficher un message de succès ici
       } else {
         const errorData = await response.json();
         console.error("Erreur lors de l'inscription :", errorData);
-        alert("Erreur lors de l'inscription : " + JSON.stringify(errorData));
+        // alert("Erreur lors de l'inscription : " + JSON.stringify(errorData));
+
+        // Afficher le message d'erreur
+        toast.error("Erreur lors de l'inscription. Veuillez réessayer.");
       }
     } catch (error) {
       console.error("Erreur lors de la requête :", error);
