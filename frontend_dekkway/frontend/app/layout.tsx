@@ -4,6 +4,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header"; // Importation du Header
 import Footer from "@/components/footer"; // Importation du Footer
+import IA_bouton from "@/components/UI/IA_bouton";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,6 +37,7 @@ export default function RootLayout({
           {children}
         </main>
         <div className = "w-full mt-20">
+          <IA_bouton/>
         <Footer/>
         </div>
       </body>

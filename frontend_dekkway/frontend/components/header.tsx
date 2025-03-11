@@ -5,12 +5,14 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FaUser } from 'react-icons/fa';
+import CompteAlert from "@/components/UI/CompteAlert";
 import { Menu, Search, SlidersHorizontal, Heart, Bell, FolderEdit as UserEdit, X } from "lucide-react";
 
 export default function Header() {
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  const [isCompteOpen, setIsCompteOpen] = useState(false);
 
   return (
     <header className="bg-white shadow-md w-full fixed top-0 left-0 z-50">
@@ -78,11 +80,19 @@ export default function Header() {
             >
               <Bell className="h-6 w-6" />
             </Link>
-            <button className="bg-[#FC9B89] hover:bg-white border-2 border-[#FC9B89] flex items-center space-x-2 
-                           py-2 px-4 rounded-full transition-colors duration-200">
-              <FaUser className="h-5 w-5 text-[#014F86]" />
-              <span className="text-[#014F86] font-medium">Mon Compte</span>
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => setIsCompteOpen(!isCompteOpen)}
+                className="bg-[#FC9B89] hover:bg-white border-2 border-[#FC9B89] flex items-center space-x-2 
+                           py-2 px-4 rounded-full transition-colors duration-200"
+              >
+                <FaUser className="h-5 w-5 text-[#014F86]" />
+                <span className="text-[#014F86] font-medium">Mon Compte</span>
+              </button>
+
+              {/* Menu déroulant Mon Compte */}
+              {isCompteOpen && <CompteAlert onClose={() => setIsCompteOpen(false)} />}
+            </div>
           </nav>
 
           {/* Mobile Navigation Controls */}
@@ -152,11 +162,19 @@ export default function Header() {
                 <Bell className="h-5 w-5" />
                 <span>Notifications</span>
               </Link>
-              <button className="bg-[#FC9B89] hover:bg-white border-2 border-[#FC9B89] flex items-center 
-                             justify-center space-x-2 py-2 px-4 rounded-full w-full transition-colors duration-200">
-                <UserEdit className="h-5 w-5 text-[#014F86]" />
+              <div className="relative">
+              <button
+                onClick={() => setIsCompteOpen(!isCompteOpen)}
+                className="bg-[#FC9B89] hover:bg-white border-1 border-[#FC9B89] flex items-center space-x-1 
+                           py-1 px-2 rounded-full transition-colors duration-200"
+              >
+                <FaUser className="h-5 w-5 text-[#014F86]" />
                 <span className="text-[#014F86] font-medium">Mon Compte</span>
               </button>
+
+              {/* Menu déroulant Mon Compte */}
+              {isCompteOpen && <CompteAlert onClose={() => setIsCompteOpen(false)} />}
+            </div>
             </div>
           </nav>
         )}
