@@ -18,7 +18,301 @@
 }
 
 body {
+  padding-top: 20px;
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* Animation pour le texte de type machine à écrire */
+@keyframes typewriter {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+.animate-typewriter {
+  display: inline-block;
+  overflow: hidden; 
+  white-space: nowrap; 
+  width: 0;
+  animation: typewriter 2s steps(44) 1s forwards;
+}
+
+/* Animation pour le curseur de type machine à écrire */
+@keyframes blink {
+  50% {
+    border-color: transparent;
+  }
+}
+
+.animate-typewriter::after {
+  content: '';
+  display: inline-block;
+  margin-left: 5px;
+  border-right: 2px solid black;
+}
+
+
+/* Animation de surbrillance texte */
+@keyframes highlight {
+  0% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: rgb(247, 102, 174);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.animate-highlight {
+  animation: highlight 2s ease-in-out forwards;
+}
+
+/* Animation de clignontement texte */
+@keyframes blink {
+  0%, 50%, 100% {
+    opacity: 1;
+  }
+  25%, 75% {
+    opacity: 0;
+  }
+}
+
+.animate-blink {
+  animation: blink 1.5s step-end infinite;
+}
+
+
+/* Animation de rebond texte */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-10px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(-5px);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 1.5s ease infinite;
+}
+
+
+/* Animation de zoom avant du texte */
+@keyframes zoomIn {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-zoom-in {
+  animation: zoomIn 1s ease-in-out forwards;
+}
+
+
+
+/* Animation qui fait glisser le texte de gauche à droite */
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%); /* À gauche de l'écran */
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 1s ease-out forwards;
+}
+
+
+
+/* Animation fondu du texte en entrer */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 2s ease-in-out forwards;
+}
+
+
+/* Animation du texte bas_haut */
+@keyframes slideInUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-up {
+  animation: slideInUp 1s ease-out forwards;
+}
+
+
+/* Animation du texte zoom continue */
+@keyframes zoomInText {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2); /* Agrandir l'élément */
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-zoom-ind {
+  animation: zoomInText 3s ease-in-out infinite;
+}
+
+/* Animation du texte zoom continue */
+@keyframes slideInLoop {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-slide-in-loop {
+  animation: slideInLoop 5s linear infinite;
+}
+
+/* Animation du texte rebond continue */
+@keyframes bounceText {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px); /* Peut être ajusté pour plus ou moins de rebond */
+  }
+}
+
+.animate-bounced {
+  animation: bounceText 1s ease-in-out infinite;
+}
+
+
+/* Animations pour le zoom et le rétrécissement de l'image */
+@keyframes zoomShrink {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Animation pour l'entrée de la page */
+@keyframes pageEntrance {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Animation pour l'entrée de l'image */
+@keyframes imageEntrance {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Animation pour l'entrée du logo */
+@keyframes logoEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation pour le zigzag infini */
+@keyframes zigzagInfinite {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-10px);
+  }
+  50% {
+    transform: translateX(10px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Classes utilitaires pour appliquer les animations */
+.animate-zoomShrink {
+  animation: zoomShrink 5s infinite ease-in-out; /* Zoom et rétrécissement */
+}
+
+.animate-pageEntrance {
+  animation: pageEntrance 1.5s ease-in-out; /* Entrée de la page */
+}
+
+.animate-imageEntrance {
+  animation: imageEntrance 1s ease-in-out; /* Entrée de l'image */
+}
+
+.animate-logoEntrance {
+  animation: logoEntrance 1s ease-in-out; /* Entrée du logo */
+}
+
+.animate-zigzagInfinite {
+  animation: zigzagInfinite 1s ease-in-out infinite; /* Zigzag infini */
 }

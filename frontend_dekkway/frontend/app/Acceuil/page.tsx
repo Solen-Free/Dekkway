@@ -1,12 +1,17 @@
 "use client";
 import Buttons from "@/components/buttons";
 import Carousel from "@/components/Carousel";
+import Card from "@/components/UI/Card";
+import { motion, AnimatePresence } from "framer-motion";
+import Filtre from "@/components/Filtre";
 import Footer from "@/components/footer";
 import GridCard from "@/components/UI/GridCard";
 import { useState } from 'react';
 import Link from "next/link";
 
 export default function Page() {
+  
+
   return (
     <div className="w-full min-h-screen">
      
@@ -31,11 +36,11 @@ export default function Page() {
           textSize="text-xl sm:text-2xl"  
           href="/InscriptionBailleur"
         />
-        {/* <h1 className="text-lg sm:text-xl font-bold text-black">
+        <h1 className="text-lg sm:text-xl font-bold text-black">
           <span className="animate-typewriter block">
             Vous avez la possibilité de vendre vos propriétés sur notre plateforme !
           </span>
-        </h1> */}
+        </h1>
       </div>
 
       {/* Recent listings sections */}
@@ -45,7 +50,7 @@ export default function Page() {
           <h1 className="font-bold text-[#014F86] text-lg sm:text-xl mb-6">
             Les plus récents
           </h1>
-          <div className="w-full  items-center px-4 sm:px-6 lg:px-8 flex justify-center">
+          <div className="w-full">
             <GridCard />
           </div>
         </div>
@@ -58,11 +63,10 @@ export default function Page() {
           <h1 className="font-bold text-[#014F86] text-lg sm:text-xl mb-6">
             Les plus récents
           </h1>
-          <div className="w-full px-4 sm:px-6 lg:px-8 flex justify-center">
+          <div className="w-full">
             <GridCard />
           </div>
         </div>
-        
       </div>
 
     </div>
