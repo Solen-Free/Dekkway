@@ -3,6 +3,7 @@
 import { Send, Mic, Volume2 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { FaRedo } from "react-icons/fa";
+import OpenAI from 'openai';
 
 const Assistance = () => {
   const [message, setMessage] = useState<string>("");
