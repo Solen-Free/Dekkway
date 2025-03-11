@@ -15,14 +15,26 @@ const Filtre = () => {
   const [equipments, setEquipments] = useState<string[]>([]);
   const [city, setCity] = useState("");
   const [isMobile, setIsMobile] = useState(false);
+  const [deviceType, setDeviceType] = useState<"mobile" | "tablet" | "desktop">("desktop");
+
 
   // Détection de la taille d'écran
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    const checkDevice = () => {
+      const width = window.innerWidth;
+      if (width < 768) {
+        setDeviceType("mobile");
+      } else if (width >= 768 && width < 1024) {
+        setDeviceType("tablet");
+      } else {
+        setDeviceType("desktop");
+      }
+    };
+    checkDevice();
+    window.addEventListener('resize', checkDevice);
+    return () => window.removeEventListener('resize', checkDevice);
   }, []);
+  
 
   const toggleFilter = () => setIsFilterVisible(!isFilterVisible);
 
@@ -80,14 +92,21 @@ const Filtre = () => {
 
             {/* Contenu principal */}
             <motion.div
-              key="filter-content"
-              {...(isMobile ? mobileAnimation : desktopAnimation)}
-              className={`fixed top-0 h-full bg-white shadow-xl z-50 ${
-                isMobile 
-                  ? 'right-0 w-full max-w-xs' 
-                  : 'inset-0 m-auto max-w-md rounded-xl'
-              }`}
-            >
+  key="filter-content"
+  {...(deviceType === "mobile" 
+    ? mobileAnimation 
+    : deviceType === "tablet" 
+      ? desktopAnimation 
+      : desktopAnimation
+  )}
+  className={`fixed bg-white shadow-xl z-50 ${
+    deviceType === "mobile"
+      ? 'top-0 right-0 h-full w-full max-w-xs'
+      : deviceType === "tablet"
+        ? 'inset-0 m-auto max-w-md h-[90vh] rounded-xl' // Centrage vertical/horizontal
+        : 'inset-0 m-auto max-w-lg rounded-xl' // Desktop
+  }`}
+>
               <div className="flex flex-col h-full">
                 {/* En-tête */}
                 <div className="p-4 bg-gradient-to-r from-[#FC9B89] to-[#FF6B6B] flex items-center justify-between">
