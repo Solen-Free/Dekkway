@@ -1,110 +1,151 @@
 "use client"; // Assurez-vous que ce composant est exécuté côté client
 
 import React, { useState } from 'react';
+import { motion } from 'framer-motion'; // Import de Framer Motion
 
 const ReservationPage: React.FC = () => {
-  const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [selectedService, setSelectedService] = useState<string | null>(null); // Un seul service sélectionné
 
   const handleServiceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const service = event.target.value;
-    if (event.target.checked) {
-      setSelectedServices([...selectedServices, service]);
-    } else {
-      setSelectedServices(selectedServices.filter((s) => s !== service));
-    }
+    setSelectedService(event.target.value); // Mettre à jour le service sélectionné
   };
 
   const handleSubmit = () => {
-    if (selectedServices.length > 0) {
-      // Rediriger vers la première page de service sélectionnée
-      window.location.href = `/services/${selectedServices[0]}`;
+    if (selectedService) {
+      // Rediriger vers la page du service sélectionné
+      window.location.href = `/services/${selectedService}`;
     }
+  };
+
+  // Animation pour les cartes
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+    hover: { scale: 1.05, borderColor: '#014F86', transition: { duration: 0.2 } },
+  };
+
+  // Animation pour le bouton
+  const buttonVariants = {
+    hover: { scale: 1.05, backgroundColor: '#FC9B89', transition: { duration: 0.2 } },
   };
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
-        <h1 className="text-2xl font-bold text-center mb-4">Merci pour votre réservation !</h1>
+      <motion.div
+        className="bg-white p-8 rounded-3xl shadow-md w-full max-w-2xl border-2 border-[#014F86]"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h1 className="text-2xl font-bold text-center mb-4 text-[#014F86]">
+          Merci pour votre réservation !
+        </h1>
         <p className="text-gray-600 text-center mb-6">
           Avez-vous besoin de services supplémentaires ?
         </p>
 
         <div className="space-y-4">
           {/* Carte pour le service de déménagement */}
-          <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:shadow-md transition-shadow">
+          <motion.label
+            className="flex items-center p-4 border-2 border-[#FC9B89] rounded-2xl cursor-pointer hover:shadow-md transition-shadow"
+            variants={cardVariants}
+            initial="hidden"
+            animate="visible"
+            whileHover="hover"
+          >
             <input
-              type="checkbox"
+              type="radio" // Utilisation d'un bouton radio
+              name="service" // Même nom pour regrouper les boutons radio
               value="deménagement"
               onChange={handleServiceChange}
-              className="form-checkbox h-5 w-5 text-[#014F86] rounded border-gray-300 focus:ring-[#FC9B89]"
+              checked={selectedService === 'deménagement'} // Vérifie si ce service est sélectionné
+              className="form-radio h-5 w-5 text-[#014F86] rounded-full border-gray-300 focus:ring-[#FC9B89]"
             />
             <div className="ml-4 flex-1">
-              <h2 className="text-lg font-semibold">Déménagement facile et rapide</h2>
+              <h2 className="text-lg font-semibold text-[#014F86]">Déménagement facile et rapide</h2>
               <p className="text-gray-600">Transport de vos meubles en toute sécurité !</p>
             </div>
-            <div className="w-24 h-24 ml-4">
+            <div className="w-24 h-24 ml-4 border-2 border-[#014F86] rounded-xl overflow-hidden">
               <img
-                src="/images/demenagement.jpg" // Remplacez par le chemin de votre image
+                src="../images/demenagement.jpg" // Remplacez par le chemin de votre image
                 alt="Déménagement"
-                className="w-full h-full object-cover rounded-lg"
+                className="w-full h-full object-cover"
               />
             </div>
-          </label>
+          </motion.label>
 
           {/* Carte pour le service de nettoyage */}
-          <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:shadow-md transition-shadow">
+          <motion.label
+            className="flex items-center p-4 border-2 border-[#FC9B89] rounded-2xl cursor-pointer hover:shadow-md transition-shadow"
+            variants={cardVariants}
+            initial="hidden"
+            animate="visible"
+            whileHover="hover"
+          >
             <input
-              type="checkbox"
+              type="radio" // Utilisation d'un bouton radio
+              name="service" // Même nom pour regrouper les boutons radio
               value="nettoyage"
               onChange={handleServiceChange}
-              className="form-checkbox h-5 w-5 text-[#014F86] rounded border-gray-300 focus:ring-[#FC9B89]"
+              checked={selectedService === 'nettoyage'} // Vérifie si ce service est sélectionné
+              className="form-radio h-5 w-5 text-[#014F86] rounded-full border-gray-300 focus:ring-[#FC9B89]"
             />
             <div className="ml-4 flex-1">
-              <h2 className="text-lg font-semibold">Service de nettoyage</h2>
+              <h2 className="text-lg font-semibold text-[#014F86]">Service de nettoyage</h2>
               <p className="text-gray-600">Un logement propre avant votre installation !</p>
             </div>
-            <div className="w-24 h-24 ml-4">
+            <div className="w-24 h-24 ml-4 border-2 border-[#014F86] rounded-xl overflow-hidden">
               <img
-                src="/images/nettoyage.jpg" // Remplacez par le chemin de votre image
+                src="../images/nettoyage.jpg" // Remplacez par le chemin de votre image
                 alt="Nettoyage"
-                className="w-full h-full object-cover rounded-lg"
+                className="w-full h-full object-cover"
               />
             </div>
-          </label>
+          </motion.label>
 
           {/* Carte pour le service de transport */}
-          <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:shadow-md transition-shadow">
+          <motion.label
+            className="flex items-center p-4 border-2 border-[#FC9B89] rounded-2xl cursor-pointer hover:shadow-md transition-shadow"
+            variants={cardVariants}
+            initial="hidden"
+            animate="visible"
+            whileHover="hover"
+          >
             <input
-              type="checkbox"
+              type="radio" // Utilisation d'un bouton radio
+              name="service" // Même nom pour regrouper les boutons radio
               value="transport"
               onChange={handleServiceChange}
-              className="form-checkbox h-5 w-5 text-[#014F86] rounded border-gray-300 focus:ring-[#FC9B89]"
+              checked={selectedService === 'transport'} // Vérifie si ce service est sélectionné
+              className="form-radio h-5 w-5 text-[#014F86] rounded-full border-gray-300 focus:ring-[#FC9B89]"
             />
             <div className="ml-4 flex-1">
-              <h2 className="text-lg font-semibold">Service de transport</h2>
+              <h2 className="text-lg font-semibold text-[#014F86]">Service de transport</h2>
               <p className="text-gray-600">Transport rapide et sécurisé pour vos biens !</p>
             </div>
-            <div className="w-24 h-24 ml-4">
+            <div className="w-24 h-24 ml-4 border-2 border-[#014F86] rounded-xl overflow-hidden">
               <img
-                src="/images/transport.jpg" // Remplacez par le chemin de votre image
+                src="../images/transport.jpg" // Remplacez par le chemin de votre image
                 alt="Transport"
-                className="w-full h-full object-cover rounded-lg"
+                className="w-full h-full object-cover"
               />
             </div>
-          </label>
+          </motion.label>
         </div>
 
-        <button
+        {/* Bouton de confirmation */}
+        <motion.button
           onClick={handleSubmit}
-          disabled={selectedServices.length === 0}
-          className="w-full mt-6 bg-[#014F86] text-white py-2 px-4 rounded-md hover:bg-[#013A63] focus:outline-none focus:ring-2 focus:ring-[#FC9B89] focus:ring-offset-2 disabled:opacity-50"
+          disabled={!selectedService} // Désactivé si aucun service n'est sélectionné
+          className="w-full mt-6 bg-[#014F86] text-white py-2 px-4 rounded-xl hover:bg-[#FC9B89] focus:outline-none focus:ring-2 focus:ring-[#FC9B89] focus:ring-offset-2 disabled:opacity-50 transition-colors"
+          variants={buttonVariants}
+          whileHover="hover"
         >
           Confirmer et continuer
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
     </div>
   );
 };
 
 export default ReservationPage;
-
