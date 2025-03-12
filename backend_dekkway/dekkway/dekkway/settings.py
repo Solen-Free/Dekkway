@@ -41,11 +41,21 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'django.contrib.postgres',
+    'rest_framework.authtoken',
+    "corsheaders",
 ]
 
 
 REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+    ],
+    'SEARCH_PARAM': 'search',  # Paramètre GET pour la recherche
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
 }
 
 
@@ -57,7 +67,16 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
 ]
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # URL de ton frontend React/Next.js
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
 
 ROOT_URLCONF = 'dekkway.urls'
 
