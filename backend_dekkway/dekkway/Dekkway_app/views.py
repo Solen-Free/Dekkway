@@ -164,7 +164,21 @@ class LogementListView(generics.ListAPIView):
     serializer_class = LogementsRechercheSerializer
 
 
-# Vue pour inscription
+# # Vue pour inscription
+# class InscriptionLocataireView(APIView):
+#     def post(self, request):
+#         serializer = InscriptionLocataireSerializer(data=request.data)
+#         if serializer.is_valid():
+#             utilisateur = serializer.save()
+#             token, _ = Token.objects.get_or_create(user=utilisateur)
+#             return Response({
+#                 'message': 'Compte créé avec succès',
+#                 'token': token.key
+#             }, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 class InscriptionLocataireView(APIView):
     def post(self, request):
         serializer = InscriptionLocataireSerializer(data=request.data)
@@ -176,6 +190,7 @@ class InscriptionLocataireView(APIView):
                 'token': token.key
             }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # Vue pour connexion
 class ConnexionLocataireView(APIView):

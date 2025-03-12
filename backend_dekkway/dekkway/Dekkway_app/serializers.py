@@ -67,12 +67,34 @@ class LocataireServiceSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 
+# class InscriptionLocataireSerializer(serializers.ModelSerializer):
+#     password = serializers.CharField(write_only=True)
+
+#     class Meta:
+#         model = Locataire
+#         fields = ['username', 'email', 'password', 'nom', 'prenom', 'telephone', 'date_de_naissance']
+
+#     def create(self, validated_data):
+#         user = Locataire.objects.create_user(
+#             username=validated_data['username'],
+#             email=validated_data['email'],
+#             password=validated_data['password'],
+#             nom=validated_data.get('nom', ''),
+#             prenom=validated_data.get('prenom', ''),
+#             telephone=validated_data.get('telephone', ''),
+#             date_de_naissance=validated_data.get('date_de_naissance', ''),
+#         )
+#         return user
+
+
+
 class InscriptionLocataireSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
     class Meta:
         model = Locataire
-        fields = ['username', 'email', 'password', 'nom', 'prenom', 'adresse', 'telephone', 'date_de_naissance']
+        # On retire le champ 'adresse' de la liste
+        fields = ['username', 'email', 'password', 'nom', 'prenom', 'telephone', 'date_de_naissance']
 
     def create(self, validated_data):
         user = Locataire.objects.create_user(
@@ -81,11 +103,13 @@ class InscriptionLocataireSerializer(serializers.ModelSerializer):
             password=validated_data['password'],
             nom=validated_data.get('nom', ''),
             prenom=validated_data.get('prenom', ''),
-            adresse=validated_data.get('adresse', ''),
+            # On ne gère plus 'adresse'
             telephone=validated_data.get('telephone', ''),
             date_de_naissance=validated_data.get('date_de_naissance', ''),
         )
         return user
+
+
 
 # Serializer pour la connexion
 class ConnexionLocataireSerializer(serializers.Serializer):
