@@ -158,7 +158,7 @@ class LocataireServiceDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = LocataireService.objects.all()
     serializer_class = LocataireServiceSerializer
     
-    
+# pour la recherche
 class LogementListView(generics.ListAPIView):
     queryset = Logement.objects.all()
     serializer_class = LogementsRechercheSerializer
