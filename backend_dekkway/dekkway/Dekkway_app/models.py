@@ -13,6 +13,7 @@ class Utilisateur(AbstractUser):
     telephone = models.CharField(max_length=20)
     date_creation = models.DateTimeField(auto_now_add=True)
     date_modification = models.DateTimeField(auto_now=True)
+    date_de_naissance = models.DateField(null=True, blank=True)
     
     # Résolution du conflit
     groups = models.ManyToManyField(

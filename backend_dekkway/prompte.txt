@@ -1,3 +1,4 @@
+voila mon filtre
 import re
 import django_filters
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
@@ -158,3 +159,12 @@ class LogementFilter(django_filters.FilterSet):
             }
         }
 
+ces requete marche
+http://127.0.0.1:8000/logements/?search=appartement à dakar entre 300000 et 400000 avec piscine wifi climatisation
+http://127.0.0.1:8000/logements/?search=appartement 4 chambres à dakar entre 300000 et 400000 avec piscine wifi climatisation
+http://127.0.0.1:8000/logements/?search=appartement à dakar entre 300000 et 400000 avec piscine wifi climatisation 4 chambres
+ces requette ne marche pas 
+http://127.0.0.1:8000/logements/?search=appartement à dakar avec piscine wifi climatisation entre 300000 et 400000
+http://127.0.0.1:8000/logements/?search=avec piscine wifi climatisation appartement à dakar entre 300000 et 400000 4 chambres
+je veut que qu'importe leur combinaison cela marche.
+les equipements si on le met au milieux 

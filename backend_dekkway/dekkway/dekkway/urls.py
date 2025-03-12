@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from Dekkway_app.views import BailleurListCreateView, BailleurDetailView, LocataireListCreateView, LocataireDetailView, AdministrateurListCreateView, AdministrateurDetailView, LogementListCreateView, LogementDetailView, LocationListCreateView, LocationDetailView, NotificationListCreateView, NotificationDetailView, ServiceListCreateView, ServiceDetailView, FavorisListCreateView, FavorisDetailView, LocataireServiceDetailView
+from Dekkway_app.views import BailleurListCreateView, BailleurDetailView, LocataireListCreateView, LocataireDetailView, AdministrateurListCreateView, AdministrateurDetailView, LogementListCreateView,LogementDetailView, LocationListCreateView, LocationDetailView, NotificationListCreateView, NotificationDetailView, ServiceListCreateView, ServiceDetailView, FavorisListCreateView, FavorisDetailView, LocataireServiceDetailView, LogementDetailsListCreateView, InscriptionLocataireView, ConnexionLocataireView, ProfilLocataireView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,8 +30,10 @@ urlpatterns = [
     path('administrateurs/', AdministrateurListCreateView.as_view(), name='administrateur-list-create'),
     path('administrateurs/<int:pk>/', AdministrateurDetailView.as_view(), name='administrateur-detail'),
 
-    path('logements/', LogementListCreateView.as_view(), name='logement-list-create'),
-    path('logements/<int:pk>/', LogementDetailView.as_view(), name='logement-detail'),
+    path('rech-logements/', LogementListCreateView.as_view(), name='logement-list-create'),
+    
+    path('details-logements/', LogementDetailsListCreateView.as_view(), name='logement-detail'),
+    path('details-logements/<int:pk>/', LogementDetailsListCreateView.as_view(), name='logement-detail'),
 
     path('locations/', LocationListCreateView.as_view(), name='location-list-create'),
     path('locations/<int:pk>/', LocationDetailView.as_view(), name='location-detail'),
@@ -45,5 +47,12 @@ urlpatterns = [
     path('favoris/', FavorisListCreateView.as_view(), name='favoris-list-create'),
     path('favoris/<int:pk>/', FavorisDetailView.as_view(), name='favoris-detail'),
     
+    
     path('locataire_services/<int:pk>/', LocataireServiceDetailView.as_view(), name='locataire-service-detail'),
+
+    path('loca-inscription/', InscriptionLocataireView.as_view(), name='inscription locataire'),
+    path('loca-connexion/', ConnexionLocataireView.as_view(), name='connexion locataire'),
+    
+    path('profil-locataire/', ProfilLocataireView.as_view(), name='profil locataire'),
+    
 ]
