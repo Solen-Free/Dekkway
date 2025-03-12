@@ -3,7 +3,7 @@
 import { Send, Mic, Volume2 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { FaRedo } from "react-icons/fa";
-import OpenAI from 'openai';
+import { motion } from "framer-motion"; // Import de Framer Motion
 
 const Assistance = () => {
   const [message, setMessage] = useState<string>("");
@@ -13,6 +13,7 @@ const Assistance = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [audioMessage, setAudioMessage] = useState<string>("");
+  const [isAnimating, setIsAnimating] = useState<boolean>(false); // État pour gérer l'animation
 
   // Références avec les types appropriés
   const mediaRecorder = useRef<MediaRecorder | null>(null); // Typage pour MediaRecorder
@@ -114,6 +115,12 @@ const Assistance = () => {
     localStorage.removeItem("conversation");
   };
 
+  // Fonction pour déclencher l'animation
+  const handleAIClick = () => {
+    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 1000); // Désactive l'animation après 1 seconde
+  };
+
   // Charger la conversation depuis le localStorage au chargement de la page
   useEffect(() => {
     const savedConversation = localStorage.getItem("conversation");
@@ -123,14 +130,26 @@ const Assistance = () => {
   }, []);
 
   return (
-    <div className="w-full h-screen flex flex-col items-center bg-white p-2">
-      <div className="w-full bg-gray-100 shadow-lg rounded-lg overflow-hidden">
-        <div className="w-full bg-red-300 py-4 flex items-center px-6">
-          <div className="w-12 h-12 bg-blue-800 rounded-full flex items-center justify-center text-white text-lg font-bold">IA</div>
+    <div className="w-full h-screen flex flex-col items-center bg-white p-2 sm:p-4">
+      <div className="w-full max-w-4xl bg-gray-100 shadow-lg rounded-lg overflow-hidden">
+        {/* En-tête avec animation */}
+        <div className="w-full bg-red-300 py-4 flex items-center px-4 sm:px-6">
+          <motion.div
+            className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-800 rounded-full flex items-center justify-center text-white text-lg font-bold cursor-pointer"
+            onClick={handleAIClick}
+            animate={{
+              scale: isAnimating ? [1, 1.2, 1] : 1, // Animation de zoom
+              rotate: isAnimating ? [0, 360] : 0, // Animation de rotation
+            }}
+            transition={{ duration: 1, ease: "easeInOut" }}
+          >
+            IA
+          </motion.div>
           <span className="text-white text-lg font-semibold ml-4">Assistant IA</span>
         </div>
 
-        <div className="flex flex-col p-4 space-y-3 h-84 overflow-y-auto" style={{ maxHeight: "calc(100vh - 200px)" }}>
+        {/* Zone de conversation */}
+        <div className="flex flex-col p-4 space-y-3 h-[calc(100vh-200px)] sm:h-[calc(100vh-250px)] overflow-y-auto">
           {responses.map((res, index) => (
             <div key={index} className={`flex items-center ${res.sender === "user" ? "justify-end" : "justify-start"}`}>
               {res.sender === "IA" && (
@@ -138,7 +157,7 @@ const Assistance = () => {
                   <Volume2 size={18} />
                 </button>
               )}
-              <div className={`px-4 py-2 rounded-full border border-red-300 max-w-xs ${res.sender === "user" ? "bg-red-300 text-white" : "bg-white"}`}>
+              <div className={`px-4 py-2 rounded-full border border-red-300 max-w-xs sm:max-w-md ${res.sender === "user" ? "bg-red-300 text-white" : "bg-white"}`}>
                 {res.text}
               </div>
             </div>
@@ -146,6 +165,7 @@ const Assistance = () => {
           {loading && <div className="text-gray-500"> L'IA réfléchit...</div>}
         </div>
 
+        {/* Zone de saisie */}
         <div className="w-full border-t border-red-300 px-4 py-3 flex items-center space-x-2">
           <button onClick={isRecording ? stopRecording : startRecording} className="text-gray-500">
             <Mic size={20} />
@@ -162,7 +182,7 @@ const Assistance = () => {
             <Send size={20} />
           </button>
           <button onClick={resetConversation} className="ml-2 p-2 bg-[#014F86] rounded-full text-white">
-           <FaRedo size={20} />
+            <FaRedo size={20} />
           </button>
         </div>
       </div>

@@ -9,8 +9,6 @@ import Link from "next/link";
 export default function Page() {
   return (
     <div className="w-full min-h-screen">
-     
-
       {/* Carousel section */}
       <div className="w-full">
         <Carousel />
@@ -64,6 +62,8 @@ export default function Page() {
         </div>
       </div>
 
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

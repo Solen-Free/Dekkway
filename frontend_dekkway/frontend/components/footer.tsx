@@ -1,178 +1,73 @@
 "use client";
+
 import React from 'react';
-import { useState } from "react";
 import { FaInstagram, FaFacebookF, FaTwitter, FaYoutube, FaLinkedinIn } from "react-icons/fa";
 import Link from "next/link";
 import Image from "next/image";
 
- export default function Footer() {
-   const [search, setSearch] = useState("");
-   const [isOpen, setIsOpen] = useState(false);
+export default function Footer() {
   return (
-    <footer
-      className="w-full h-screen-15 flex flex-col text-white text-sm"
-      style={{ backgroundColor: "#014F86" }}
-    >
-      {/* Partie supérieure du footer */}
-      <div className="w-full px-4 py-4">
-        <div className="flex flex-col md:flex-row justify-between">
-
-          {/* Présentation et appel à l'action */}
-
-          <div className="mb-6 md:mb-0">
-              <div className="flex items-leg">
-                 <Link
-                   href="/Acceuil"
-                   className="flex items-center gap-2 font-bold text-xl transition-transform duration-300 hover:scale-110"
-                   onClick={() => setIsOpen(false)}>
-                   <Image src="/icones/Logob.png" alt="Logo Dekkway" width={120} height={80} priority />
-                 </Link>
-              </div>
-              <div className="left-20 relative items-center flex-1 max-w-sm mx-4 my-2">
-               <h3 className="font-light text-base">Suivez-Nous sur nos réseaux :</h3>
-               <ul className=" mt-2 flex space-x-2 font-light">
-                <li>
-                  <a
-                    href="https://www.facebook.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:underline"
-                  >
-                    <FaFacebookF className="text-2xl rounded bg-[#FC9B89] text-white hover:text-gray-600 transition duration-300 hover:scale-110" />
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.twitter.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:underline"
-                  >
-                    <FaTwitter className="text-2xl rounded bg-[#FC9B89] text-white hover:text-gray-600 transition duration-300 hover:scale-110" />
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.instagram.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:underline"
-                  >
-                  <FaInstagram className="text-2xl rounded bg-[#FC9B89] text-white hover:text-gray-600 transition duration-300 hover:scale-110" />
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.instagram.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:underline"
-                  >
-                  <FaLinkedinIn className="text-2xl rounded bg-[#FC9B89] text-white hover:text-gray-600 transition duration-300 hover:scale-110" />
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.instagram.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:underline"
-                  >
-                  <FaYoutube className="text-2xl rounded bg-[#FC9B89] text-white hover:text-gray-600 transition duration-300 hover:scale-110" />
-                  </a>
-                </li>
-               </ul>
-              </div>
-            
+    <footer className="w-full bg-[#014F86] text-white text-sm">
+      <div className="w-full px-4 py-8">
+        <div className="flex flex-col md:flex-row justify-between items-start gap-8">
+          {/* Logo and Social Media */}
+          <div className="flex flex-col items-start">
+            <Link href="/Acceuil" className="flex items-center gap-2">
+              <Image src="/icones/Logob.png" alt="Logo Dekkway" width={120} height={80} priority />
+            </Link>
+            <p className="mt-4 text-sm">Suivez-nous sur nos réseaux :</p>
+            <div className="flex gap-4 mt-2">
+              <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">
+                <FaFacebookF className="text-2xl text-[#FC9B89] hover:text-white transition-colors" />
+              </a>
+              <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer">
+                <FaTwitter className="text-2xl text-[#FC9B89] hover:text-white transition-colors" />
+              </a>
+              <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
+                <FaInstagram className="text-2xl text-[#FC9B89] hover:text-white transition-colors" />
+              </a>
+              <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer">
+                <FaLinkedinIn className="text-2xl text-[#FC9B89] hover:text-white transition-colors" />
+              </a>
+              <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer">
+                <FaYoutube className="text-2xl text-[#FC9B89] hover:text-white transition-colors" />
+              </a>
+            </div>
           </div>
-          {/* Liens rapides répartis en colonnes */}
-          <div className="text-left py-6 grid grid-cols-2 md:grid-cols-3 gap-4 w-4/6">
 
-            {/* Colonne "Assistance" */}
-
+          {/* Quick Links */}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="font-light text-base">Assistance</h3>
-              <ul className="mt-2 font-light">
-                <li>
-                  <a href="/a-propos" className="hover:underline">
-                    Centre d'aide
-                  </a>
-                </li>
-                <li>
-                  <a href="/contact" className="hover:underline">
-                    Option d'annulation
-                  </a>
-                </li>
-                <li>
-                  <a href="/partenaires" className="hover:underline">
-                    Option de remboursement
-                  </a>
-                </li>
+              <h3 className="font-bold mb-4">Assistance</h3>
+              <ul className="space-y-2">
+                <li><Link href="/aide" className="hover:underline">Centre d'aide</Link></li>
+                <li><Link href="/annulation" className="hover:underline">Option d'annulation</Link></li>
+                <li><Link href="/remboursement" className="hover:underline">Option de remboursement</Link></li>
               </ul>
             </div>
-
-            {/* Colonne "Entreprise" */}
-
             <div>
-              <h3 className="font-light text-base">Entreprise</h3>
-              <ul className="mt-2 font-light">
-                <li>
-                  <a href="/aide" className="hover:underline">
-                    A propos de nous
-                  </a>
-                </li>
-                <li>
-                  <a href="/annulation" className="hover:underline"> 
-                    Contactez-nous
-                  </a>
-                </li>
-                <li>
-                  <a href="/remboursement" className="hover:underline">
-                    Nos partenaires
-                  </a>
-                </li>
+              <h3 className="font-bold mb-4">Entreprise</h3>
+              <ul className="space-y-2">
+                <li><Link href="/a-propos" className="hover:underline">À propos de nous</Link></li>
+                <li><Link href="/contact" className="hover:underline">Contactez-nous</Link></li>
+                <li><Link href="/partenaires" className="hover:underline">Nos partenaires</Link></li>
               </ul>
             </div>
-
-            {/* Colonne "Navigation" */}
-            
             <div>
-              <h3 className="font-light text-base">Navigation</h3>
-              <ul className="mt-2 font-light">
-                <li>
-                  <a href="/reservation" className="hover:underline">
-                    Reservation
-                  </a>
-                </li>
-                <li>
-                  <a href="/mon-compte" className="hover:underline">
-                    Mon Compte
-                  </a>
-                </li>
+              <h3 className="font-bold mb-4">Navigation</h3>
+              <ul className="space-y-2">
+                <li><Link href="/reservation" className="hover:underline">Réservation</Link></li>
+                <li><Link href="/mon-compte" className="hover:underline">Mon Compte</Link></li>
               </ul>
             </div>
-            
           </div>
         </div>
       </div>
 
-      {/* Ligne séparatrice courte et centrée */}
-      <div className="w-full">
-        <hr className="w-2/3 border-t border-white mx-auto my-1" />
-      </div>
-
-      {/* Informations de copyright */}
-      <div className="max-w-7xl mx-auto px-4 py-2 text-center text-gray text-opacity-70 font-thin">
-        <p>Copyright © 2025 BRIX Templates | All Rights Reserved | <a href="/terms" className="hover:underline">
-            Terms and Conditions
-          </a>{" "}
-          |{" "}
-          <a href="/privacy" className="hover:underline">
-            Privacy Policy
-          </a> 
-        </p>
-    
+      {/* Copyright */}
+      <div className="w-full border-t border-white/20 py-4 text-center">
+        <p className="text-sm">© 2025 Dekkway. Tous droits réservés.</p>
       </div>
     </footer>
   );
-};
+}
