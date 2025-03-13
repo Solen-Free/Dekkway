@@ -11,7 +11,7 @@ const Filtre = () => {
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [selectedPropertyType, setSelectedPropertyType] = useState("");
   const [priceRange, setPriceRange] = useState<[number, number]>([50000, 1000000]);
-  const [bedrooms, setBedrooms] = useState(1);
+  const [bedrooms, setBedrooms] = useState<number | null>(null);
   const [equipments, setEquipments] = useState<string[]>([]);
   const [city, setCity] = useState("");
   const [isMobile, setIsMobile] = useState(false);
@@ -41,7 +41,7 @@ const Filtre = () => {
   const handleReset = () => {
     setSelectedPropertyType("");
     setPriceRange([50000, 1000000]);
-    setBedrooms(1);
+    setBedrooms(null);
     setEquipments([]);
     setCity("");
   };
@@ -138,7 +138,7 @@ const Filtre = () => {
                           key={type}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => setSelectedPropertyType(type)}
-                          className={`p-2 text-sm rounded-xl transition-colors ${
+                          className={`p-2 text-sm rounded-3xl transition-colors ${
                             selectedPropertyType === type
                               ? "bg-gradient-to-r from-[#FC9B89] to-[#FF6B6B] text-white"
                               : "bg-[#014F86] text-white hover:bg-[#013A63]"
@@ -175,31 +175,32 @@ const Filtre = () => {
 
                   {/* Nombre de chambres */}
                   <div className="mb-6">
-                    <h3 className="text-lg font-semibold mb-4">Nombre de chambres</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {[1, 2, 3, 4, 5].map((num) => (
-                        <motion.button
-                          key={num}
-                          whileHover={{ scale: 1.05 }}
-                          onClick={() => setBedrooms(num)}
-                          className={`w-12 h-12 rounded-lg text-lg font-semibold transition-colors ${
-                            bedrooms === num
-                              ? "bg-gradient-to-r from-[#FC9B89] to-[#FF6B6B] text-white"
-                              : "bg-[#014F86] text-white hover:bg-[#013A63]"
-                          }`}
-                        >
-                          {num}
-                        </motion.button>
-                      ))}
-                    </div>
-                  </div>
-
+  <h3 className="text-lg font-semibold mb-4">Nombre de chambres</h3>
+  <div className="flex flex-wrap gap-2">
+    {[1, 2, 3, 4, 5].map((num) => (
+      <motion.button
+        key={num}
+        whileHover={{ scale: 1.05 }}
+        onClick={() => setBedrooms(current => current === num ? null : num)}
+        className={`w-12 h-12 rounded-lg text-lg font-semibold transition-colors
+          ${
+            bedrooms === num 
+              ? "bg-gradient-to-r from-[#FC9B89] to-[#FF6B6B] text-white" 
+              : "bg-[#014F86] text-white hover:bg-[#FC9B89]/80"
+          }`
+        }
+      >
+        {num}
+      </motion.button>
+    ))}
+  </div>
+</div>
                   {/* Équipements */}
                   <div className="mb-6">
                     <h3 className="text-lg font-semibold mb-4">Équipements</h3>
                     <div className="grid grid-cols-2 gap-3">
                       {[
-                        "Climatiseur", "Electricité", "Réfrigérateur",
+                        "Climatiseur", "Réfrigérateur",
                         "Garage", "Piscine", "Chauffe-eau",
                         "Ménagères", "Micro-onde", "Meubles"
                       ].map((equipment) => (
@@ -243,7 +244,7 @@ const Filtre = () => {
                       className="w-full p-2 border-2 border-[#FC9B89] rounded-lg focus:outline-none focus:border-[#FF6B6B]"
                     >
                       <option value="">Sélectionnez une ville</option>
-                      {["Thiès", "Dakar", "Saint-Louis", "Diourbel", "Kaolack", "Matam"].map((ville) => (
+                      {["Thiès", "Dakar", "Saint-Louis", "Diourbel", "Kaolack", "Matam", "Fatick", "Kaffrine", "Kédougou", "Kolda", "Louga", "Sédhiou","Tambacounda", "Ziguinchor"].map((ville) => (
                         <option key={ville} value={ville}>{ville}</option>
                       ))}
                     </select>
@@ -277,15 +278,15 @@ const Filtre = () => {
                         </motion.span>
                       )}
 
-                      {bedrooms > 1 && (
+                      {bedrooms !== null && bedrooms > 0 && (
                         <motion.span
                           initial={{ opacity: 0, scale: 0.5 }}
                           animate={{ opacity: 1, scale: 1 }}
                           className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
-                          onClick={() => setBedrooms(1)}
+                          onClick={() => setBedrooms(null)}
                         >
                           {bedrooms} chambre{bedrooms > 1 && 's'}
-                          <IoClose className="text-[#014F86]" size={14} />
+                         <IoClose className="text-[#014F86]" size={14} />
                         </motion.span>
                       )}
 
