@@ -1,14 +1,23 @@
 "use client";
 import { Heart, MapPin } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface CardProps {
+  id: number;
   image: string;
   title: string;
   location: string;
   price: string;
 }
 
-const Card: React.FC<CardProps> = ({ image, title, location, price }) => {
+
+const Card: React.FC<CardProps> = ({ id, image, title, location, price }) => {
+  const router = useRouter(); // Déclarer useRouter
+
+  // Fonction pour rediriger vers la page de détails
+  const handleDetailsClick = () => {
+    router.push(`/logement/${id}`);
+  };
   return (
     <div className="shadow-lg rounded-3xl overflow-hidden w-full max-w-[280px] md:max-w-[320px] border-2 border-[#FC9B89] relative transition duration-300 hover:scale-110">
       {/* Image */}
@@ -35,7 +44,7 @@ const Card: React.FC<CardProps> = ({ image, title, location, price }) => {
 
       {/* Bouton Détails */}
       <div className="pb-2 flex justify-center">
-        <button className="w-full max-w-[120px] bg-[#014F86] text-white text-center text-sm font-bold py-1 px-3 rounded-3xl hover:bg-[#FC9B89] transition">
+        <button onClick={handleDetailsClick} className="w-full max-w-[120px] bg-[#014F86] text-white text-center text-sm font-bold py-1 px-3 rounded-3xl hover:bg-[#FC9B89] transition">
           Détails
         </button>
       </div>

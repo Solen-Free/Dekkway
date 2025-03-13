@@ -1,0 +1,25 @@
+{
+  "logements": [
+    {
+      "id": 1,
+      "nom": "Maison moderne",
+      "ville": "Paris",
+      "prix": "200000",
+      "image": "/images/maison2.jpg",
+      "description": "Une belle maison moderne",
+      "type": "Maison"
+    },
+
+    {
+      "id": 2,
+      "nom": "Villa moderne",
+      "ville": "Paris",
+      "prix": "200000",
+      "image": "/images/maison3.jpg",
+      "description": "Une belle villa moderne",
+      "type": "Villa"
+    }
+  ]
+
+  
+}

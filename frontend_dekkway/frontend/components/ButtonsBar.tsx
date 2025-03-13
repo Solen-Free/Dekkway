@@ -1,21 +1,25 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const pages = [
-  { label: "Tout", href: "/Acceuil" },
-  { label: "Maison", href: "/Maison" },
-  { label: "Appartement", href: "/Appartement" },
-  { label: "Studio", href: "/Studio" },
-  { label: "Villa", href: "/Vila" },
-  { label: "Co-location", href: "/Co-location" },
-  { label: "Longue-durée", href: "/Longue-duree" },
-  { label: "Courte-durée", href: "/Courte-duree" },
-  { label: "Localisation", href: "/Localisation" },
+// Définir les types de logements disponibles
+const types = [
+  { label: "Tout", value: null }, // null signifie "pas de filtre"
+  { label: "Maison", value: "maison" },
+  { label: "Appartement", value: "appartement" },
+  { label: "Studio", value: "studio" },
+  { label: "Villa", value: "villa" },
+  { label: "Co-location", value: "colocation" },
+  { label: "Longue durée", value: "longuedurée" },
+  { label: "Courte durée", value: "lourtedurée" },
+  { label: "Localisation", value: "localisation" },
 ];
 
-export default function ButtonsBar() {
+interface ButtonsBarProps {
+  onSelectTypeAction: (type: string | null) => void; // Callback pour sélectionner un type
+}
+
+export default function ButtonsBar({ onSelectTypeAction }: ButtonsBarProps) {
   const pathname = usePathname();
 
   return (
@@ -25,12 +29,12 @@ export default function ButtonsBar() {
         sur tous les écrans
       */}
       <div className="flex flex-nowrap overflow-x-auto scrollbar-hide items-center gap-4 my-6">
-        {pages.map((page) => {
-          const isActive = pathname === page.href;
+        {types.map((type) => {
+          const isActive = pathname === `/${type.value}`; // Vérifie si le type est actif
           return (
-            <Link
-              key={page.href}
-              href={page.href}
+            <button
+              key={type.value || "Tout"} // Utilise "Tout" comme clé si value est null
+              onClick={() => onSelectTypeAction(type.value)} // Appelle le callback avec le type sélectionné
               className={`
                 shrink-0
                 px-3 py-2 sm:px-4 sm:py-2 md:px-5 md:py-3 
@@ -39,13 +43,13 @@ export default function ButtonsBar() {
                 hover:scale-105 active:scale-95
                 ${
                   isActive
-                    ? "bg-[#FC9B89]"        /* Bouton actif : rose */
-                    : "bg-[#014F86] hover:bg-[#FC9B89]" /* Sinon : bleu + hover rose */
+                    ? "bg-[#FC9B89]" // Bouton actif : rose
+                    : "bg-[#014F86] hover:bg-[#FC9B89]" // Sinon : bleu + hover rose
                 }
               `}
             >
-              {page.label}
-            </Link>
+              {type.label}
+            </button>
           );
         })}
       </div>
