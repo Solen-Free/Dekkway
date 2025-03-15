@@ -11,8 +11,10 @@ from rest_framework import generics, filters, status
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Logement
 from .filters import LogementFilter
-from .models import Bailleur, Locataire, Administrateur, Logement, Location, Notification, Service, Favoris, LocataireService
-from .serializers import BailleurSerializer, LocataireSerializer, AdministrateurSerializer, LocationSerializer, NotificationSerializer, ServiceSerializer, FavorisSerializer, LocataireServiceSerializer, LogementsRechercheSerializer, LogementsRechercheSerializer, LogementSerializer, InscriptionLocataireSerializer, ConnexionLocataireSerializer
+from rest_framework import viewsets
+from rest_framework.parsers import MultiPartParser, FormParser
+from .models import Bailleur, Locataire, Administrateur, Logement, Location, Notification, Service, Favoris, LocataireService, Media
+from .serializers import BailleurSerializer, LocataireSerializer, AdministrateurSerializer, LocationSerializer, NotificationSerializer, ServiceSerializer, FavorisSerializer, LocataireServiceSerializer, LogementsRechercheSerializer, LogementsRechercheSerializer, LogementSerializer, InscriptionLocataireSerializer, ConnexionLocataireSerializer, MediaSerializer
 
 
 # Create your views here.
@@ -43,7 +45,7 @@ class AdministrateurDetailView(generics.RetrieveUpdateDestroyAPIView):
     
 
 class LogementListCreateView(generics.ListCreateAPIView):
-    queryset = Logement.objects.all()
+    queryset = Logement.objects.prefetch_related('medias')
     serializer_class = LogementsRechercheSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_class = LogementFilter
@@ -213,3 +215,16 @@ class ProfilLocataireView(APIView):
         utilisateur = request.user
         serializer = LocataireSerializer(utilisateur)
         return Response(serializer.data)
+
+
+
+class MediaViewSet(viewsets.ModelViewSet):
+    queryset = Media.objects.all()
+    serializer_class = MediaSerializer
+    parser_classes = (MultiPartParser, FormParser)
+    #permission_classes = [IsAuthenticated]  # Ajoutez ceci pour la sécurité
+    
+    def perform_create(self, serializer):
+        # Validation supplémentaire avant sauvegarde
+        instance = serializer.save()
+        instance.full_clean()  # Déclenche la validation du modèle
