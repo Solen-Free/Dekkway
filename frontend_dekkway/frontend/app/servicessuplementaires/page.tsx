@@ -5,13 +5,23 @@ import { motion } from 'framer-motion'; // Import de Framer Motion
 
 const ReservationPage: React.FC = () => {
   const [selectedService, setSelectedService] = useState<string | null>(null); // Un seul service sélectionné
+  const [noServiceNeeded, setNoServiceNeeded] = useState<boolean>(false); // État pour aucun service supplémentaire
 
   const handleServiceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedService(event.target.value); // Mettre à jour le service sélectionné
+    setNoServiceNeeded(false); // Désactiver l'option "Aucun service" si un service est sélectionné
+  };
+
+  const handleNoServiceNeeded = () => {
+    setNoServiceNeeded(true); // Activer l'option "Aucun service"
+    setSelectedService(null); // Désélectionner tout service sélectionné
   };
 
   const handleSubmit = () => {
-    if (selectedService) {
+    if (noServiceNeeded) {
+      // Rediriger vers une page de confirmation ou autre
+      window.location.href = `/confirmation`;
+    } else if (selectedService) {
       // Rediriger vers la page du service sélectionné
       window.location.href = `/services/${selectedService}`;
     }
@@ -131,12 +141,34 @@ const ReservationPage: React.FC = () => {
               />
             </div>
           </motion.label>
+
+          {/* Option pour aucun service supplémentaire */}
+          <motion.label
+            className="flex items-center p-4 border-2 border-[#FC9B89] rounded-2xl cursor-pointer hover:shadow-md transition-shadow"
+            variants={cardVariants}
+            initial="hidden"
+            animate="visible"
+            whileHover="hover"
+          >
+            <input
+              type="radio" // Utilisation d'un bouton radio
+              name="service" // Même nom pour regrouper les boutons radio
+              value="none"
+              onChange={handleNoServiceNeeded}
+              checked={noServiceNeeded} // Vérifie si cette option est sélectionnée
+              className="form-radio h-5 w-5 text-[#014F86] rounded-full border-gray-300 focus:ring-[#FC9B89]"
+            />
+            <div className="ml-4 flex-1">
+              <h2 className="text-lg font-semibold text-[#014F86]">Non, merci</h2>
+              <p className="text-gray-600">Je n'ai pas besoin de services supplémentaires.</p>
+            </div>
+          </motion.label>
         </div>
 
         {/* Bouton de confirmation */}
         <motion.button
           onClick={handleSubmit}
-          disabled={!selectedService} // Désactivé si aucun service n'est sélectionné
+          disabled={!selectedService && !noServiceNeeded} // Désactivé si aucun choix n'est fait
           className="w-full mt-6 bg-[#014F86] text-white py-2 px-4 rounded-xl hover:bg-[#FC9B89] focus:outline-none focus:ring-2 focus:ring-[#FC9B89] focus:ring-offset-2 disabled:opacity-50 transition-colors"
           variants={buttonVariants}
           whileHover="hover"
