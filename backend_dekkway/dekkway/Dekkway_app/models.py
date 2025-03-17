@@ -92,11 +92,12 @@ class Media(models.Model):
                 logement=self.logement, 
                 type=self.VIDEO
             ).exclude(id=self.id)
+            
             if existing_video.exists():
                 raise ValidationError("Un seul vidéo autorisée par logement")
 
     def save(self, *args, **kwargs):
-        self.clean()  # Vérifie la contrainte avant d'enregistrer
+        self.full_clean()  # Force la validation avant sauvegarde
         super().save(*args, **kwargs)
 
 

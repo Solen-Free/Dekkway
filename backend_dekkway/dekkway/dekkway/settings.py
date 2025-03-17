@@ -22,6 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent  # Définition en premier
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")  # Utilisation après définition
 
+# Pour éviter de surcharger la mémoire
+DATA_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024 * 15  # 15MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = DATA_UPLOAD_MAX_MEMORY_SIZE
 # Le reste des configurations...
 
 

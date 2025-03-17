@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate
+from django.core.validators import FileExtensionValidator
 from .models import Bailleur, Locataire, Administrateur, Logement, Location, Notification, Service, Favoris, LocataireService, Media
 
 
@@ -39,13 +40,39 @@ class LogementsRechercheSerializer(serializers.ModelSerializer):
         fallback_media = obj.medias.filter(type=Media.IMAGE).first()
         return fallback_media.fichier.url if fallback_media else None
       
-      
+# class MediaSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Media
+#         fields = "__all__"
+#         extra_kwargs = {
+#             'logement': {'required': False}  # Auto-rempli par la vue
+#         }  
+
+
 
 class MediaSerializer(serializers.ModelSerializer):
+    fichier = serializers.FileField(required=True)  # Champ explicite
+    
     class Meta:
         model = Media
         fields = "__all__"
-        read_only_fields = ('date_ajout',)
+        extra_kwargs = {
+            'fichier': {
+                'validators': [
+                    FileExtensionValidator(
+                        allowed_extensions=['jpg', 'jpeg', 'png', 'mp4', 'mov'],
+                        message="Format de fichier non supporté. Formats autorisés: jpg, jpeg, png, mp4, mov"
+                    )
+                ]
+            }
+        }
+
+
+# class MediaSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Media
+#         fields = "__all__"
+#         read_only_fields = ('date_ajout',)
 
 # class LogementSerializer(serializers.ModelSerializer):
 #     medias = MediaSerializer(many=True, read_only=True)
@@ -61,9 +88,18 @@ class LogementSerializer(serializers.ModelSerializer):
         model = Logement
         fields = [
             'type', 'description', 'region', 
-            'quartier', 'prix', 'nombre_de_chambres', 
-            'medias', 'equipements', 'latitude', 'longitude'
+            'quartier', 'prix', 'nombre_de_chambres', 'equipements', 'latitude', 'longitude', 
+            'medias'
         ]
+    
+    def validate_medias(self, value):
+        """Valide le nombre de vidéos dans les médias"""
+        video_count = sum(1 for m in value if m.get('type') == Media.VIDEO)
+        
+        if video_count > 1:
+            raise serializers.ValidationError("Un seul vidéo autorisé par logement")
+        
+        return value
     
     def create(self, validated_data):
         medias_data = validated_data.pop('medias', [])

@@ -62,7 +62,7 @@ urlpatterns = [
     
     path('profil-locataire/', ProfilLocataireView.as_view(), name='profil locataire'),
     
-    path('medias/', MediaViewSet.as_view(), name='media-list-create'),
-    path('medias/<int:pk>/', MediaViewSet.as_view(), name='media-detail'),
+    # path('medias/', MediaViewSet.as_view(), name='media-list-create'),
+    # path('medias/<int:pk>/', MediaViewSet.as_view(), name='media-detail'),
     
 ] + router.urls + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
