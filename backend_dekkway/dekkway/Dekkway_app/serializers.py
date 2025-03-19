@@ -67,6 +67,12 @@ class MediaSerializer(serializers.ModelSerializer):
             }
         }
 
+class NestedMediaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Media
+        # Liste uniquement les champs que tu veux retourner
+        fields = ['fichier', 'type', 'date_ajout']
+
 
 # class MediaSerializer(serializers.ModelSerializer):
 #     class Meta:
@@ -82,7 +88,7 @@ class MediaSerializer(serializers.ModelSerializer):
 
 
 class LogementSerializer(serializers.ModelSerializer):
-    medias = MediaSerializer(many=True)  # Retire read_only=True
+    medias = NestedMediaSerializer(many=True)  # Retire read_only=True
 
     class Meta:
         model = Logement
