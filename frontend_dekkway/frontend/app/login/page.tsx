@@ -35,32 +35,20 @@ export default function Login() {
     return () => window.removeEventListener("resize", handleResize);
   }, [isMobile]);
 
-  // Gestion de la soumission du formulaire et vérification au niveau du backend
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  // Gestion de la soumission du formulaire
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMessage("");
-    try {
-      const response = await fetch("http://localhost:8000/api/login/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Connexion réussie :", data);
-        // Ici, vous pouvez sauvegarder le token, rediriger l'utilisateur, etc.
-      } else {
-        const errorData = await response.json();
-        console.error("Erreur lors de la connexion :", errorData);
-        setErrorMessage(errorData.message || "Erreur lors de la connexion");
-      }
-    } catch (error) {
-      console.error("Erreur lors de la requête :", error);
-      setErrorMessage("Erreur lors de la requête. Vérifiez votre connexion ou le backend.");
+    // Validation de base
+    if (!formData.email || !formData.password) {
+      setErrorMessage("Veuillez remplir tous les champs.");
+      return;
     }
+
+    // Simuler une connexion réussie
+    toast.success("Connexion réussie !");
+    console.log("Données du formulaire :", formData);
   };
 
   // Gestion des changements dans les champs du formulaire

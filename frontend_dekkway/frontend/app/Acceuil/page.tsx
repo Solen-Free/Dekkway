@@ -47,7 +47,16 @@ export default function Page() {
           <h1 className="font-bold text-[#014F86] text-lg sm:text-xl mb-6">
             {selectedType ? selectedType : "Tous les logements"}
           </h1>
-          <LogementsList type={selectedType} /> {/* Affiche les logements filtrés */}
+        </div>
+
+        {/* Divider */}
+        <div className="w-full max-w-[90%] mx-auto h-[2px] border-[#FC9B89] border"></div>
+
+        {/* Second recent section */}
+        <div className="w-full mt-12">
+          <h1 className="font-bold text-[#014F86] text-lg sm:text-xl mb-6">
+            Les plus récents
+          </h1>
         </div>
       </div>
     </div>
