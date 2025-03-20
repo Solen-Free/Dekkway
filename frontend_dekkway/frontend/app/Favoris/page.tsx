@@ -37,6 +37,7 @@ export default function FavorisPage() {
         { id: '6', image: '/images/maison1.jpg', title: 'Appart à louer', location: 'Centre-Ville, Dakar', price: '300000' },
         { id: '7', image: '/images/maison2.jpg', title: 'Villa à vendre', location: 'Plage, Mbour', price: '1500000' },
         { id: '8', image: '/images/maison3.jpg', title: 'Maison moderne', location: 'Banlieue, Rufisque', price: '800000' },
+        { id: '9', image: '/images/maison.jpg', title: 'Maison moderne', location: 'Banlieue, Rufisque', price: '800000' },
       ];
 
       // Filtrer pour garder seulement les favoris
