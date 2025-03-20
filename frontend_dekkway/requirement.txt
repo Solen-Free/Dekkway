@@ -1,0 +1,9 @@
+npm install react-leaflet leaflet --legacy-peer-deps
+npm install react@latest react-dom@latest
+npm install react-leaflet leaflet
+npm install @types/leaflet
+npm install zod react-leaflet leaflet @types/leaflet
+npm install lucide-react @types/react @types/react-dom
+npm install zod @types/react @types/react-dom
+npm install leaflet-geosearch
+npm install clsx tailwind-merge

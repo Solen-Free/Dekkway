@@ -1,5 +1,6 @@
 "use client";
 import Alert from "@/components/UI/Alert";
+import Filtre from "@/components/Filtre";
 import Header from "@/components/header";
 export default function Home() {
     return (
@@ -10,8 +11,8 @@ export default function Home() {
         </div>
         <div className="flex items-center justify-center h-screen">
       <Alert />
+      <Filtre />
     </div>
       </div>
     );
   }
-

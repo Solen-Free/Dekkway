@@ -6,21 +6,21 @@ interface Filters {
   priceRange: number[];
   bedrooms: number;
   city: string;
-  amenities: string[];  // ✅ Définir comme `string[]`
+  amenities: string[];  
   rentalType: string;
 }
 
 interface FilterProps {
-  onClose: () => void; // Définir la prop onClose ici
+  onClose: () => void; 
 }
 
 const Filter = ({ onClose }: FilterProps) => {
-  const [filters, setFilters] = useState<Filters>({ // ✅ Ajout d'un type explicite ici
+  const [filters, setFilters] = useState<Filters>({ 
     propertyType: "",
     priceRange: [50000, 500000],
     bedrooms: 1,
     city: "",
-    amenities: [], // ✅ Type string[] est bien respecté
+    amenities: [],
     rentalType: ""
   });
 
@@ -29,28 +29,38 @@ const Filter = ({ onClose }: FilterProps) => {
       ...prev,
       amenities: prev.amenities.includes(amenity)
         ? prev.amenities.filter((a) => a !== amenity)
-        : [...prev.amenities, amenity] // ✅ Aucun problème avec TypeScript ici
+        : [...prev.amenities, amenity] 
     }));
   };
 
   return (
     <div>
       <h2>Filtrer</h2>
+      
+      <div>
+        <h3>Équipements</h3>
+          <label>
+            <input
+              type="checkbox"
+              checked={filters.amenities.includes("Climatiseur")}
+              onChange={() => handleCheckboxChange("Climatiseur")}
+            />
+            Climatiseur
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={filters.amenities.includes("Climatiseur")}
+              onChange={() => handleCheckboxChange("Climatiseur")}
+            />
+            Climatiseur
+          </label>
+      </div>
+      <div>
       <PriceRange
         priceRange={filters.priceRange}
         onChange={(newValue) => setFilters({ ...filters, priceRange: newValue })}
       />
-
-      <div>
-        <h3>Équipements</h3>
-        <label>
-          <input
-            type="checkbox"
-            checked={filters.amenities.includes("Climatiseur")}
-            onChange={() => handleCheckboxChange("Climatiseur")}
-          />
-          Climatiseur
-        </label>
       </div>
     </div>
   );
