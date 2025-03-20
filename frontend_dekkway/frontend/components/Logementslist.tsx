@@ -96,11 +96,11 @@ const LogementsList: React.FC<LogementsListProps> = ({ type }) => {
       {filteredLogements.map((logement) => (
         <Card
           key={logement.id}
-          id={logement.id}
+          id={String(logement.id)} 
           image={logement.image}
           title={logement.nom}
           location={logement.ville}
-          price={logement.prix}
+          price={`${logement.prix}`}
         />
       ))}
     </div>

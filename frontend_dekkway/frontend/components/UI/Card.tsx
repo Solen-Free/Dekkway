@@ -37,11 +37,11 @@ const Card: React.FC<CardProps> = ({ id, image, title, location, price }) => {
 
       {/* Bouton Détails */}
       <div className="pb-2 flex justify-center">
-        {/* <Link href={`/logements/${id}`}> Utilisez Link pour la navigation */}
-          <button className="w-full max-w-[120px] bg-[#014F86] text-white text-center text-sm font-bold py-1 px-3 rounded-3xl hover:bg-[#FC9B89] transition">
+      <Link href={`/logements/${id}`}>
+          <button className="w-full bg-[#014F86] text-white text-center text-sm font-bold py-1 px-3 rounded-3xl hover:bg-[#FC9B89] transition">
             Détails
           </button>
-        {/* </Link> */}
+        </Link>
       </div>
     </div>
   );

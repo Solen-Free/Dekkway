@@ -1,15 +1,24 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import ProgressBar from '@/components/ProgressBar';
 import ReservationForm from '@/components/ReservationForm';
 import OptionsForm from '@/components/OptionsForm';
 import PaymentForm from '@/components/PaymentForm';
 import Confirmation from '@/components/Confirmation';
-import { ReservationDetails } from '@/types/reservation'; // Chemin corrigé
+import { ReservationDetails } from '@/types/reservation';
 
 const ReservationPage: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1); // Renommer en currentStep
+  const searchParams = useSearchParams();
+  const [currentStep, setCurrentStep] = useState(1);
   const [reservationDetails, setReservationDetails] = useState<ReservationDetails>({
+    property: {
+      id: 0,
+      name: '',
+      location: '',
+      monthlyPrice: 0,
+      image: ''
+    },
     name: '',
     phone: '',
     email: '',
@@ -17,24 +26,60 @@ const ReservationPage: React.FC = () => {
     cardNumber: '',
     expiryDate: '',
     cvv: '',
-    cardName: '',
-    propertyName: 'Grand-Standing, Thiès',
-    location: 'Thiès',
+    cardName: ''
   });
 
+  useEffect(() => {
+    const propertyParam = searchParams.get('property');
+    if (propertyParam) {
+      try {
+        const apiData = JSON.parse(propertyParam);
+        setReservationDetails(prev => ({
+          ...prev,
+          property: {
+            id: Number(apiData.id),
+            name: apiData.nom,
+            location: apiData.ville,
+            monthlyPrice: apiData.prix,
+            image: apiData.image
+          }
+        }));
+      } catch (error) {
+        console.error('Erreur de conversion des données:', error);
+      }
+    }
+  }, [searchParams]);
+
   const handleNext = (data: Partial<ReservationDetails>) => {
-    setReservationDetails((prev) => ({ ...prev, ...data }));
-    setCurrentStep((prev) => prev + 1);
+    setReservationDetails(prev => ({
+      ...prev,
+      ...data,
+      property: {
+        ...prev.property,
+        ...(data.property || {})
+      }
+    }));
+    
+    if (currentStep < 4) {
+      setCurrentStep(prev => prev + 1);
+    }
   };
 
   const renderStep = () => {
-    switch (currentStep) { // Utiliser currentStep
+    switch (currentStep) {
       case 1:
         return <ReservationForm onNext={handleNext} />;
       case 2:
-        return <OptionsForm onNext={handleNext} />;
+        return <OptionsForm 
+                 onNext={handleNext} 
+                 onPrevious={() => setCurrentStep(1)}
+                 property={reservationDetails.property}
+               />;
       case 3:
-        return <PaymentForm onNext={handleNext} />;
+        return <PaymentForm 
+                 onNext={handleNext} 
+                 onPrevious={() => setCurrentStep(2)}
+               />;
       case 4:
         return <Confirmation reservationDetails={reservationDetails} />;
       default:
@@ -43,8 +88,8 @@ const ReservationPage: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-md border-2 border-[#FC9B89] rounded-xl">
-      <ProgressBar currentStep={currentStep} /> {/* Prop corrigée */}
+    <div className="container mx-auto p-7 max-w-lg bg-[#FC9B89]/10 border-2 border-[#014F86] rounded-xl">
+      <ProgressBar currentStep={currentStep} />
       {renderStep()}
     </div>
   );
