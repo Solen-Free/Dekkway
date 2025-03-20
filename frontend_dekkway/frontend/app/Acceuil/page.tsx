@@ -3,7 +3,7 @@ import Buttons from "@/components/buttons";
 import Carousel from "@/components/Carousel";
 import ButtonsBar from "@/components/ButtonsBar"; // Importez ButtonsBar
 import LogementsList from "@/components/Logementslist"; // Importez LogementsList
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Page() {
   const [selectedType, setSelectedType] = useState<string | null>(null);
