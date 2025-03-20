@@ -10,7 +10,7 @@ import {
   FaUser,
   FaCalendar,
   FaLock,
-  FaEnvelope
+  FaEnvelope,
 } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
@@ -340,6 +340,36 @@ export default function Register() {
                 S’inscrire
               </button>
             </form>
+
+            {/* Séparateur "Ou s'inscrire avec" */}
+            <div className="flex items-center justify-center my-6">
+              <div className="flex-grow border-t border-gray-300"></div>
+              <span className="mx-4 text-sm sm:text-base text-gray-600">Ou s'inscrire avec</span>
+              <div className="flex-grow border-t border-gray-300"></div>
+            </div>
+
+            {/* Boutons des réseaux sociaux */}
+            <div className="flex justify-center gap-4">
+              <div className="p-3 bg-gray-100 border border-gray-300 rounded-full hover:bg-[#014F86] transition cursor-pointer">
+                <FaGoogle className="text-gray-700 hover:text-white" />
+              </div>
+              <div className="p-3 bg-gray-100 border border-gray-300 rounded-full hover:bg-[#014F86] transition cursor-pointer">
+                <FaFacebook className="text-gray-700 hover:text-white" />
+              </div>
+              <div className="p-3 bg-gray-100 border border-gray-300 rounded-full hover:bg-[#014F86] transition cursor-pointer">
+                <FaApple className="text-gray-700 hover:text-white" />
+              </div>
+            </div>
+
+            {/* Lien vers la connexion */}
+            <div className="text-center mt-6">
+              <p className="text-sm sm:text-base text-gray-600">
+                Vous avez déjà un compte ?{" "}
+                <Link href="../login" className="text-[#014F86] hover:underline">
+                  Connectez-vous
+                </Link>
+              </p>
+            </div>
           </div>
         </div>
       </div>
