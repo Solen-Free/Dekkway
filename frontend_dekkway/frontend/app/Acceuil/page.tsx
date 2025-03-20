@@ -64,7 +64,7 @@ export default function Page() {
             Les plus récents
           </h1>
           <div className="w-full">
-            <GridCard />
+            {/* <GridCard /> */}
           </div>
         </div>
       </div>
