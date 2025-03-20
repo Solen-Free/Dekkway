@@ -1,25 +1,22 @@
-"use client"; // Assurez-vous que ce composant est exécuté côté client
+"use client";
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion'; // Import de Framer Motion
-import Link from 'next/link'; // Import de Link pour la navigation
+import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 const ServicePage: React.FC = () => {
-  const [selectedOption, setSelectedOption] = useState<string | null>(null); // État pour l'option sélectionnée
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
-  // Animation pour les cartes
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
     hover: { scale: 1.05, borderColor: '#014F86', transition: { duration: 0.2 } },
   };
 
-  // Animation pour le bouton
   const buttonVariants = {
     hover: { scale: 1.05, backgroundColor: '#FC9B89', transition: { duration: 0.2 } },
   };
 
-  // Gestion du choix de l'option
   const handleOptionSelect = (option: string) => {
     setSelectedOption(option);
   };
@@ -33,14 +30,13 @@ const ServicePage: React.FC = () => {
         transition={{ duration: 0.5 }}
       >
         <h1 className="text-2xl font-bold text-center mb-6 text-[#014F86]">
-          Service de déménagement
+          Merci de votre réservation !
         </h1>
         <p className="text-gray-600 text-center mb-8">
-          Choisissez une option
+          Avez-vous besoin d'un service supplémentaire ?
         </p>
 
         <div className="space-y-6">
-          {/* Option Déménagement */}
           <Link href="/demenagement" passHref>
             <motion.label
               className={`flex flex-col md:flex-row items-center justify-between p-4 border-2 ${
@@ -67,7 +63,7 @@ const ServicePage: React.FC = () => {
               </div>
               <div className="w-24 h-24 md:ml-4 border-2 border-[#014F86] rounded-xl overflow-hidden">
                 <img
-                  src="../images/demenagement.jpg" // Remplacez par le chemin de votre image
+                  src="../images/demenagement.jpg"
                   alt="Déménagement"
                   className="w-full h-full object-cover"
                 />
@@ -75,7 +71,6 @@ const ServicePage: React.FC = () => {
             </motion.label>
           </Link>
 
-          {/* Option Nettoyage */}
           <Link href="../nettoyage" passHref>
             <motion.label
               className={`flex flex-col md:flex-row items-center justify-between p-4 border-2 ${
@@ -102,7 +97,7 @@ const ServicePage: React.FC = () => {
               </div>
               <div className="w-24 h-24 md:ml-4 border-2 border-[#014F86] rounded-xl overflow-hidden">
                 <img
-                  src="../images/nettoyage.jpg" // Remplacez par le chemin de votre image
+                  src="../images/nettoyage.jpg"
                   alt="Nettoyage"
                   className="w-full h-full object-cover"
                 />
@@ -110,7 +105,6 @@ const ServicePage: React.FC = () => {
             </motion.label>
           </Link>
 
-          {/* Option Transport */}
           <Link href="/transport" passHref>
             <motion.label
               className={`flex flex-col md:flex-row items-center justify-between p-4 border-2 ${
@@ -137,7 +131,7 @@ const ServicePage: React.FC = () => {
               </div>
               <div className="w-24 h-24 md:ml-4 border-2 border-[#014F86] rounded-xl overflow-hidden">
                 <img
-                  src="../images/transport.jpg" // Remplacez par le chemin de votre image
+                  src="../images/transport.jpg"
                   alt="Transport"
                   className="w-full h-full object-cover"
                 />
@@ -145,7 +139,6 @@ const ServicePage: React.FC = () => {
             </motion.label>
           </Link>
 
-          {/* Option "Non" */}
           <Link href="/" passHref>
             <motion.label
               className={`flex flex-col md:flex-row items-center justify-between p-4 border-2 ${
