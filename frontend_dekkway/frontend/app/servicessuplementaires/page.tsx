@@ -2,30 +2,10 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion'; // Import de Framer Motion
+import Link from 'next/link'; // Import de Link pour la navigation
 
-const ReservationPage: React.FC = () => {
-  const [selectedService, setSelectedService] = useState<string | null>(null); // Un seul service sélectionné
-  const [noServiceNeeded, setNoServiceNeeded] = useState<boolean>(false); // État pour aucun service supplémentaire
-
-  const handleServiceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedService(event.target.value); // Mettre à jour le service sélectionné
-    setNoServiceNeeded(false); // Désactiver l'option "Aucun service" si un service est sélectionné
-  };
-
-  const handleNoServiceNeeded = () => {
-    setNoServiceNeeded(true); // Activer l'option "Aucun service"
-    setSelectedService(null); // Désélectionner tout service sélectionné
-  };
-
-  const handleSubmit = () => {
-    if (noServiceNeeded) {
-      // Rediriger vers une page de confirmation ou autre
-      window.location.href = `/confirmation`;
-    } else if (selectedService) {
-      // Rediriger vers la page du service sélectionné
-      window.location.href = `/services/${selectedService}`;
-    }
-  };
+const ServicePage: React.FC = () => {
+  const [selectedOption, setSelectedOption] = useState<string | null>(null); // État pour l'option sélectionnée
 
   // Animation pour les cartes
   const cardVariants = {
@@ -39,6 +19,11 @@ const ReservationPage: React.FC = () => {
     hover: { scale: 1.05, backgroundColor: '#FC9B89', transition: { duration: 0.2 } },
   };
 
+  // Gestion du choix de l'option
+  const handleOptionSelect = (option: string) => {
+    setSelectedOption(option);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <motion.div
@@ -47,137 +32,150 @@ const ReservationPage: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-2xl font-bold text-center mb-4 text-[#014F86]">
-          Merci pour votre réservation !
+        <h1 className="text-2xl font-bold text-center mb-6 text-[#014F86]">
+          Service de déménagement
         </h1>
-        <p className="text-gray-600 text-center mb-6">
-          Avez-vous besoin de services supplémentaires ?
+        <p className="text-gray-600 text-center mb-8">
+          Choisissez une option
         </p>
 
-        <div className="space-y-4">
-          {/* Carte pour le service de déménagement */}
-          <motion.label
-            className="flex items-center p-4 border-2 border-[#FC9B89] rounded-2xl cursor-pointer hover:shadow-md transition-shadow"
-            variants={cardVariants}
-            initial="hidden"
-            animate="visible"
-            whileHover="hover"
-          >
-            <input
-              type="radio" // Utilisation d'un bouton radio
-              name="service" // Même nom pour regrouper les boutons radio
-              value="deménagement"
-              onChange={handleServiceChange}
-              checked={selectedService === 'deménagement'} // Vérifie si ce service est sélectionné
-              className="form-radio h-5 w-5 text-[#014F86] rounded-full border-gray-300 focus:ring-[#FC9B89]"
-            />
-            <div className="ml-4 flex-1">
-              <h2 className="text-lg font-semibold text-[#014F86]">Déménagement facile et rapide</h2>
-              <p className="text-gray-600">Transport de vos meubles en toute sécurité !</p>
-            </div>
-            <div className="w-24 h-24 ml-4 border-2 border-[#014F86] rounded-xl overflow-hidden">
-              <img
-                src="../images/demenagement.jpg" // Remplacez par le chemin de votre image
-                alt="Déménagement"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </motion.label>
+        <div className="space-y-6">
+          {/* Option Déménagement */}
+          <Link href="/demenagement" passHref>
+            <motion.label
+              className={`flex flex-col md:flex-row items-center justify-between p-4 border-2 ${
+                selectedOption === 'demenagement' ? 'border-[#014F86]' : 'border-[#FC9B89]'
+              } rounded-2xl hover:shadow-md transition-shadow cursor-pointer`}
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+              whileHover="hover"
+              onClick={() => handleOptionSelect('demenagement')}
+            >
+              <div className="flex items-center">
+                <input
+                  type="radio"
+                  name="service"
+                  value="demenagement"
+                  checked={selectedOption === 'demenagement'}
+                  onChange={() => handleOptionSelect('demenagement')}
+                  className="form-radio h-5 w-5 text-[#014F86] rounded-full border-gray-300 focus:ring-[#FC9B89]"
+                />
+                <div className="ml-4">
+                  <h2 className="text-lg font-semibold text-[#014F86]">Déménagement</h2>
+                </div>
+              </div>
+              <div className="w-24 h-24 md:ml-4 border-2 border-[#014F86] rounded-xl overflow-hidden">
+                <img
+                  src="../images/demenagement.jpg" // Remplacez par le chemin de votre image
+                  alt="Déménagement"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </motion.label>
+          </Link>
 
-          {/* Carte pour le service de nettoyage */}
-          <motion.label
-            className="flex items-center p-4 border-2 border-[#FC9B89] rounded-2xl cursor-pointer hover:shadow-md transition-shadow"
-            variants={cardVariants}
-            initial="hidden"
-            animate="visible"
-            whileHover="hover"
-          >
-            <input
-              type="radio" // Utilisation d'un bouton radio
-              name="service" // Même nom pour regrouper les boutons radio
-              value="nettoyage"
-              onChange={handleServiceChange}
-              checked={selectedService === 'nettoyage'} // Vérifie si ce service est sélectionné
-              className="form-radio h-5 w-5 text-[#014F86] rounded-full border-gray-300 focus:ring-[#FC9B89]"
-            />
-            <div className="ml-4 flex-1">
-              <h2 className="text-lg font-semibold text-[#014F86]">Service de nettoyage</h2>
-              <p className="text-gray-600">Un logement propre avant votre installation !</p>
-            </div>
-            <div className="w-24 h-24 ml-4 border-2 border-[#014F86] rounded-xl overflow-hidden">
-              <img
-                src="../images/nettoyage.jpg" // Remplacez par le chemin de votre image
-                alt="Nettoyage"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </motion.label>
+          {/* Option Nettoyage */}
+          <Link href="../nettoyage" passHref>
+            <motion.label
+              className={`flex flex-col md:flex-row items-center justify-between p-4 border-2 ${
+                selectedOption === 'nettoyage' ? 'border-[#014F86]' : 'border-[#FC9B89]'
+              } rounded-2xl hover:shadow-md transition-shadow cursor-pointer`}
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+              whileHover="hover"
+              onClick={() => handleOptionSelect('nettoyage')}
+            >
+              <div className="flex items-center">
+                <input
+                  type="radio"
+                  name="service"
+                  value="nettoyage"
+                  checked={selectedOption === 'nettoyage'}
+                  onChange={() => handleOptionSelect('nettoyage')}
+                  className="form-radio h-5 w-5 text-[#014F86] rounded-full border-gray-300 focus:ring-[#FC9B89]"
+                />
+                <div className="ml-4">
+                  <h2 className="text-lg font-semibold text-[#014F86]">Nettoyage</h2>
+                </div>
+              </div>
+              <div className="w-24 h-24 md:ml-4 border-2 border-[#014F86] rounded-xl overflow-hidden">
+                <img
+                  src="../images/nettoyage.jpg" // Remplacez par le chemin de votre image
+                  alt="Nettoyage"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </motion.label>
+          </Link>
 
-          {/* Carte pour le service de transport */}
-          <motion.label
-            className="flex items-center p-4 border-2 border-[#FC9B89] rounded-2xl cursor-pointer hover:shadow-md transition-shadow"
-            variants={cardVariants}
-            initial="hidden"
-            animate="visible"
-            whileHover="hover"
-          >
-            <input
-              type="radio" // Utilisation d'un bouton radio
-              name="service" // Même nom pour regrouper les boutons radio
-              value="transport"
-              onChange={handleServiceChange}
-              checked={selectedService === 'transport'} // Vérifie si ce service est sélectionné
-              className="form-radio h-5 w-5 text-[#014F86] rounded-full border-gray-300 focus:ring-[#FC9B89]"
-            />
-            <div className="ml-4 flex-1">
-              <h2 className="text-lg font-semibold text-[#014F86]">Service de transport</h2>
-              <p className="text-gray-600">Transport rapide et sécurisé pour vos biens !</p>
-            </div>
-            <div className="w-24 h-24 ml-4 border-2 border-[#014F86] rounded-xl overflow-hidden">
-              <img
-                src="../images/transport.jpg" // Remplacez par le chemin de votre image
-                alt="Transport"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </motion.label>
+          {/* Option Transport */}
+          <Link href="/transport" passHref>
+            <motion.label
+              className={`flex flex-col md:flex-row items-center justify-between p-4 border-2 ${
+                selectedOption === 'transport' ? 'border-[#014F86]' : 'border-[#FC9B89]'
+              } rounded-2xl hover:shadow-md transition-shadow cursor-pointer`}
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+              whileHover="hover"
+              onClick={() => handleOptionSelect('transport')}
+            >
+              <div className="flex items-center">
+                <input
+                  type="radio"
+                  name="service"
+                  value="transport"
+                  checked={selectedOption === 'transport'}
+                  onChange={() => handleOptionSelect('transport')}
+                  className="form-radio h-5 w-5 text-[#014F86] rounded-full border-gray-300 focus:ring-[#FC9B89]"
+                />
+                <div className="ml-4">
+                  <h2 className="text-lg font-semibold text-[#014F86]">Transport</h2>
+                </div>
+              </div>
+              <div className="w-24 h-24 md:ml-4 border-2 border-[#014F86] rounded-xl overflow-hidden">
+                <img
+                  src="../images/transport.jpg" // Remplacez par le chemin de votre image
+                  alt="Transport"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </motion.label>
+          </Link>
 
-          {/* Option pour aucun service supplémentaire */}
-          <motion.label
-            className="flex items-center p-4 border-2 border-[#FC9B89] rounded-2xl cursor-pointer hover:shadow-md transition-shadow"
-            variants={cardVariants}
-            initial="hidden"
-            animate="visible"
-            whileHover="hover"
-          >
-            <input
-              type="radio" // Utilisation d'un bouton radio
-              name="service" // Même nom pour regrouper les boutons radio
-              value="none"
-              onChange={handleNoServiceNeeded}
-              checked={noServiceNeeded} // Vérifie si cette option est sélectionnée
-              className="form-radio h-5 w-5 text-[#014F86] rounded-full border-gray-300 focus:ring-[#FC9B89]"
-            />
-            <div className="ml-4 flex-1">
-              <h2 className="text-lg font-semibold text-[#014F86]">Non, merci</h2>
-              <p className="text-gray-600">Je n'ai pas besoin de services supplémentaires.</p>
-            </div>
-          </motion.label>
+          {/* Option "Non" */}
+          <Link href="/" passHref>
+            <motion.label
+              className={`flex flex-col md:flex-row items-center justify-between p-4 border-2 ${
+                selectedOption === 'non' ? 'border-[#014F86]' : 'border-[#FC9B89]'
+              } rounded-2xl hover:shadow-md transition-shadow cursor-pointer`}
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+              whileHover="hover"
+              onClick={() => handleOptionSelect('non')}
+            >
+              <div className="flex items-center">
+                <input
+                  type="radio"
+                  name="service"
+                  value="non"
+                  checked={selectedOption === 'non'}
+                  onChange={() => handleOptionSelect('non')}
+                  className="form-radio h-5 w-5 text-[#014F86] rounded-full border-gray-300 focus:ring-[#FC9B89]"
+                />
+                <div className="ml-4">
+                  <h2 className="text-lg font-semibold text-[#014F86]">Non, merci</h2>
+                </div>
+              </div>
+            </motion.label>
+          </Link>
         </div>
-
-        {/* Bouton de confirmation */}
-        <motion.button
-          onClick={handleSubmit}
-          disabled={!selectedService && !noServiceNeeded} // Désactivé si aucun choix n'est fait
-          className="w-full mt-6 bg-[#014F86] text-white py-2 px-4 rounded-xl hover:bg-[#FC9B89] focus:outline-none focus:ring-2 focus:ring-[#FC9B89] focus:ring-offset-2 disabled:opacity-50 transition-colors"
-          variants={buttonVariants}
-          whileHover="hover"
-        >
-          Confirmer et continuer
-        </motion.button>
       </motion.div>
     </div>
   );
 };
 
-export default ReservationPage;
+export default ServicePage;
