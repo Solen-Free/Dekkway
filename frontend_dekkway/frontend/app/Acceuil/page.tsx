@@ -47,9 +47,6 @@ export default function Page() {
           <h1 className="font-bold text-[#014F86] text-lg sm:text-xl mb-6">
             {selectedType ? selectedType : "Tous les logements"}
           </h1>
-          <div className="w-full">
-            <GridCard />
-          </div>
         </div>
 
         {/* Divider */}
@@ -60,9 +57,6 @@ export default function Page() {
           <h1 className="font-bold text-[#014F86] text-lg sm:text-xl mb-6">
             Les plus récents
           </h1>
-          <div className="w-full">
-            <GridCard />
-          </div>
         </div>
       </div>
     </div>
