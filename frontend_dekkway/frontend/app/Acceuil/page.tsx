@@ -50,7 +50,6 @@ export default function Page() {
           <LogementsList type={selectedType} /> {/* Affiche les logements filtrés */}
         </div>
       </div>
-
     </div>
   );
 }

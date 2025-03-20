@@ -23,6 +23,11 @@
       "@/*": ["./*"] // Alias pour les chemins
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts", // Fichier de déclaration Next.js
+    "**/*.ts", // Inclure tous les fichiers TypeScript
+    "**/*.tsx", // Inclure tous les fichiers TSX
+    ".next/types/**/*.ts" // Inclure les types générés par Next.js
+  ],
+  "exclude": ["node_modules"] // Exclure le dossier node_modules
 }
