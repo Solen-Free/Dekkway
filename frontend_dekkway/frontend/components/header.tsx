@@ -6,6 +6,7 @@ import Link from "next/link";
 import { FaUser } from 'react-icons/fa';
 import { Menu, Search, Heart, Bell, FolderEdit as UserEdit, X } from "lucide-react";
 import Filtre from "./Filtre"; // Importez votre composant Filtre
+import CompteAlert from "@/components/UI/CompteAlert";
 
 export default function Header() {
   const [search, setSearch] = useState("");

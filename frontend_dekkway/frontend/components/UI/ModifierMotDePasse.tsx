@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function ModifierMotDePasse() {
   const router = useRouter();
@@ -98,7 +99,7 @@ export default function ModifierMotDePasse() {
 
         {/* Bouton Retour */}
         <button
-          onClick={() => router.push("/profil")}
+          onClick={() => router.push("/Profil")}
           className="w-full mt-3 bg-gray-300 hover:bg-gray-400 text-[#014F86] font-medium py-2 rounded-lg transition"
         >
           Annuler

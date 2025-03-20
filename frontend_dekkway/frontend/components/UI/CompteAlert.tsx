@@ -39,10 +39,10 @@ const CompteAlert: React.FC<CompteAlertProps> = ({ onClose, isLoggedIn }) => {
           </>
         ) : (
           <>
-            <Link href="">
+            <Link href="/Register">
               <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">S’inscrire</li>
             </Link>
-            <Link href="">
+            <Link href="/login">
               <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Se connecter</li>
             </Link>
 
