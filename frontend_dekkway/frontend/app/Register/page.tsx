@@ -1,10 +1,35 @@
 "use client";
 
-import React, { useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import {
+  FaGoogle,
+  FaFacebook,
+  FaApple,
+  FaEye,
+  FaEyeSlash,
+  FaUser,
+  FaCalendar,
+  FaLock,
+  FaEnvelope
+} from "react-icons/fa";
+import Image from "next/image";
+import Link from "next/link";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-import { toast } from "react-toastify";
+
+// Définir manuellement le type E164Number
+type E164Number = string;
+
+interface FormData {
+  nom: string;
+  prenom: string;
+  username: string;
+  birthDate: string;
+  email: string;
+  phone?: E164Number;
+  password: string;
+  confirmPassword: string;
+}
 
 export default function Register() {
   // États pour les champs du formulaire
@@ -226,14 +251,17 @@ export default function Register() {
             )}
           </div>
 
-          {/* Bouton de soumission */}
-          <button
-            type="submit"
-            className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            S'inscrire
-          </button>
-        </form>
+              {/* Bouton de soumission */}
+              <button
+                type="submit"
+                disabled={!acceptConditions}
+                className="w-full py-2 bg-[#014F86] text-white rounded-lg hover:bg-[#013A63] transition-colors text-sm sm:text-base disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+                S’inscrire
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   );

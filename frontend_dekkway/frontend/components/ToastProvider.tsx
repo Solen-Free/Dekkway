@@ -1,28 +1,29 @@
-"use client";
+'use client';
 
-import React from "react";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function ToastProvider() {
   return (
     <ToastContainer
       position="top-right"
-      autoClose={5000}
+      autoClose={3000}
       hideProgressBar={false}
       newestOnTop={true}
-      closeOnClick={true}
-      pauseOnFocusLoss={true}
-      draggable={true}
-      pauseOnHover={true}
-      theme="light"
+      closeOnClick
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="light" // Change en "dark" si tu utilises un thème sombre
       toastClassName={() =>
-        "relative flex p-1 min-h-10 rounded-md justify-between overflow-hidden cursor-pointer"
+        "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-lg rounded-lg p-5 flex items-center justify-between text-sm font-medium"
       }
-      progressClassName="Toastify__progress-bar"
+      progressClassName="bg-blue-500"
       style={{
-        width: "400px",
-        fontSize: "14px",
+        top: "6rem", // Ajustez cette valeur pour déplacer les toasts plus bas
+        right: "1rem",
+        width: "auto",
+        maxWidth: "400px",
       }}
     />
   );
