@@ -124,9 +124,7 @@ class LogementDetailsListCreateView(generics.RetrieveUpdateDestroyAPIView):
     def perform_create(self, serializer):
         serializer.save(bailleur=self.request.user)  # Auto-attribution du bailleur
 
-class LogementDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Logement.objects.all()
-    serializer_class = LogementSerializer
+
 
 
 class LocationListCreateView(generics.ListCreateAPIView):

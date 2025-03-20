@@ -20,7 +20,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from Dekkway_app.views import BailleurListCreateView, BailleurDetailView, LocataireListCreateView, LocataireDetailView, AdministrateurListCreateView, AdministrateurDetailView, LogementListCreateView,LogementDetailView, LocationListCreateView, LocationDetailView, NotificationListCreateView, NotificationDetailView, ServiceListCreateView, ServiceDetailView, FavorisListCreateView, FavorisDetailView, LocataireServiceDetailView, LogementDetailsListCreateView, InscriptionLocataireView, ConnexionLocataireView, ProfilLocataireView, MediaViewSet
+from Dekkway_app.views import BailleurListCreateView, BailleurDetailView, LocataireListCreateView, LocataireDetailView, AdministrateurListCreateView, AdministrateurDetailView, LogementListCreateView, LocationListCreateView, LocationDetailView, NotificationListCreateView, NotificationDetailView, ServiceListCreateView, ServiceDetailView, FavorisListCreateView, FavorisDetailView, LocataireServiceDetailView, LogementDetailsListCreateView, InscriptionLocataireView, ConnexionLocataireView, ProfilLocataireView, MediaViewSet
 
 router = DefaultRouter()
 router.register(r'medias', MediaViewSet, basename='media')
@@ -39,8 +39,9 @@ urlpatterns = [
 
     path('rech-logements/', LogementListCreateView.as_view(), name='logement-list-create'),
     
-    path('details-logements/', LogementDetailsListCreateView.as_view(), name='logement-detail'),
+    
     path('details-logements/<int:pk>/', LogementDetailsListCreateView.as_view(), name='logement-detail'),
+
 
     path('locations/', LocationListCreateView.as_view(), name='location-list-create'),
     path('locations/<int:pk>/', LocationDetailView.as_view(), name='location-detail'),

@@ -25,7 +25,7 @@ class LogementsRechercheSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Logement
-        fields = ['id', 'type', 'region', 'quartier', 'prix', 'banniere']
+        fields = ['id', 'type', 'region', 'quartier', 'prix', 'banniere', 'equipements']
 
     def get_banniere(self, obj):
         # Recherche le premier média image dont le nom contient "baniere"
