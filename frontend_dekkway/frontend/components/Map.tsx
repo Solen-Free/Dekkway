@@ -1,67 +1,54 @@
-"use client";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import * as L from "leaflet";
-import { useEffect, useRef, useState } from "react";
+'use client';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+import { useEffect } from 'react';
+import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
+import 'leaflet-geosearch/dist/geosearch.css';
 
-// Configuration des icônes
+// Correction de l'icône manquante
 const DefaultIcon = L.icon({
-  iconUrl: "/images/marker-icon.png",
-  iconRetinaUrl: "/images/marker-icon-2x.png",
-  shadowUrl: "/images/marker-shadow.png",
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
   iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
+  iconAnchor: [12, 41]
 });
-
 L.Marker.prototype.options.icon = DefaultIcon;
 
-interface MapProps {
+export default function Map({ 
+  coordinates,
+  address
+}: { 
   coordinates: [number, number];
-}
-
-export default function MapComponent({ coordinates }: MapProps) {
-  const mapRef = useRef<L.Map | null>(null);
-  const [isMounted, setIsMounted] = useState(false);
-
+  address?: string;
+}) {
   useEffect(() => {
-    setIsMounted(true);
+    const map = L.map('map').setView(coordinates, 15);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    const provider = new OpenStreetMapProvider();
+    
+    const searchControl = new (GeoSearchControl as any)({
+      provider,
+      style: 'bar',
+      showMarker: false,
+      autoClose: true
+    });
+
+    map.addControl(searchControl);
+
+    L.marker(coordinates)
+      .addTo(map)
+      .bindPopup(address || 'Localisation du logement')
+      .openPopup();
+
     return () => {
-      mapRef.current?.remove();
-      mapRef.current = null;
+      map.removeControl(searchControl);
+      map.remove();
     };
-  }, []);
+  }, [coordinates, address]);
 
-  useEffect(() => {
-    if (mapRef.current) {
-      mapRef.current.setView(coordinates, 13);
-    }
-  }, [coordinates]);
-
-  if (!isMounted) return null;
-
-  return (
-    <div className="h-96 w-full rounded-xl overflow-hidden">
-      <MapContainer
-        center={coordinates}
-        zoom={13}
-        scrollWheelZoom={false}
-        style={{ height: "100%", width: "100%" }}
-        ref={(map) => {
-          if (map && !mapRef.current) {
-            mapRef.current = map;
-          }
-        }}
-      >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        />
-        <Marker position={coordinates}>
-          <Popup>Emplacement du logement</Popup>
-        </Marker>
-      </MapContainer>
-    </div>
-  );
+  return <div id="map" className="h-full w-full" />;
 }

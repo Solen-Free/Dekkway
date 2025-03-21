@@ -1,25 +1,22 @@
 "use client";
 import Buttons from "@/components/buttons";
 import Carousel from "@/components/Carousel";
-import Card from "@/components/UI/Card";
-import { motion, AnimatePresence } from "framer-motion";
-import Filtre from "@/components/Filtre";
-import Footer from "@/components/footer";
-import GridCard from "@/components/UI/GridCard";
+import ButtonsBar from "@/components/ButtonsBar"; // Importez ButtonsBar
+import LogementsList from "@/components/Logementslist"; // Importez LogementsList
 import { useState } from 'react';
-import Link from "next/link";
 
 export default function Page() {
-  
+  const [selectedType, setSelectedType] = useState<string | null>(null);
 
   return (
     <div className="w-full min-h-screen">
-     
-
       {/* Carousel section */}
       <div className="w-full">
         <Carousel />
       </div>
+
+      {/* ButtonsBar pour filtrer les logements */}
+      <ButtonsBar onSelectTypeAction={setSelectedType} />
 
       {/* Main heading */}
       <div className="flex flex-col items-center mt-6 px-4 sm:px-6 lg:px-8">
@@ -43,32 +40,16 @@ export default function Page() {
         </h1>
       </div>
 
-      {/* Recent listings sections */}
+      {/* Sections de logements */}
       <div className="flex flex-col w-full px-4 sm:px-6 lg:px-8 mt-8">
-        {/* First recent section */}
+        {/* Section "Tous" */}
         <div className="w-full mb-12">
           <h1 className="font-bold text-[#014F86] text-lg sm:text-xl mb-6">
-            Les plus récents
+            {selectedType ? selectedType : "Tous les logements"}
           </h1>
-          <div className="w-full">
-            <GridCard />
-          </div>
-        </div>
-
-        {/* Divider */}
-        <div className="w-full max-w-[90%] mx-auto h-[2px] border-[#FC9B89] border"></div>
-
-        {/* Second recent section */}
-        <div className="w-full mt-12">
-          <h1 className="font-bold text-[#014F86] text-lg sm:text-xl mb-6">
-            Les plus récents
-          </h1>
-          <div className="w-full">
-            <GridCard />
-          </div>
+          <LogementsList type={selectedType} /> {/* Affiche les logements filtrés */}
         </div>
       </div>
-
     </div>
   );
 }

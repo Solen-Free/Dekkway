@@ -5,6 +5,29 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* Animation du texte */
+@keyframes slide-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.animate-slide-in {
+  animation: slide-in 1s ease-out;
+}
+
+/* Responsivité améliorée */
+@media (max-width: 767px) {
+  .mobile-scale {
+    transform: scale(0.95);
+    transform-origin: center;
+  }
+  
+  .mobile-padding {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -227,3 +250,101 @@ body {
   animation: bounceText 1s ease-in-out infinite;
 }
 
+/* Masquer la scrollbar tout en gardant le scroll actif */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari et Opera */
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;     /* Firefox */
+}
+
+
+/* Animations pour le zoom et le rétrécissement de l'image */
+@keyframes zoomShrink {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Animation pour l'entrée de la page */
+@keyframes pageEntrance {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Animation pour l'entrée de l'image */
+@keyframes imageEntrance {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Animation pour l'entrée du logo */
+@keyframes logoEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation pour le zigzag infini */
+@keyframes zigzagInfinite {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-10px);
+  }
+  50% {
+    transform: translateX(10px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Classes utilitaires pour appliquer les animations */
+.animate-zoomShrink {
+  animation: zoomShrink 5s infinite ease-in-out; /* Zoom et rétrécissement */
+}
+
+.animate-pageEntrance {
+  animation: pageEntrance 1.5s ease-in-out; /* Entrée de la page */
+}
+
+.animate-imageEntrance {
+  animation: imageEntrance 1s ease-in-out; /* Entrée de l'image */
+}
+
+.animate-logoEntrance {
+  animation: logoEntrance 1s ease-in-out; /* Entrée du logo */
+}
+
+.animate-zigzagInfinite {
+  animation: zigzagInfinite 1s ease-in-out infinite; /* Zigzag infini */
+}

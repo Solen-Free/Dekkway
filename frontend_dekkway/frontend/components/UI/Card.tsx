@@ -1,14 +1,16 @@
 "use client";
 import { Heart, MapPin } from "lucide-react";
+import Link from 'next/link'; // Importez Link
 
 interface CardProps {
+  id: string; // Ajoutez l'ID du logement
   image: string;
   title: string;
   location: string;
   price: string;
 }
 
-const Card: React.FC<CardProps> = ({ image, title, location, price }) => {
+const Card: React.FC<CardProps> = ({ id, image, title, location, price }) => {
   return (
     <div className="shadow-lg rounded-3xl overflow-hidden w-full max-w-[280px] md:max-w-[320px] border-2 border-[#FC9B89] relative transition duration-300 hover:scale-110">
       {/* Image */}
@@ -22,10 +24,10 @@ const Card: React.FC<CardProps> = ({ image, title, location, price }) => {
 
       {/* Infos */}
       <div className="p-2">
-      <div className="flex justify-between items-baseline">
-        <h3 className="text-sm font-bold text-left text-black">{title}</h3>
-         <span className="text-[#014F86] font-bold text-base">{price} FCFA</span>
-      </div>
+        <div className="flex justify-between items-baseline">
+          <h3 className="text-sm font-bold text-left text-black">{title}</h3>
+          <span className="text-[#014F86] font-bold text-base">{price} FCFA</span>
+        </div>
         {/* Icône de localisation */}
         <div className="flex items-center gap-2 text-black text-xs pb-2">
           <MapPin size={14} className="text-[#FC9B89]" /> {/* Icône avec couleur */}
@@ -35,12 +37,15 @@ const Card: React.FC<CardProps> = ({ image, title, location, price }) => {
 
       {/* Bouton Détails */}
       <div className="pb-2 flex justify-center">
-        <button className="w-full max-w-[120px] bg-[#014F86] text-white text-center text-sm font-bold py-1 px-3 rounded-3xl hover:bg-[#FC9B89] transition">
-          Détails
-        </button>
+        {/* <Link href={`/logements/${id}`}> Utilisez Link pour la navigation */}
+          <button className="w-full max-w-[120px] bg-[#014F86] text-white text-center text-sm font-bold py-1 px-3 rounded-3xl hover:bg-[#FC9B89] transition">
+            Détails
+          </button>
+        {/* </Link> */}
       </div>
     </div>
   );
 };
 
 export default Card;
+
