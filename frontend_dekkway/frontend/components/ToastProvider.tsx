@@ -15,8 +15,9 @@ export default function ToastProvider() {
       draggable
       pauseOnHover
       theme="light" // Change en "dark" si tu utilises un thème sombre
+      className="toast-container"
       toastClassName={() =>
-        "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-lg rounded-lg p-5 flex items-center justify-between text-sm font-medium"
+        "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-lg rounded-lg p-5 flex items-center justify-between"
       }
       progressClassName="bg-blue-500"
       style={{
