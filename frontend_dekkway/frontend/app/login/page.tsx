@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { FaGoogle, FaFacebook, FaApple, FaEye, FaEyeSlash } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -40,7 +41,7 @@ export default function Login() {
     e.preventDefault();
     setErrorMessage("");
     try {
-      const response = await fetch("http://localhost:8000/api/login/", {
+      const response = await fetch("http://localhost:8000/loca-connexion/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -50,16 +51,14 @@ export default function Login() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Connexion réussie :", data);
+        toast.success(data.message);
         // Ici, vous pouvez sauvegarder le token, rediriger l'utilisateur, etc.
       } else {
         const errorData = await response.json();
-        console.error("Erreur lors de la connexion :", errorData);
-        setErrorMessage(errorData.message || "Erreur lors de la connexion");
+        toast.error(errorData.non_field_errors[0]);
       }
     } catch (error) {
-      console.error("Erreur lors de la requête :", error);
-      setErrorMessage("Erreur lors de la requête. Vérifiez votre connexion ou le backend.");
+      toast.error("Le serveur ne repond pas");
     }
   };
 
