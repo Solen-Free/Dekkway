@@ -14,9 +14,16 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
+from rest_framework.routers import DefaultRouter
 from django.contrib import admin
 from django.urls import path
-from Dekkway_app.views import BailleurListCreateView, BailleurDetailView, LocataireListCreateView, LocataireDetailView, AdministrateurListCreateView, AdministrateurDetailView, LogementListCreateView,LogementDetailView, LocationListCreateView, LocationDetailView, NotificationListCreateView, NotificationDetailView, ServiceListCreateView, ServiceDetailView, FavorisListCreateView, FavorisDetailView, LocataireServiceDetailView, LogementDetailsListCreateView, InscriptionLocataireView, ConnexionLocataireView, ProfilLocataireView
+from django.conf import settings
+from django.conf.urls.static import static
+from Dekkway_app.views import BailleurListCreateView, BailleurDetailView, LocataireListCreateView, LocataireDetailView, AdministrateurListCreateView, AdministrateurDetailView, LogementListCreateView, LocationListCreateView, LocationDetailView, NotificationListCreateView, NotificationDetailView, ServiceListCreateView, ServiceDetailView, FavorisListCreateView, FavorisDetailView, LocataireServiceDetailView, LogementDetailsListCreateView, InscriptionLocataireView, ConnexionLocataireView, ProfilLocataireView, MediaViewSet
+
+router = DefaultRouter()
+router.register(r'medias', MediaViewSet, basename='media')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,8 +39,9 @@ urlpatterns = [
 
     path('rech-logements/', LogementListCreateView.as_view(), name='logement-list-create'),
     
-    path('details-logements/', LogementDetailsListCreateView.as_view(), name='logement-detail'),
+    
     path('details-logements/<int:pk>/', LogementDetailsListCreateView.as_view(), name='logement-detail'),
+
 
     path('locations/', LocationListCreateView.as_view(), name='location-list-create'),
     path('locations/<int:pk>/', LocationDetailView.as_view(), name='location-detail'),
@@ -55,4 +63,7 @@ urlpatterns = [
     
     path('profil-locataire/', ProfilLocataireView.as_view(), name='profil locataire'),
     
-]
+    # path('medias/', MediaViewSet.as_view(), name='media-list-create'),
+    # path('medias/<int:pk>/', MediaViewSet.as_view(), name='media-detail'),
+    
+] + router.urls + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

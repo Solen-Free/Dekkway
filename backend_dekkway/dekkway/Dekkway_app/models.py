@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import JSONField
+from django.core.exceptions import ValidationError
+
 
 # Create your models here.
 
@@ -60,11 +62,44 @@ class Logement(models.Model):
     region = models.CharField(max_length=255, null=True, blank=True)
     date_ajout = models.DateTimeField(auto_now_add=True)
     date_modification = models.DateTimeField(auto_now=True)
-    medias = models.JSONField(default=dict, blank=True)
     equipements = models.JSONField(default=dict, blank=True)
 
     def __str__(self):
         return f"{self.type} - {self.region} - {self.quartier} ({self.prix} CFA)"
+
+
+# pour le stockages des mediaes
+class Media(models.Model):
+    IMAGE = "image"
+    VIDEO = "video"
+
+    TYPE_CHOICES = [
+        (IMAGE, "Image"),
+        (VIDEO, "Vidéo"),
+    ]
+
+    logement = models.ForeignKey("Logement", on_delete=models.CASCADE, related_name="medias")
+    fichier = models.FileField(upload_to="logements/")
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES)
+    date_ajout = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.type} - {self.fichier.name}"
+
+    def clean(self):
+        if self.type == self.VIDEO:
+            existing_video = Media.objects.filter(
+                logement=self.logement, 
+                type=self.VIDEO
+            ).exclude(id=self.id)
+            
+            if existing_video.exists():
+                raise ValidationError("Un seul vidéo autorisée par logement")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()  # Force la validation avant sauvegarde
+        super().save(*args, **kwargs)
+
 
 
 # Modèle Location (Louer un logement)

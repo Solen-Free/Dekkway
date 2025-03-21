@@ -11,8 +11,10 @@ from rest_framework import generics, filters, status
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Logement
 from .filters import LogementFilter
-from .models import Bailleur, Locataire, Administrateur, Logement, Location, Notification, Service, Favoris, LocataireService
-from .serializers import BailleurSerializer, LocataireSerializer, AdministrateurSerializer, LocationSerializer, NotificationSerializer, ServiceSerializer, FavorisSerializer, LocataireServiceSerializer, LogementsRechercheSerializer, LogementsRechercheSerializer, LogementSerializer, InscriptionLocataireSerializer, ConnexionLocataireSerializer
+from rest_framework import viewsets
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+from .models import Bailleur, Locataire, Administrateur, Logement, Location, Notification, Service, Favoris, LocataireService, Media
+from .serializers import BailleurSerializer, LocataireSerializer, AdministrateurSerializer, LocationSerializer, NotificationSerializer, ServiceSerializer, FavorisSerializer, LocataireServiceSerializer, LogementsRechercheSerializer, LogementsRechercheSerializer, LogementSerializer, InscriptionLocataireSerializer, ConnexionLocataireSerializer, MediaSerializer
 
 
 # Create your views here.
@@ -43,7 +45,7 @@ class AdministrateurDetailView(generics.RetrieveUpdateDestroyAPIView):
     
 
 class LogementListCreateView(generics.ListCreateAPIView):
-    queryset = Logement.objects.all()
+    queryset = Logement.objects.prefetch_related('medias')
     serializer_class = LogementsRechercheSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_class = LogementFilter
@@ -108,13 +110,21 @@ class LogementListCreateView(generics.ListCreateAPIView):
 
 
 
-class LogementDetailsListCreateView(generics.ListCreateAPIView):
-    queryset = Logement.objects.all()
-    serializer_class = LogementSerializer
+# class LogementDetailsListCreateView(generics.ListCreateAPIView):
+#     queryset = Logement.objects.all()
+#     serializer_class = LogementSerializer
 
-class LogementDetailView(generics.RetrieveUpdateDestroyAPIView):
+
+class LogementDetailsListCreateView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Logement.objects.all()
     serializer_class = LogementSerializer
+    parser_classes = [MultiPartParser, JSONParser]  # Autorise les fichiers
+    # permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(bailleur=self.request.user)  # Auto-attribution du bailleur
+
+
 
 
 class LocationListCreateView(generics.ListCreateAPIView):
@@ -164,7 +174,21 @@ class LogementListView(generics.ListAPIView):
     serializer_class = LogementsRechercheSerializer
 
 
-# Vue pour inscription
+# # Vue pour inscription
+# class InscriptionLocataireView(APIView):
+#     def post(self, request):
+#         serializer = InscriptionLocataireSerializer(data=request.data)
+#         if serializer.is_valid():
+#             utilisateur = serializer.save()
+#             token, _ = Token.objects.get_or_create(user=utilisateur)
+#             return Response({
+#                 'message': 'Compte créé avec succès',
+#                 'token': token.key
+#             }, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 class InscriptionLocataireView(APIView):
     def post(self, request):
         serializer = InscriptionLocataireSerializer(data=request.data)
@@ -176,6 +200,7 @@ class InscriptionLocataireView(APIView):
                 'token': token.key
             }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # Vue pour connexion
 class ConnexionLocataireView(APIView):
@@ -198,3 +223,16 @@ class ProfilLocataireView(APIView):
         utilisateur = request.user
         serializer = LocataireSerializer(utilisateur)
         return Response(serializer.data)
+
+
+
+class MediaViewSet(viewsets.ModelViewSet):
+    queryset = Media.objects.all()
+    serializer_class = MediaSerializer
+    parser_classes = (MultiPartParser, FormParser)  # Essentiel pour les uploads
+    # permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        # Validation supplémentaire
+        instance = serializer.save()
+        instance.full_clean()
