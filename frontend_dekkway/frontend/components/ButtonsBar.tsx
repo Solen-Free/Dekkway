@@ -1,40 +1,43 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
-// Définir les types de logements disponibles
 const types = [
-  { label: "Tout", value: null }, // null signifie "pas de filtre"
+  { label: "Tout", value: null },
   { label: "Maison", value: "maison" },
   { label: "Appartement", value: "appartement" },
   { label: "Studio", value: "studio" },
   { label: "Villa", value: "villa" },
   { label: "Co-location", value: "colocation" },
   { label: "Longue durée", value: "longuedurée" },
-  { label: "Courte durée", value: "lourtedurée" },
+  { label: "Courte durée", value: "courtedurée" }, // Faute corrigée
   { label: "Localisation", value: "localisation" },
 ];
 
 interface ButtonsBarProps {
-  onSelectTypeAction: (type: string | null) => void; // Callback pour sélectionner un type
+  onSelectTypeAction: (type: string | null) => void;
 }
 
 export default function ButtonsBar({ onSelectTypeAction }: ButtonsBarProps) {
-  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const currentType = searchParams.get('type');
 
   return (
     <div className="max-w-screen-xl mx-auto px-4 sm:px-6 md:px-8">
-      {/* 
-        flex-nowrap + overflow-x-auto => 1 seule ligne avec scroll horizontal
-        sur tous les écrans
-      */}
       <div className="flex flex-nowrap overflow-x-auto scrollbar-hide items-center gap-4 my-6">
         {types.map((type) => {
-          const isActive = pathname === `/${type.value}`; // Vérifie si le type est actif
+          const isActive = type.value ? currentType === type.value : !currentType;
+          
           return (
             <button
-              key={type.value || "Tout"} // Utilise "Tout" comme clé si value est null
-              onClick={() => onSelectTypeAction(type.value)} // Appelle le callback avec le type sélectionné
+              key={type.value || "Tout"}
+              onClick={() => {
+                if (type.value === null) {
+                  onSelectTypeAction(null);
+                } else {
+                  onSelectTypeAction(type.value.toLowerCase());
+                }
+              }}
               className={`
                 shrink-0
                 px-3 py-2 sm:px-4 sm:py-2 md:px-5 md:py-3 
@@ -43,10 +46,11 @@ export default function ButtonsBar({ onSelectTypeAction }: ButtonsBarProps) {
                 hover:scale-105 active:scale-95
                 ${
                   isActive
-                    ? "bg-[#FC9B89]" // Bouton actif : rose
-                    : "bg-[#014F86] hover:bg-[#FC9B89]" // Sinon : bleu + hover rose
+                    ? "bg-[#FC9B89] scale-105" // Style actif
+                    : "bg-[#014F86] hover:bg-[#FC9B89]/80" // Style inactif
                 }
               `}
+              aria-label={`Filtrer par ${type.label}`}
             >
               {type.label}
             </button>

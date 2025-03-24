@@ -2,81 +2,23 @@
   "logements": [
     {
       "id": 1,
-      "nom": "Appartement moderne République",
-      "image": "/images/maison.jpg",
-      "ville": "Paris",
-      "prix": 250000,
-      "type": "appartement",
-      "description": "Appartement neuf de 65m² proche place de la République.",
-      "caracteristiques": {
-        "chambres": 2,
-        "salon": 1,
-        "cuisine": 1,
-        "toilettes": 1,
-        "garage": 0
-      },
-      "equipements": ["climatiseur", "wifi", "ascenseur"],
-      "proprietaire": {
-        "nom": "Paris Immobilier",
-        "logo": "/images/logo1.jpg"
-      },
-      "localisation": {
-        "lat": 48.8675,
-        "lng": 2.3636
-      }
+      "type": "maison",
+      "price": 350000,
+      "bedrooms": 3,
+      "equipments": "piscine:true,climatiseur:true",
+      "city": "Thies",
+      "title": "Belle maison à Thiès",
+      "image": "/maison.jpg"
     },
     {
       "id": 2,
-      "nom": "Maison de charme Croix-Rousse",
-      "image": "/images/maison1.jpg",
-      "ville": "Lyon",
-      "prix": 450000,
-      "type": "maison",
-      "description": "Maison de 120m² avec jardin clos.",
-      "caracteristiques": {
-        "chambres": 3,
-        "salon": 2,
-        "cuisine": 1,
-        "toilettes": 2,
-        "garage": 1
-      },
-      "equipements": ["jardin", "cheminee", "cave"],
-      "proprietaire": {
-        "nom": "Lyon Habitat",
-        "logo": "/images/logo2.jpg"
-      },
-      "localisation": {
-        "lat": 45.7718,
-        "lng": 4.8282
-      }
-    },
-    {
-      "id": 3,
-      "nom": "Villa vue mer Malmousque",
-      "image": "/images/maison2.jpg",
-      "ville": "Marseille",
-      "prix": 890000,
-      "type": "villa",
-      "description": "Villa de 200m² avec piscine.",
-      "caracteristiques": {
-        "chambres": 4,
-        "salon": 2,
-        "cuisine": 1,
-        "toilettes": 3,
-        "garage": 2
-      },
-      "equipements": ["piscine", "jacuzzi", "climatisation"],
-      "proprietaire": {
-        "nom": "Côte d'Azur Properties",
-        "logo": "/images/logo3.jpg"
-      },
-      "localisation": {
-        "lat": 43.2803,
-        "lng": 5.3564
-      }
+      "type": "appartement",
+      "price": 250000,
+      "bedrooms": 2,
+      "equipments": "garage:true",
+      "city": "Dakar",
+      "title": "Appartement moderne",
+      "image": "/appart.jpg"
     }
-  ],
-  "reservations": [],
-  "transactions": [],
-  "clients": []
+  ]
 }

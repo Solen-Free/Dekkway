@@ -20,7 +20,7 @@ export default function Header() {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link
-              href="/Acceuil"
+              href="/"
               className="flex items-center gap-2 transition-transform duration-300 hover:scale-105"
               onClick={() => {
                 setIsOpen(false);

@@ -9,26 +9,9 @@ export interface Logement {
   image: string;
   nom: string;
   ville: string;
-  prix: number;
+  prix: string;
   description: string;
   type: string;
-  caracteristiques: {
-    chambres: number;
-    salon: number;
-    cuisine: number;
-    toilettes: number;
-    garage: number;
-  };
-  equipements: string[];
-  proprietaire: {
-    nom: string;
-    logo: string;
-  };
-  localisation: {
-    lat: number;
-    lng: number;
-  };
-
 }
 
 // Fonction pour récupérer un logement par son ID

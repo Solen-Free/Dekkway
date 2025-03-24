@@ -209,7 +209,7 @@ export default function Login() {
 
         {/* Image décorative sur desktop */}
         {showImage && (
-          <div className="w-full md:w-1/2 flex items-center justify-center p-4 md:p-6 hidden sm:block order-2 md:order-1">
+          <div className="w-full md:w-1/2 hidden sm:flex items-center justify-center p-4 md:p-6 order-2 md:order-1">
             <Image
               src="/images/conn.png"
               alt="Connexion"
