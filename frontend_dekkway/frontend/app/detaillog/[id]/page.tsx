@@ -9,7 +9,7 @@ import dynamic from 'next/dynamic';
 import { z } from 'zod';
 
 // Import des styles nécessaires
-import 'leaflet/dist/leaflet.css';
+import 'leaflet/dist/leaflet.css?url';
 import 'leaflet-geosearch/dist/geosearch.css';
 
 // Chargement dynamique de la carte

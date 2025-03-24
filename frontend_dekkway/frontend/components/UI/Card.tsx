@@ -2,13 +2,14 @@
 import { Heart, MapPin, X } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 interface CardProps {
   id: string;
   image: string;
   title: string;
   location: string;
-  price: string;
+  prix: number;
   isOnFavoritesPage?: boolean;
   onRemove?: (id: string) => void;
 }
@@ -18,7 +19,7 @@ const Card: React.FC<CardProps> = ({
   image, 
   title, 
   location, 
-  price, 
+  prix, 
   isOnFavoritesPage = false, 
   onRemove 
 }) => {
@@ -26,13 +27,11 @@ const Card: React.FC<CardProps> = ({
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
 
-  // Charger l'état initial des favoris
   useEffect(() => {
     const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
     setIsFavorite(favorites.includes(id));
   }, [id]);
 
-  // Gestion du cœur (uniquement sur la page d'accueil)
   const toggleFavorite = () => {
     const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
     let updatedFavorites;
@@ -51,7 +50,6 @@ const Card: React.FC<CardProps> = ({
     setTimeout(() => setShowNotification(false), 3000);
   };
 
-  // Gestion de la suppression (uniquement sur la page favoris)
   const handleRemove = () => {
     const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
     const updatedFavorites = favorites.filter((favId: string) => favId !== id);
@@ -61,63 +59,82 @@ const Card: React.FC<CardProps> = ({
   };
 
   return (
-    <div className="shadow-lg rounded-3xl overflow-hidden w-full max-w-[280px] md:max-w-[320px] border-2 border-[#FC9B89] relative transition duration-300 hover:scale-110">
-      <div className="relative">
-        <img 
-          src={image} 
-          alt={title} 
-          className="w-full h-[150px] sm:h-[10px] md:h-[180px] object-cover"
-        />
+    <div className="group relative w-full max-w-[300px] xs:max-w-[340px] sm:max-w-[320px] md:max-w-[280px] lg:max-w-[300px] xl:max-w-[320px] 
+                    mx-auto bg-white rounded-2xl shadow-md hover:shadow-xl border border-[#FC9B89]/30 hover:border-[#FC9B89] 
+                    transition-all duration-300 ease-in-out transform hover:-translate-y-1">
+      {/* Image Container */}
+      <div className="relative w-full h-35 aspect-[4/3] overflow-hidden rounded-t-2xl">
+        <div className="relative w-full h-35">
+          <img
+            src={image}
+            alt={title}
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+          
+          {/* Overlay gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        </div>
 
-        {/* Cœur - Visible uniquement HORS page favoris */}
-        {!isOnFavoritesPage && (
-          <div
-            className="absolute top-3 right-3 bg-white rounded-full p-2 shadow-md hover:bg-[#FC9B89] cursor-pointer"
-            onClick={toggleFavorite}
-          >
-            <Heart
-              className={isFavorite ? 'text-[#014F86] fill-[#FC9B89]' : 'text-gray-400'}
-              size={20}
-            />
-          </div>
-        )}
+        {/* Action Buttons */}
+        <div className="absolute top-3 right-3 flex gap-2">
+          {!isOnFavoritesPage && (
+            <button
+              onClick={toggleFavorite}
+              className="p-2 rounded-full bg-white/90 shadow-lg hover:bg-white transition-all duration-200 
+                       transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-[#FC9B89]"
+            >
+              <Heart
+                className={`w-5 h-5 transition-colors duration-200 ${
+                  isFavorite ? 'text-[#014F86] fill-[#FC9B89]' : 'text-gray-400'
+                }`}
+              />
+            </button>
+          )}
 
-        {/* Croix - Visible uniquement SUR page favoris */}
-        {isOnFavoritesPage && (
-          <div
-            className="absolute top-3 right-3 bg-white rounded-full p-2 shadow-md hover:bg-red-500 cursor-pointer"
-            onClick={handleRemove}
-          >
-            <X size={20} className="text-red-500 hover:text-white" />
-          </div>
-        )}
+          {isOnFavoritesPage && (
+            <button
+              onClick={handleRemove}
+              className="p-2 rounded-full bg-white/90 shadow-lg hover:bg-red-50 transition-all duration-200 
+                       transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500"
+            >
+              <X className="w-5 h-5 text-red-500" />
+            </button>
+          )}
+        </div>
 
         {/* Notification */}
         {showNotification && (
-          <div className="absolute top-0 left-0 w-full bg-green-500 text-white px-4 py-2 text-center rounded-t-lg animate-fade-in">
+          <div className="absolute top-0 left-0 right-0 p-2 bg-green-500 text-white text-sm text-center 
+                         transform transition-transform duration-300 animate-fade-in">
             {notificationMessage}
           </div>
         )}
       </div>
 
-      {/* Corps de la carte */}
-      <div className="p-2">
-        <div className="flex justify-between items-baseline">
-          <h3 className="text-sm font-bold text-left text-black">{title}</h3>
-          <span className="text-[#014F86] font-bold text-base">{price} FCFA</span>
+      {/* Content */}
+      <div className="p-2 h-30">
+        {/* Title and Price */}
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <h3 className="text-lg sm:text-sm font-semibold text-gray-900 line-clamp-1">
+            {title}
+          </h3>
+          <span className="text-base sm:text-md font-bold text-[#014F86] whitespace-nowrap">
+            {prix} FCFA
+          </span>
         </div>
-        
-        <div className="flex items-center gap-2 text-black text-xs pb-2">
-          <MapPin size={14} className="text-[#FC9B89]" />
-          <span>{location}</span>
-        </div>
-      </div>
 
-      {/* Bouton Détails */}
-      <div className="pb-2 flex justify-center">
+        {/* Location */}
+        <div className="flex items-center gap-1.5 text-gray-600 mb-4">
+          <MapPin className="w-4 h-4 text-[#FC9B89]" />
+          <span className="text-xs sm:text-sm truncate">{location}</span>
+        </div>
+
+        {/* Details Button */}
         <Link
           href={`/detaillog/${id}`}
-          className="w-full max-w-[120px] bg-[#014F86] text-white text-center text-sm font-bold py-1 px-3 rounded-3xl hover:bg-[#FC9B89] transition"
+          className="block w-35 mx-auto py-2 px-2 bg-[#014F86] hover:bg-[#FC9B89] text-white text-center text-sm font-semibold 
+                   rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 
+                   focus:ring-[#014F86] transform hover:scale-[1.02]"
         >
           Détails
         </Link>

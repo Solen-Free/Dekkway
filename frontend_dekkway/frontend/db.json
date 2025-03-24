@@ -2,24 +2,23 @@
   "logements": [
     {
       "id": 1,
-      "nom": "Maison moderne",
-      "ville": "Paris",
-      "prix": "200000",
-      "image": "/images/maison2.jpg",
-      "description": "Une belle maison moderne",
-      "type": "Maison"
+      "type": "maison",
+      "price": 350000,
+      "bedrooms": 3,
+      "equipments": "piscine:true,climatiseur:true",
+      "city": "Thies",
+      "title": "Belle maison à Thiès",
+      "image": "/maison.jpg"
     },
-
     {
       "id": 2,
-      "nom": "Villa moderne",
-      "ville": "Paris",
-      "prix": "200000",
-      "image": "/images/maison3.jpg",
-      "description": "Une belle villa moderne",
-      "type": "Villa"
+      "type": "appartement",
+      "price": 250000,
+      "bedrooms": 2,
+      "equipments": "garage:true",
+      "city": "Dakar",
+      "title": "Appartement moderne",
+      "image": "/appart.jpg"
     }
   ]
-
-  
 }
