@@ -47,9 +47,7 @@ export default function Home() {
     const fetchLogements = async () => {
       try {
         const params = new URLSearchParams();
-        if (searchParams.get('type')) {
-          params.append('type', searchParams.get('type')!);
-        }
+       
 
         // Conversion des paramètres pour le backend Django
         if (searchParams.get('prix_min')) params.append('prix_min', searchParams.get('prix_min')!);
