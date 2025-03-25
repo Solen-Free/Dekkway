@@ -10,9 +10,9 @@ import { useRouter } from "next/navigation";
 
 interface Logement {
   id: string;
-  image: string;
-  title: string;
-  location: string;
+  banniere: string;
+  titre: string;
+  quartier: string;
   price: string;
   type: string;
   prix: number;
@@ -47,9 +47,9 @@ export default function Home() {
     const fetchLogements = async () => {
       try {
         const params = new URLSearchParams();
-        if (searchParams.get('type')) {
-          params.append('type', searchParams.get('type')!);
-        }
+        // if (searchParams.get('type')) {
+        //   params.append('type', searchParams.get('type')!);
+        // }
 
         // Conversion des paramètres pour le backend Django
         if (searchParams.get('prix_min')) params.append('prix_min', searchParams.get('prix_min')!);
@@ -59,7 +59,7 @@ export default function Home() {
         if (searchParams.get('region')) params.append('region', searchParams.get('region')!);
         if (searchParams.get('type')) params.append('type', searchParams.get('type')!.toLowerCase());
 
-        const response = await fetch(`/api/Logement?${params.toString()}`);
+        const response = await fetch(`http://127.0.0.1:8000/rech-logements/?${params.toString()}`);
         
         if (!response.ok) {
           const errorData = await response.json();
@@ -149,9 +149,9 @@ export default function Home() {
               <Card 
                 key={logement.id}
                 id={logement.id}
-                image={logement.image}
-                title={logement.title}
-                location={logement.location}
+                banniere={logement.banniere}
+                titre={logement.titre}
+                quartier={logement.quartier}
                 prix={logement.prix}
               />
             ))
