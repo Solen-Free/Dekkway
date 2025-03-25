@@ -4,7 +4,12 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header"; // Importation du Header
 import Footer from "@/components/footer"; // Importation du Footer
+<<<<<<< HEAD
 import ToastProvider from "@/components/ToastProvider"; // Importation du ToastProvider
+=======
+import IA_bouton from "@/components/UI/IA_bouton";
+
+>>>>>>> frontend-develop
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,9 +40,15 @@ export default function RootLayout({
         <main className="flex-1 mt-16">
           {children}
         </main>
+<<<<<<< HEAD
         <ToastProvider /> {/* Ajout du ToastProvider ici */}
         <div className="w-full mt-20">
           <Footer />
+=======
+        <div className = "w-full mt-20">
+          <IA_bouton/>
+        <Footer/>
+>>>>>>> frontend-develop
         </div>
       </body>
     </html>

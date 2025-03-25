@@ -69,7 +69,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 relative">
       {/* Logo en haut */}
       <div className="absolute top-12 sm:top-22 left-1/2 transform -translate-x-1/2 animate-logoEntrance">
         <Image
@@ -81,22 +81,22 @@ export default function Login() {
         />
       </div>
 
-      {/* Image horizontale sur mobile */}
+      {/* Image horizontale en haut sur mobile */}
       {isMobile && (
-        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 w-full px-4">
+        <div className="w-full">
           <Image
             src="/images/insc.png"
             alt="insc"
-            layout="intrinsic"
+            layout="responsive"
             width={600}
             height={200}
-            className="w-full h-auto object-cover mb-4"
+            className="w-full h-auto object-cover"
           />
         </div>
       )}
 
       {/* Conteneur du formulaire */}
-      <div className="relative z-10 w-full max-w-4xl bg-[#FC9B89] rounded-lg shadow-lg flex flex-col md:flex-row overflow-hidden mt-28 sm:mt-40">
+      <div className="relative z-10 w-full max-w-4xl bg-[#FC9B89] rounded-lg shadow-lg flex flex-col md:flex-row overflow-hidden">
         {/* Formulaire */}
         <div className={`w-full ${showImage ? "md:w-1/2" : "md:w-full"} p-6 md:p-8 bg-white order-1 md:order-2`}>
           {/* Image décorative en haut à droite */}
@@ -208,7 +208,7 @@ export default function Login() {
 
         {/* Image décorative sur desktop */}
         {showImage && (
-          <div className="w-full md:w-1/2 flex items-center justify-center p-4 md:p-6 hidden sm:block order-2 md:order-1">
+          <div className="w-full md:w-1/2 hidden sm:flex items-center justify-center p-4 md:p-6 order-2 md:order-1">
             <Image
               src="/images/conn.png"
               alt="Connexion"

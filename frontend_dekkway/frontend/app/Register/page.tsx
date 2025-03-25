@@ -3,7 +3,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+<<<<<<< HEAD
 import { toast } from "react-toastify";
+=======
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+>>>>>>> frontend-develop
 import {
   FaGoogle,
   FaFacebook,
@@ -13,7 +18,7 @@ import {
   FaUser,
   FaCalendar,
   FaLock,
-  FaEnvelope
+  FaEnvelope,
 } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
@@ -77,12 +82,12 @@ export default function Register() {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      alert("Les mots de passe ne correspondent pas");
+      toast.error("Les mots de passe ne correspondent pas");
       return;
     }
 
     if (!acceptConditions) {
-      alert("Veuillez accepter les conditions d'utilisation.");
+      toast.error("Veuillez accepter les conditions d'utilisation.");
       return;
     }
 
@@ -99,10 +104,14 @@ export default function Register() {
 
     try {
 <<<<<<< HEAD
+<<<<<<< HEAD
       const response = await fetch("http://localhost:8000/register/", {
 =======
       const response = await fetch("http://localhost:8000/loca-inscription/", {
 >>>>>>> backend-develop
+=======
+      const response = await fetch("http://localhost:8000/loca-inscription/", {
+>>>>>>> frontend-develop
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -114,22 +123,28 @@ export default function Register() {
 
       if (response.ok) {
         const data = await response.json();
+<<<<<<< HEAD
         console.log("Inscription réussie :", data);
 
         // Afficher le toast de succès
+=======
+>>>>>>> frontend-develop
         toast.success("Inscription réussie !");
         // Rediriger l'utilisateur ou afficher un message de succès ici
       } else {
         const errorData = await response.json();
+<<<<<<< HEAD
         console.error("Erreur lors de l'inscription :", errorData);
         // alert("Erreur lors de l'inscription : " + JSON.stringify(errorData));
 
         // Afficher le message d'erreur
         toast.error("Erreur lors de l'inscription. Veuillez réessayer.");
+=======
+        toast.error("Erreur lors de l'inscription : " + JSON.stringify(errorData));
+>>>>>>> frontend-develop
       }
     } catch (error) {
-      console.error("Erreur lors de la requête :", error);
-      alert("Erreur lors de la requête. Vérifiez que le backend est en cours d'exécution et que l'URL est correcte.");
+      toast.error("Erreur lors de la requête. Vérifiez que le backend est en cours d'exécution et que l'URL est correcte.");
     }
   };
 
@@ -178,23 +193,23 @@ export default function Register() {
       )}
 
       {/* Conteneur principal du formulaire */}
-      <div className="relative z-10 w-full max-w-3xl sm:max-w-4xl mx-4 mt-64 sm:mt-40">
+      <div className="relative z-10 w-full max-w-2xl sm:max-w-3xl mx-4 mt-64 sm:mt-40">
         <div className="bg-[#FC9B89] rounded-lg shadow-[0_0_25px_#FC9B89] w-full flex flex-col md:flex-row overflow-hidden animate-pageEntrance">
           {/* Image décorative (affichée sur desktop) */}
           {showImage && (
-            <div className="w-full md:w-1/2 flex items-center justify-center p-4 sm:p-6 animate-zoomShrink hidden sm:block">
+            <div className="w-full md:w-2/5 flex items-center justify-center p-4 sm:p-6 animate-zoomShrink hidden sm:block">
               <Image
                 src="/images/dekk.png"
                 alt="Inscription"
-                width={400}
-                height={400}
+                width={300}
+                height={300}
                 className="w-full h-auto md:h-full object-cover rounded-lg shadow-lg"
               />
             </div>
           )}
 
           {/* Formulaire d'inscription */}
-          <div className={`w-full ${showImage ? "md:w-1/2" : "md:w-full"} p-4 sm:p-6 md:p-8 bg-white`}>
+          <div className={`w-full ${showImage ? "md:w-3/5" : "md:w-full"} p-4 sm:p-6 md:p-8 bg-white`}>
             <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
               <h2 className="text-lg sm:text-xl font-bold text-center text-[#014F86] animate-zigzagInfinite">
                 Inscrivez-Vous
@@ -364,9 +379,63 @@ export default function Register() {
                 S’inscrire
               </button>
             </form>
+
+            {/* Séparateur "Ou s'inscrire avec" */}
+            <div className="flex items-center justify-center my-6">
+              <div className="flex-grow border-t border-gray-300"></div>
+              <span className="mx-4 text-sm sm:text-base text-gray-600">Ou s'inscrire avec</span>
+              <div className="flex-grow border-t border-gray-300"></div>
+            </div>
+
+            {/* Boutons des réseaux sociaux */}
+            <div className="flex justify-center gap-4">
+              <div className="p-3 bg-gray-100 border border-gray-300 rounded-full hover:bg-[#014F86] transition cursor-pointer">
+                <FaGoogle className="text-gray-700 hover:text-white" />
+              </div>
+              <div className="p-3 bg-gray-100 border border-gray-300 rounded-full hover:bg-[#014F86] transition cursor-pointer">
+                <FaFacebook className="text-gray-700 hover:text-white" />
+              </div>
+              <div className="p-3 bg-gray-100 border border-gray-300 rounded-full hover:bg-[#014F86] transition cursor-pointer">
+                <FaApple className="text-gray-700 hover:text-white" />
+              </div>
+            </div>
+
+            {/* Lien vers la connexion */}
+            <div className="text-center mt-6">
+              <p className="text-sm sm:text-base text-gray-600">
+                Vous avez déjà un compte ?{" "}
+                <Link href="../login" className="text-[#014F86] hover:underline">
+                  Connectez-vous
+                </Link>
+              </p>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* ToastContainer pour les notifications */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        className="toast-container"
+        toastClassName={() =>
+          "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-lg rounded-lg p-5 flex items-center justify-between"
+        }
+        progressClassName="bg-blue-500"
+        style={{
+          top: "6rem",
+          right: "1rem",
+          width: "auto",
+          maxWidth: "400px",
+        }}
+      />
     </div>
   );
 }

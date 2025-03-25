@@ -1,5 +1,4 @@
 "use client";
-
 import * as React from "react";
 import { useState } from "react";
 import Image from "next/image";
@@ -7,11 +6,14 @@ import Link from "next/link";
 import { FaUser } from 'react-icons/fa';
 import { Menu, Search, Heart, Bell, FolderEdit as UserEdit, X } from "lucide-react";
 import Filtre from "./Filtre"; // Importez votre composant Filtre
+import CompteAlert from "@/components/UI/CompteAlert";
 
 export default function Header() {
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  const [isCompteOpen, setIsCompteOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Simule l'état de connexion
 
   return (
     <header className="bg-white shadow-md w-full fixed top-0 left-0 z-50">
@@ -20,7 +22,7 @@ export default function Header() {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link
-              href="/Acceuil"
+              href="/"
               className="flex items-center gap-2 transition-transform duration-300 hover:scale-105"
               onClick={() => {
                 setIsOpen(false);
@@ -59,32 +61,31 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
-            <Link 
-              href="/Reservations" 
-              className="font-semibold text-[#014F86] hover:text-[#FC9B89] transition-colors"
-            >
+            <Link href="/Reservations" className="font-semibold text-[#014F86] hover:text-[#FC9B89] transition-colors">
               Reservations
             </Link>
-            <Link 
-              href="/Favoris"
-              className="text-[#014F86] hover:text-[#FC9B89] transition-colors"
-            >
+            <Link href="/Favoris" className="text-[#014F86] hover:text-[#FC9B89] transition-colors">
               <Heart className="h-6 w-6" />
             </Link>
-            <Link 
-              href="/Notifications"
-              className="text-[#014F86] hover:text-[#FC9B89] transition-colors"
-            >
+            <Link href="/Notifications" className="text-[#014F86] hover:text-[#FC9B89] transition-colors">
               <Bell className="h-6 w-6" />
             </Link>
-            <button className="bg-[#FC9B89] hover:bg-white border-2 border-[#FC9B89] flex items-center space-x-2 
-                           py-2 px-4 rounded-full transition-colors duration-200">
-              <FaUser className="h-5 w-5 text-[#014F86]" />
-              <span className="text-[#014F86] font-medium">Mon Compte</span>
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => setIsCompteOpen(!isCompteOpen)}
+                className="bg-[#FC9B89] hover:bg-white border-2 border-[#FC9B89] flex items-center space-x-2 
+                           py-2 px-4 rounded-full transition-colors duration-200"
+              >
+                <FaUser className="h-5 w-5 text-[#014F86]" />
+                <span className="text-[#014F86] font-medium">Mon Compte</span>
+              </button>
+
+              {/* Menu déroulant Mon Compte */}
+              {isCompteOpen && <CompteAlert onClose={() => setIsCompteOpen(false)} isLoggedIn={isLoggedIn} />}
+            </div>
           </nav>
 
-          {/* Mobile Navigation Controls */}
+          {/* Mobile Navigation */}
           <div className="flex md:hidden items-center space-x-4">
             <button
               onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
@@ -126,34 +127,30 @@ export default function Header() {
         {isOpen && (
           <nav className="md:hidden border-t border-gray-200">
             <div className="flex flex-col space-y-4 px-4 py-6">
-              <Link
-                href="/Reservations"
-                onClick={() => setIsOpen(false)}
-                className="flex items-center space-x-2 text-[#014F86] hover:text-[#FC9B89] transition-colors"
-              >
-                <span className="font-semibold">Reservations</span>
+              <Link href="/Reservations" onClick={() => setIsOpen(false)} className="text-[#014F86] hover:text-[#FC9B89] transition-colors">
+                Reservations
               </Link>
-              <Link
-                href="/Favoris"
-                onClick={() => setIsOpen(false)}
-                className="flex items-center space-x-2 text-[#014F86] hover:text-[#FC9B89] transition-colors"
-              >
+              <Link href="/Favoris" onClick={() => setIsOpen(false)} className="text-[#014F86] hover:text-[#FC9B89] transition-colors">
                 <Heart className="h-5 w-5" />
-                <span>Favoris</span>
+                Favoris
               </Link>
-              <Link
-                href="/Notifications"
-                onClick={() => setIsOpen(false)}
-                className="flex items-center space-x-2 text-[#014F86] hover:text-[#FC9B89] transition-colors"
-              >
+              <Link href="/Notifications" onClick={() => setIsOpen(false)} className="text-[#014F86] hover:text-[#FC9B89] transition-colors">
                 <Bell className="h-5 w-5" />
-                <span>Notifications</span>
+                Notifications
               </Link>
-              <button className="bg-[#FC9B89] hover:bg-white border-2 border-[#FC9B89] flex items-center 
-                             justify-center space-x-2 py-2 px-4 rounded-full w-full transition-colors duration-200">
-                <UserEdit className="h-5 w-5 text-[#014F86]" />
-                <span className="text-[#014F86] font-medium">Mon Compte</span>
-              </button>
+              <div className="relative">
+                <button
+                  onClick={() => setIsCompteOpen(!isCompteOpen)}
+                  className="bg-[#FC9B89] hover:bg-white border-2 border-[#FC9B89] flex items-center space-x-2 
+                            py-2 px-4 rounded-full transition-colors duration-200"
+                >
+                  <FaUser className="h-5 w-5 text-[#014F86]" />
+                  <span className="text-[#014F86] font-medium">Mon Compte</span>
+                </button>
+
+                {/* Menu déroulant Mon Compte */}
+                {isCompteOpen && <CompteAlert onClose={() => setIsCompteOpen(false)} isLoggedIn={isLoggedIn} />}
+              </div>
             </div>
           </nav>
         )}
