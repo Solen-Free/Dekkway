@@ -9,7 +9,7 @@ interface Logement {
   image: string;
   title: string;
   location: string;
-  price: string;
+  prix: number;
 }
 
 export default function FavorisPage() {
@@ -92,7 +92,7 @@ export default function FavorisPage() {
                 image={logement.image}
                 title={logement.title}
                 location={logement.location}
-                price={logement.price}
+                prix={logement.prix}
                 isOnFavoritesPage={true}
                 onRemove={handleRemove}
               />
