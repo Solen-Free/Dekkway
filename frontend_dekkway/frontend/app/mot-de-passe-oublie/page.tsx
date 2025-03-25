@@ -1,40 +1,43 @@
-// components/MotDePasseOublie.tsx
 "use client"; // Directive pour indiquer que ce composant est un composant client
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function MotDePasseOublie() {
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState(""); // L'email que l'utilisateur va entrer
+  const [message, setMessage] = useState(""); // Message à afficher après la soumission
+  const [isLoading, setIsLoading] = useState(false); // Gestion de l'état de chargement
   const router = useRouter();
 
   // Gérer la soumission du formulaire
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setMessage(""); // Réinitialiser le message avant chaque nouvelle soumission
 
     try {
-      // Envoyer une requête à l'API pour réinitialiser le mot de passe
+      // Envoi de la requête à l'API de réinitialisation du mot de passe
       const response = await fetch("/api/mot-de-passe-oublie", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email }), // On envoie l'email de l'utilisateur
       });
 
       if (response.ok) {
+        // Si la réponse est ok, informer l'utilisateur que l'e-mail de réinitialisation a été envoyé
         setMessage("Un e-mail de réinitialisation a été envoyé à votre adresse.");
       } else {
+        // Si une erreur se produit, afficher le message d'erreur
         const data = await response.json();
         setMessage(data.message || "Une erreur s'est produite.");
       }
     } catch (error) {
+      // En cas d'erreur lors de la requête
       setMessage("Une erreur s'est produite. Veuillez réessayer.");
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Fin du chargement
     }
   };
 
@@ -42,17 +45,15 @@ export default function MotDePasseOublie() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
-          {/* Titre */}
           <h2 className="mt-6 text-center text-2xl sm:text-3xl font-bold text-gray-900">
             Mot de passe oublié
           </h2>
-          {/* Sous-titre */}
           <p className="mt-2 text-center text-sm sm:text-base text-gray-600">
             Entrez votre adresse e-mail pour réinitialiser votre mot de passe.
           </p>
         </div>
 
-        {/* Formulaire */}
+        {/* Formulaire de saisie de l'email */}
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>

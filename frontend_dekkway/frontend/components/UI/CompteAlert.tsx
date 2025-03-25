@@ -1,15 +1,24 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface CompteAlertProps {
   onClose: () => void;
-  isLoggedIn: boolean; // Ajout de l'état de connexion
 }
 
-const CompteAlert: React.FC<CompteAlertProps> = ({ onClose, isLoggedIn }) => {
+const CompteAlert: React.FC<CompteAlertProps> = ({ onClose }) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  // Vérifier si l'utilisateur est connecté au chargement du composant
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token); // Convertit en booléen (true si token existe, false sinon)
+  }, []);
+
+  // Fermer le menu si on clique en dehors
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -20,7 +29,14 @@ const CompteAlert: React.FC<CompteAlertProps> = ({ onClose, isLoggedIn }) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [onClose]);
-  
+
+  // Déconnexion de l'utilisateur
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Suppression du token
+    setIsLoggedIn(false);
+    router.push("/login"); // Rediriger vers la page de connexion
+    onClose(); // Fermer le menu après la déconnexion
+  };
 
   return (
     <div
@@ -33,9 +49,12 @@ const CompteAlert: React.FC<CompteAlertProps> = ({ onClose, isLoggedIn }) => {
             <Link href="/Profil">
               <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Mon Profil</li>
             </Link>
-            <Link href="">
-              <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Se Déconnecter</li>
-            </Link>
+            <li
+              onClick={handleLogout}
+              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+            >
+              Se Déconnecter
+            </li>
           </>
         ) : (
           <>
@@ -45,7 +64,6 @@ const CompteAlert: React.FC<CompteAlertProps> = ({ onClose, isLoggedIn }) => {
             <Link href="/login">
               <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Se connecter</li>
             </Link>
-
           </>
         )}
       </ul>

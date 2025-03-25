@@ -1,20 +1,54 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Calendar, Pencil, Save } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function ProfilePage() {
-  // Simuler les données récupérées lors de l'inscription
-  const [userData, setUserData] = useState({
-    username: "MohamedFall",
-    birthdate: "1995-05-15",
-    email: "mohamed.fall@example.com",
-    password: "********", // On masque le mot de passe
-  });
-
+  const router = useRouter();
+  const [userData, setUserData] = useState<any>(null); // Pour stocker les données récupérées
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Vérification du token dans localStorage
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login"); // Si aucun token, rediriger vers la page de connexion
+    } else {
+      fetchUserData(token); // Récupérer les données utilisateur avec le token
+    }
+  }, [router]);
+
+  // Fonction pour récupérer les données de l'utilisateur
+  const fetchUserData = async (token: string) => {
+    try {
+      const response = await fetch("http://localhost:8000/api/user/profile/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.message || "Une erreur est survenue.");
+        setLoading(false);
+      } else {
+        const data = await response.json();
+        setUserData(data); // Stocker les données dans le state
+        setLoading(false);
+      }
+    } catch (error) {
+      setError("Impossible de récupérer les informations.");
+      setLoading(false);
+    }
+  };
 
   // Gérer les modifications des inputs
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,6 +58,10 @@ export default function ProfilePage() {
   // Activer/Désactiver le mode édition
   const toggleEdit = () => setIsEditing(!isEditing);
 
+  // Si la page est en chargement ou si erreur, on affiche un message
+  if (loading) return <div>Chargement...</div>;
+  if (error) return <div>{error}</div>;
+
   return (
     <div className="min-h-screen flex flex-col items-center bg-gray-100">
       {/* Header avec image de couverture */}
@@ -32,7 +70,7 @@ export default function ProfilePage() {
       {/* Photo de profil */}
       <div className="relative -mt-16">
         <Image
-          src="/images/profil.jpg" // Remplace avec le bon chemin
+          src={userData.profile_image || "/images/profil.jpg"} // Utiliser l'image de profil récupérée ou une par défaut
           alt="Profil"
           width={100}
           height={100}
@@ -120,9 +158,8 @@ export default function ProfilePage() {
               />
             </div>
             <button className="text-blue-500 hover:underline">
-              <Link href="/Modifier_mot_de_passe" >
-                Modifier
-            </Link></button>
+              <Link href="/Modifier_mot_de_passe">Modifier</Link>
+            </button>
           </div>
         </form>
       </div>
