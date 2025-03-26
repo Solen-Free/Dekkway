@@ -10,10 +10,9 @@ import { useRouter } from "next/navigation";
 
 interface Logement {
   id: string;
-  image: string;
-  title: string;
-  location: string;
-  price: string;
+  banniere: string;
+  titre: string;
+  quartier: string;
   type: string;
   prix: number;
   bedrooms?: number;
@@ -47,7 +46,9 @@ export default function Home() {
     const fetchLogements = async () => {
       try {
         const params = new URLSearchParams();
-       
+        // if (searchParams.get('type')) {
+        //   params.append('type', searchParams.get('type')!);
+        // }
 
         // Conversion des paramètres pour le backend Django
         if (searchParams.get('prix_min')) params.append('prix_min', searchParams.get('prix_min')!);
@@ -147,9 +148,9 @@ export default function Home() {
               <Card 
                 key={logement.id}
                 id={logement.id}
-                image={logement.image}
-                title={logement.title}
-                location={logement.location}
+                banniere={logement.banniere}
+                titre={logement.titre}
+                quartier={logement.quartier}
                 prix={logement.prix}
               />
             ))

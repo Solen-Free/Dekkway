@@ -2,13 +2,13 @@
 import { Heart, MapPin, X } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
+// import Image from 'next/image';
 
 interface CardProps {
   id: string;
-  image: string;
-  title: string;
-  location: string;
+  banniere: string;
+  titre: string;
+  quartier: string;
   prix: number;
   isOnFavoritesPage?: boolean;
   onRemove?: (id: string) => void;
@@ -16,9 +16,9 @@ interface CardProps {
 
 const Card: React.FC<CardProps> = ({ 
   id, 
-  image, 
-  title, 
-  location, 
+  banniere, 
+  titre, 
+  quartier, 
   prix, 
   isOnFavoritesPage = false, 
   onRemove 
@@ -66,8 +66,9 @@ const Card: React.FC<CardProps> = ({
       <div className="relative w-full h-35 aspect-[4/3] overflow-hidden rounded-t-2xl">
         <div className="relative w-full h-35">
           <img
-            src={image}
-            alt={title}
+            // src={`http://localhost:8000${banniere}`}
+            src={banniere}
+            alt={titre}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
           
@@ -116,7 +117,7 @@ const Card: React.FC<CardProps> = ({
         {/* Title and Price */}
         <div className="flex items-start justify-between gap-2 mb-2">
           <h3 className="text-lg sm:text-sm font-semibold text-gray-900 line-clamp-1">
-            {title}
+            {titre}
           </h3>
           <span className="text-base sm:text-md font-bold text-[#014F86] whitespace-nowrap">
             {prix} FCFA
@@ -126,7 +127,7 @@ const Card: React.FC<CardProps> = ({
         {/* Location */}
         <div className="flex items-center gap-1.5 text-gray-600 mb-4">
           <MapPin className="w-4 h-4 text-[#FC9B89]" />
-          <span className="text-xs sm:text-sm truncate">{location}</span>
+          <span className="text-xs sm:text-sm truncate">{quartier}</span>
         </div>
 
         {/* Details Button */}

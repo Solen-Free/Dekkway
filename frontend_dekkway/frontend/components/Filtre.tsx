@@ -218,9 +218,9 @@ const Filtre = () => {
                     <h3 className="text-lg font-semibold mb-4">Équipements</h3>
                     <div className="grid grid-cols-2 gap-3">
                       {[
-                        "Climatiseur", "Piscine",
+                        "Climatisation", "Piscine",
                         "Garage", "Chauffe-eau",
-                        "Ménagères", "Meubles"
+                        "Ménagères", "Meubles","Wifi"
                       ].map((equipment) => (
                         <label
                           key={equipment}

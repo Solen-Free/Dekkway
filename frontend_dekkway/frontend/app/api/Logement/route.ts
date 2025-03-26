@@ -7,11 +7,11 @@ const mockLogements = [
     type: "maison",
     prix: 350000,
     nombre_de_chambres: 3,
-    equipements: "piscine:true,climatiseur:true",
+    equipements: "piscine:true,climatisation:true",
     region: "Thies",
-    image: "./././images/maison.jpg",
-    title: "Belle maison à Thiès",
-    location: "Grand-Standing, Thiès",
+    banniere: "./././images/maison.jpg",
+    titre: "Belle maison à Thiès",
+    quartier: "Grand-Standing, Thiès",
     
   },
   {
@@ -21,9 +21,9 @@ const mockLogements = [
     nombre_de_chambres: 2,
     equipements: "garage:true,climatiseur:true",
     region: "Dakar",
-    image: "./././images/maison1.jpg",
-    title: "Bel appart",
-    location: "Yoff, Dakar",
+    banniere: "./././images/maison1.jpg",
+    titre: "Bel appart",
+    quartier: "Yoff, Dakar",
     
   },
 ];
