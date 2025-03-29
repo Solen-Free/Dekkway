@@ -55,7 +55,7 @@ export default function Login() {
         // Ici, vous pouvez sauvegarder le token, rediriger l'utilisateur, etc.
       } else {
         const errorData = await response.json();
-        toast.error(errorData.non_field_errors[0]);
+        toast.error(errorData.non_field_errors?.[0]);
       }
     } catch (error) {
       toast.error("Le serveur ne repond pas");
