@@ -774,7 +774,6 @@ type Logement = {
   latitude: number;
   longitude: number;
   medias: Media[];
-  video?: string;
   agent?: Agent;
   salons?: number;
   cuisines?: number;
@@ -854,11 +853,11 @@ export default function DetailLog() {
       if (!params.id) return;
       try {
         // Pour utiliser l'API Next.js locale en développement
-        const apiUrl = process.env.NODE_ENV === 'development' 
-          ? `/api/logements/${params.id}`
-          : `http://127.0.0.1:8000/details-logements/${params.id}/`;
+        // const apiUrl = process.env.NODE_ENV === 'development' 
+        //   ? `/api/logements/${params.id}`
+        //   : `http://127.0.0.1:8000/details-logements/${params.id}/`;
         
-        const response = await axios.get(apiUrl);
+        const response = await axios.get(`http://127.0.0.1:8000/details-logements/${params.id}/`);
         setLogement(response.data);
       } catch (err) {
         setError("Erreur lors du chargement des données");
@@ -880,6 +879,10 @@ export default function DetailLog() {
   const images = logement.medias
     .filter((media) => media.type === "image")
     .map((media) => media.fichier);
+
+  // Ajoutez cette ligne pour récupérer la vidéo
+  const video = logement.medias.find((media) => media.type === "video")?.fichier;
+
   const equipements = Object.entries(logement.equipements)
     .filter(([_, value]) => value)
     .map(([key]) => key);
@@ -892,7 +895,7 @@ export default function DetailLog() {
           {images.length > 0 ? (
             <ImageCarousel images={images} />
           ) : (
-            <div className="h-96 bg-gray-200 flex items-center justify-center rounded-lg">
+            <div className="h-[600px] bg-gray-200 flex items-center justify-center rounded-lg">
               <p>Aucune image disponible</p>
             </div>
           )}
@@ -924,7 +927,8 @@ export default function DetailLog() {
           </div>
           
           {/* Visite Virtuelle */}
-          {logement.video && (
+
+          {video && (
             <div className="bg-white p-6 rounded-xl shadow-sm border h-60 relative mb-6">
               <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <Video className="text-blue-600" size={20} /> Visite Virtuelle
@@ -934,13 +938,14 @@ export default function DetailLog() {
                 controls
                 poster="/images/visite-thumbnail.jpg"
               >
-                <source src={logement.video} type="video/mp4" />
+                <source src={video} type="video/mp4" />
               </video>
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                 <Lock className="text-white bg-black bg-opacity-50 rounded-full p-2" size={40} />
               </div>
             </div>
           )}
+          
           
           <div className="flex gap-4">
             <button className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600">
@@ -1003,7 +1008,7 @@ export default function DetailLog() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {equipements.map((equip, index) => (
               <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                {getEquipmentIcon(equip)}
+                {/* {getEquipmentIcon(equip)} */}
                 <span className="text-gray-700">
                   {equip.charAt(0).toUpperCase() + equip.slice(1)}
                 </span>
