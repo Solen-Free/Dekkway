@@ -382,21 +382,21 @@
 //             <p className="text-3xl font-bold text-blue-600">{logement.price} FCFA/Mois</p>
 //           </div>
 
-//           <div className="bg-white p-6 rounded-xl shadow-sm border h-60 relative">
-//             <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-//               <Video className="text-blue-600" size={20} /> Visite Virtuelle
-//             </h3>
-//             <video 
-//               className="w-full h-[calc(100%-3.5rem)] object-cover rounded-lg"
-//               controls
-//               poster="/images/visite-thumbnail.jpg"
-//             >
-//               <source src={logement.video} type="video/mp4" />
-//             </video>
-//             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-//               <Lock className="text-white bg-black bg-opacity-50 rounded-full p-2" size={40} />
-//             </div>
-//           </div>
+          // <div className="bg-white p-6 rounded-xl shadow-sm border h-60 relative">
+          //   <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+          //     <Video className="text-blue-600" size={20} /> Visite Virtuelle
+          //   </h3>
+          //   <video 
+          //     className="w-full h-[calc(100%-3.5rem)] object-cover rounded-lg"
+          //     controls
+          //     poster="/images/visite-thumbnail.jpg"
+          //   >
+          //     <source src={logement.video} type="video/mp4" />
+          //   </video>
+          //   <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          //     <Lock className="text-white bg-black bg-opacity-50 rounded-full p-2" size={40} />
+          //   </div>
+          // </div>
 
 //           <div className="flex gap-4">
 //             <button
@@ -641,6 +641,22 @@ export default function DetailLog() {
                   {equip.charAt(0).toUpperCase() + equip.slice(1)}
                 </div>
               ))}
+            </div>
+          </div>
+          
+          <div className="bg-white p-6 rounded-xl shadow-sm border h-60 relative">
+            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <Video className="text-blue-600" size={20} /> Visite Virtuelle
+            </h3>
+            <video 
+              className="w-full h-[calc(100%-3.5rem)] object-cover rounded-lg"
+              controls
+              poster="/images/visite-thumbnail.jpg"
+            >
+              <source src={logement.video} type="video/mp4" />
+            </video>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <Lock className="text-white bg-black bg-opacity-50 rounded-full p-2" size={40} />
             </div>
           </div>
           <div className="flex gap-4 mt-6">
