@@ -26,7 +26,7 @@ export default function AProposPage() {
           <div className="md:w-1/2 flex justify-center items-center">
             <div className="relative w-full h-64 md:h-80 rounded-lg overflow-hidden">
               <Image 
-                src="/images/dekk.png" 
+                src="/images/miss.jpg" 
                 alt="L'équipe Dekkway" 
                 fill 
                 style={{objectFit: 'cover'}} 

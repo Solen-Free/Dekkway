@@ -75,7 +75,7 @@ export default function ContactPage() {
             <div className="space-y-4">
               <div>
                 <h4 className="font-medium text-[#014F86]">Adresse</h4>
-                <p className="text-gray-700">123 Avenue de la République, Thiès, Sénégal</p>
+                <p className="text-gray-700">Randoulene nord, Thiès, Sénégal</p>
               </div>
               
               <div>
