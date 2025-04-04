@@ -1,77 +1,373 @@
+// "use client";
+// import { useParams } from "next/navigation";
+// import {
+//   MapPin, Video, BedDouble, ShowerHead, Utensils,
+//   Car, Wifi, Snowflake, Microwave, Map, Lock
+// } from "lucide-react";
+// import { useEffect, useState } from "react";
+// import dynamic from 'next/dynamic';
+// import { z } from 'zod';
+
+// // Import des styles nécessaires
+// import 'leaflet/dist/leaflet.css';
+// import 'leaflet-geosearch/dist/geosearch.css';
+
+// // Chargement dynamique de la carte
+// const MapComponent = dynamic(() => import('@/components/Map'), {
+//   ssr: false,
+//   loading: () => <div className="h-64 bg-gray-100 rounded-lg animate-pulse" />
+// });
+
+// const LogementSchema = z.object({
+//   id: z.string().optional(),
+//   title: z.string().min(5, "Le titre doit contenir au moins 5 caractères"),
+//   price: z.string().regex(/^\d+$/, "Doit être un nombre valide"),
+//   description: z.string().min(20, "La description doit contenir au moins 20 caractères"),
+//   location: z.tuple([
+//     z.number().min(-90).max(90).refine(n => Number(n.toFixed(6))),
+//     z.number().min(-180).max(180).refine(n => Number(n.toFixed(6)))
+//   ]),
+//   image: z.string()
+//     .refine(val => val.startsWith('/images/'), {
+//       message: "L'image doit commencer par /images/"
+//     }),
+//   video: z.string()
+//     .refine(val => val.startsWith('/videos/'), {
+//       message: "La vidéo doit commencer par /videos/"
+//     }),
+//   equipments: z.array(z.string().nonempty("L'équipement ne peut pas être vide")).default([]),
+//   rooms: z.number().int().min(1),
+//   salons: z.number().int().min(0),
+//   kitchens: z.number().int().min(0),
+//   toilets: z.number().int().min(0),
+//   garage: z.boolean(),
+//   agent: z.string().min(3, "Le nom de l'agent doit contenir au moins 3 caractères"),
+//   agentLogo: z.string().optional(), // Validation du logo de l'agent
+//   address: z.string().min(10, "L'adresse doit contenir au moins 10 caractères").optional()
+// });
+
+// type Logement = z.infer<typeof LogementSchema>;
+
+// // Composants annexes
+// const LoadingSkeleton = () => (
+//   <div className="max-w-7xl mx-auto px-4 animate-pulse space-y-8">
+//     <div className="h-96 bg-gray-200 rounded-xl" />
+//     <div className="grid grid-cols-2 gap-4">
+//       {[...Array(4)].map((_, i) => (
+//         <div key={i} className="h-24 bg-gray-200 rounded-lg" />
+//       ))}
+//     </div>
+//   </div>
+// );
+
+// const ErrorDisplay = ({ message }: { message: string }) => (
+//   <div className="text-center py-8 text-red-600">
+//     <p>⚠️ {message}</p>
+//   </div>
+// );
+
+// const SectionContainer = ({ title, children }: { title: string; children: React.ReactNode }) => (
+//   <section className="mb-8 bg-white p-6 rounded-xl shadow-sm w-full md:w-3/4 mx-auto">
+//     <h2 className="text-xl font-bold text-gray-800 mb-6">{title}</h2>
+//     {children}
+//   </section>
+// );
+
+// const FeatureCard = ({ icon, value, label }: { icon: React.ReactNode; value: number; label: string }) => (
+//   <div className="bg-blue-50 p-4 rounded-lg text-center hover:bg-blue-100 transition-colors">
+//     <div className="text-blue-600 mx-auto mb-2">{icon}</div>
+//     <p className="text-2xl font-bold text-gray-800">{value}</p>
+//     <p className="text-gray-600">{label}</p>
+//   </div>
+// );
+
+// const getEquipmentIcon = (equipment: string) => {
+//   const IconComponents = {
+//     'Climatiseur': Snowflake,
+//     'Wifi': Wifi,
+//     'Réfrigérateur': Microwave,
+//     'Micro-ondes': Microwave,
+//     'Garage': Car,
+//     'Cuisine équipée': Utensils
+//   };
+
+//   const Icon = IconComponents[equipment as keyof typeof IconComponents] || Utensils;
+//   return <Icon className="text-blue-600" size={20} />;
+// };
+
+// const EquipmentItem = ({ label }: { label: string }) => (
+//   <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+//     {getEquipmentIcon(label)}
+//     <span className="text-gray-700">{label}</span>
+//   </div>
+// );
+
+// export default function DetailLog() {
+//   const params = useParams<{ id: string }>();
+//   const [logement, setLogement] = useState<Logement | null>(null);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+
+//   useEffect(() => {
+//     const fetchLogement = async () => {
+//       if (!params.id) return;
+
+//       try {
+//         const response = await fetch(`/api/logements/${params.id}`);
+        
+//         if (!response.ok) {
+//           const errorText = await response.text();
+//           throw new Error(`Erreur ${response.status}: ${errorText}`);
+//         }
+
+//         const data = await response.json();
+//         const validation = LogementSchema.safeParse(data);
+
+//         if (!validation.success) {
+//           const errors = validation.error.issues
+//             .map(issue => `${issue.path.join('.')}: ${issue.message}`)
+//             .join('\n');
+//           throw new Error(`Données invalides:\n${errors}`);
+//         }
+
+//         setLogement(validation.data);
+
+//       } catch (err) {
+//         const errorMessage = err instanceof Error ? err.message : "Erreur inconnue";
+//         console.error('Erreur:', errorMessage);
+//         setError(errorMessage);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchLogement();
+//   }, [params.id]);
+
+//   if (loading) return <LoadingSkeleton />;
+//   if (error) return <ErrorDisplay message={error} />;
+//   if (!logement) return <ErrorDisplay message="Logement introuvable" />;
+
+//   return (
+//     <div className="max-w-7xl mx-auto px-4 font-sans">
+//       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+//         <div className="relative h-96 rounded-xl overflow-hidden shadow-lg">
+//           <img
+//             src={logement.image}
+//             alt={logement.title}
+//             className="w-full h-full object-cover"
+//             onError={(e) => (e.currentTarget.src = '/images/fallback.jpg')}
+//           />
+//         </div>
+
+//         <div className="space-y-6">
+//           <div className="space-y-2">
+//             <h1 className="text-3xl font-bold text-gray-800">{logement.title}</h1>
+//             <div className="flex items-center gap-2 text-blue-600">
+//               <MapPin size={20} />
+//               <span className="text-lg">{logement.address || "Localisation non précisée"}</span>
+//             </div>
+//             <p className="text-3xl font-bold text-blue-600">{logement.price} FCFA/Mois</p>
+//           </div>
+
+//           <div className="bg-white p-6 rounded-xl shadow-sm border h-60 relative">
+//             <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+//               <Video className="text-blue-600" size={20} /> Visite Virtuelle
+//             </h3>
+//             <video 
+//               className="w-full h-[calc(100%-3.5rem)] object-cover rounded-lg"
+//               controls
+//               poster="/images/visite-thumbnail.jpg"
+//             >
+//               <source src={logement.video} type="video/mp4" />
+//             </video>
+//             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+//               <Lock className="text-white bg-black bg-opacity-50 rounded-full p-2" size={40} />
+//             </div>
+//           </div>
+
+//           <div className="flex gap-4">
+//             <button
+//               className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600"
+//             >
+//               Réserver
+//             </button>
+//             <button
+//               className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600"
+//             >
+//               Visite Guidée
+//             </button>
+//           </div>
+//         </div>
+//       </div>
+
+//       <SectionContainer title="Description">
+//         <p className="text-gray-600 leading-relaxed text-justify">
+//           {logement.description}
+//         </p>
+//       </SectionContainer>
+
+//       <SectionContainer title="Caractéristiques">
+//         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+//           <FeatureCard icon={<BedDouble />} value={logement.rooms} label="Chambres" />
+//           <FeatureCard icon={<ShowerHead />} value={logement.toilets} label="Salles de bain" />
+//           <FeatureCard icon={<Utensils />} value={logement.kitchens} label="Cuisines" />
+//           <FeatureCard icon={<Car />} value={logement.garage ? 1 : 0} label="Garage" />
+//         </div>
+//       </SectionContainer>
+
+//       <SectionContainer title="Équipements">
+//         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+//           {(logement.equipments ?? []).map((equipment, index) => (
+//             <EquipmentItem key={index} label={equipment} />
+//           ))}
+//         </div>
+//       </SectionContainer>
+
+//       <SectionContainer title="Agent Immobilier">
+//         <div className="flex items-center gap-4">
+//           <img
+//             src={logement.agentLogo || "/images/default-agent-logo.png"}
+//             alt="Logo de l'agent"
+//             className="w-16 h-16 rounded-full object-cover"
+//           />
+//           <div>
+//             <p className="text-lg font-bold text-gray-800">{logement.agent}</p>
+//             <p className="text-gray-600">Contactez-moi pour plus d'informations</p>
+//           </div>
+//         </div>
+//       </SectionContainer>
+
+//       <SectionContainer title="Localisation précise">
+//         <div className="h-64 rounded-lg overflow-hidden">
+//           <MapComponent 
+//             coordinates={logement.location} 
+//             address={logement.address}
+//           />
+//         </div>
+//         {logement.address && (
+//           <p className="mt-4 text-gray-600 text-sm">
+//             {logement.address}
+//           </p>
+//         )}
+//         <p className="text-gray-500 text-xs mt-2">
+//           Coordonnées GPS :{" "}
+//           {logement.location[0].toFixed(6)}, {logement.location[1].toFixed(6)}
+//         </p>
+//       </SectionContainer>
+//     </div>
+//   );
+// }
+
+// -----------------------------
+
+
+// chat
+
+// app/details-logements/[id]/page.tsx
 "use client";
 import { useParams } from "next/navigation";
-import {
-  MapPin, Video, BedDouble, ShowerHead, Utensils,
-  Car, Wifi, Snowflake, Microwave, Map, Lock
-} from "lucide-react";
 import { useEffect, useState } from "react";
-import dynamic from 'next/dynamic';
-import { z } from 'zod';
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import axios from "axios";
+import {
+  MapPin,
+  Video,
+  BedDouble,
+  ShowerHead,
+  Utensils,
+  Car,
+  Wifi,
+  Snowflake,
+  Lock,
+  Phone
+} from "lucide-react";
 
 // Import des styles nécessaires
-import 'leaflet/dist/leaflet.css';
-import 'leaflet-geosearch/dist/geosearch.css';
+import "leaflet/dist/leaflet.css";
+import "leaflet-geosearch/dist/geosearch.css";
 
 // Chargement dynamique de la carte
-const MapComponent = dynamic(() => import('@/components/Map'), {
+const MapComponent = dynamic(() => import("@/components/Map"), {
   ssr: false,
-  loading: () => <div className="h-64 bg-gray-100 rounded-lg animate-pulse" />
+  loading: () => <div className="h-64 bg-gray-100 rounded-lg animate-pulse" />,
 });
 
-const LogementSchema = z.object({
-  id: z.string().optional(),
-  title: z.string().min(5, "Le titre doit contenir au moins 5 caractères"),
-  price: z.string().regex(/^\d+$/, "Doit être un nombre valide"),
-  description: z.string().min(20, "La description doit contenir au moins 20 caractères"),
-  location: z.tuple([
-    z.number().min(-90).max(90).refine(n => Number(n.toFixed(6))),
-    z.number().min(-180).max(180).refine(n => Number(n.toFixed(6)))
-  ]),
-  image: z.string()
-    .refine(val => val.startsWith('/images/'), {
-      message: "L'image doit commencer par /images/"
-    }),
-  video: z.string()
-    .refine(val => val.startsWith('/videos/'), {
-      message: "La vidéo doit commencer par /videos/"
-    }),
-  equipments: z.array(z.string().nonempty("L'équipement ne peut pas être vide")).default([]),
-  rooms: z.number().int().min(1),
-  salons: z.number().int().min(0),
-  kitchens: z.number().int().min(0),
-  toilets: z.number().int().min(0),
-  garage: z.boolean(),
-  agent: z.string().min(3, "Le nom de l'agent doit contenir au moins 3 caractères"),
-  agentLogo: z.string().optional(), // Validation du logo de l'agent
-  address: z.string().min(10, "L'adresse doit contenir au moins 10 caractères").optional()
-});
+// Types des données
+type Media = {
+  fichier: string;
+  type: string;
+  date_ajout: string;
+};
 
-type Logement = z.infer<typeof LogementSchema>;
+type Agent = {
+  nom: string;
+  logo: string;
+  telephone: string;
+};
 
-// Composants annexes
-const LoadingSkeleton = () => (
-  <div className="max-w-7xl mx-auto px-4 animate-pulse space-y-8">
-    <div className="h-96 bg-gray-200 rounded-xl" />
-    <div className="grid grid-cols-2 gap-4">
-      {[...Array(4)].map((_, i) => (
-        <div key={i} className="h-24 bg-gray-200 rounded-lg" />
-      ))}
+type Logement = {
+  type: string;
+  description: string;
+  region: string;
+  quartier: string;
+  prix: string;
+  nombre_de_chambres: number;
+  equipements: {
+    [key: string]: boolean;
+  };
+  latitude: number;
+  longitude: number;
+  medias: Media[];
+  video?: string;
+  agent?: Agent;
+  salons?: number;
+  cuisines?: number;
+  salles_de_bain?: number;
+  garage?: boolean;
+  adresse?: string;
+};
+
+function ImageCarousel({ images }: { images: string[] }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const prevImage = () =>
+    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  const nextImage = () =>
+    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+
+  return (
+    <div className="relative">
+      <div className="overflow-hidden rounded-lg">
+        <Image
+          src={images[currentIndex]}
+          alt={`Image ${currentIndex + 1}`}
+          width={800}
+          height={600}
+          className="w-full h-96 object-cover"
+          priority
+        />
+      </div>
+      {images.length > 1 && (
+        <>
+          <button
+            onClick={prevImage}
+            className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full"
+          >
+            ‹
+          </button>
+          <button
+            onClick={nextImage}
+            className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full"
+          >
+            ›
+          </button>
+        </>
+      )}
     </div>
-  </div>
-);
-
-const ErrorDisplay = ({ message }: { message: string }) => (
-  <div className="text-center py-8 text-red-600">
-    <p>⚠️ {message}</p>
-  </div>
-);
-
-const SectionContainer = ({ title, children }: { title: string; children: React.ReactNode }) => (
-  <section className="mb-8 bg-white p-6 rounded-xl shadow-sm w-full md:w-3/4 mx-auto">
-    <h2 className="text-xl font-bold text-gray-800 mb-6">{title}</h2>
-    {children}
-  </section>
-);
+  );
+}
 
 const FeatureCard = ({ icon, value, label }: { icon: React.ReactNode; value: number; label: string }) => (
   <div className="bg-blue-50 p-4 rounded-lg text-center hover:bg-blue-100 transition-colors">
@@ -82,25 +378,16 @@ const FeatureCard = ({ icon, value, label }: { icon: React.ReactNode; value: num
 );
 
 const getEquipmentIcon = (equipment: string) => {
-  const IconComponents = {
+  const IconComponents: Record<string, React.ComponentType<any>> = {
     'Climatiseur': Snowflake,
     'Wifi': Wifi,
-    'Réfrigérateur': Microwave,
-    'Micro-ondes': Microwave,
     'Garage': Car,
     'Cuisine équipée': Utensils
   };
 
-  const Icon = IconComponents[equipment as keyof typeof IconComponents] || Utensils;
+  const Icon = IconComponents[equipment] || Utensils;
   return <Icon className="text-blue-600" size={20} />;
 };
-
-const EquipmentItem = ({ label }: { label: string }) => (
-  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-    {getEquipmentIcon(label)}
-    <span className="text-gray-700">{label}</span>
-  </div>
-);
 
 export default function DetailLog() {
   const params = useParams<{ id: string }>();
@@ -111,31 +398,17 @@ export default function DetailLog() {
   useEffect(() => {
     const fetchLogement = async () => {
       if (!params.id) return;
-
       try {
-        const response = await fetch(`/api/logements/${params.id}`);
+        // Pour utiliser l'API Next.js locale en développement
+        const apiUrl = process.env.NODE_ENV === 'development' 
+          ? `/api/logements/${params.id}`
+          : `http://127.0.0.1:8000/details-logements/${params.id}/`;
         
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`Erreur ${response.status}: ${errorText}`);
-        }
-
-        const data = await response.json();
-        const validation = LogementSchema.safeParse(data);
-
-        if (!validation.success) {
-          const errors = validation.error.issues
-            .map(issue => `${issue.path.join('.')}: ${issue.message}`)
-            .join('\n');
-          throw new Error(`Données invalides:\n${errors}`);
-        }
-
-        setLogement(validation.data);
-
+        const response = await axios.get(apiUrl);
+        setLogement(response.data);
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Erreur inconnue";
-        console.error('Erreur:', errorMessage);
-        setError(errorMessage);
+        setError("Erreur lors du chargement des données");
+        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -144,117 +417,188 @@ export default function DetailLog() {
     fetchLogement();
   }, [params.id]);
 
-  if (loading) return <LoadingSkeleton />;
-  if (error) return <ErrorDisplay message={error} />;
-  if (!logement) return <ErrorDisplay message="Logement introuvable" />;
+  if (loading) return <div className="p-4 text-center">Chargement...</div>;
+  if (error) return <div className="p-4 text-center text-red-600">{error}</div>;
+  if (!logement) return <div className="p-4 text-center">Logement introuvable</div>;
+
+  // Prépare les données
+  const title = `${logement.type} - ${logement.region} - ${logement.quartier}`;
+  const images = logement.medias
+    .filter((media) => media.type === "image")
+    .map((media) => media.fichier);
+  const equipements = Object.entries(logement.equipements)
+    .filter(([_, value]) => value)
+    .map(([key]) => key);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 font-sans">
+    <div className="max-w-7xl mx-auto p-4 font-sans">
+      {/* Header avec carousel */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-        <div className="relative h-96 rounded-xl overflow-hidden shadow-lg">
-          <img
-            src={logement.image}
-            alt={logement.title}
-            className="w-full h-full object-cover"
-            onError={(e) => (e.currentTarget.src = '/images/fallback.jpg')}
-          />
+        <div>
+          {images.length > 0 ? (
+            <ImageCarousel images={images} />
+          ) : (
+            <div className="h-96 bg-gray-200 flex items-center justify-center rounded-lg">
+              <p>Aucune image disponible</p>
+            </div>
+          )}
         </div>
-
-        <div className="space-y-6">
-          <div className="space-y-2">
-            <h1 className="text-3xl font-bold text-gray-800">{logement.title}</h1>
-            <div className="flex items-center gap-2 text-blue-600">
+        
+        <div className="flex flex-col justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">{title}</h1>
+            <div className="flex items-center gap-2 text-blue-600 mb-2">
               <MapPin size={20} />
-              <span className="text-lg">{logement.address || "Localisation non précisée"}</span>
+              <span className="text-lg">
+                {logement.quartier}, {logement.region}
+                {logement.adresse && ` - ${logement.adresse}`}
+              </span>
             </div>
-            <p className="text-3xl font-bold text-blue-600">{logement.price} FCFA/Mois</p>
-          </div>
-
-          <div className="bg-white p-6 rounded-xl shadow-sm border h-60 relative">
-            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <Video className="text-blue-600" size={20} /> Visite Virtuelle
-            </h3>
-            <video 
-              className="w-full h-[calc(100%-3.5rem)] object-cover rounded-lg"
-              controls
-              poster="/images/visite-thumbnail.jpg"
-            >
-              <source src={logement.video} type="video/mp4" />
-            </video>
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              <Lock className="text-white bg-black bg-opacity-50 rounded-full p-2" size={40} />
+            <p className="text-3xl font-bold text-blue-600 mb-4">
+              {logement.prix} FCFA/Mois
+            </p>
+            <div className="flex flex-wrap gap-3 mb-6">
+              {equipements.map((equip, index) => (
+                <div
+                  key={index}
+                  className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm"
+                >
+                  {equip.charAt(0).toUpperCase() + equip.slice(1)}
+                </div>
+              ))}
             </div>
           </div>
-
+          
+          {/* Visite Virtuelle */}
+          {logement.video && (
+            <div className="bg-white p-6 rounded-xl shadow-sm border h-60 relative mb-6">
+              <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <Video className="text-blue-600" size={20} /> Visite Virtuelle
+              </h3>
+              <video 
+                className="w-full h-[calc(100%-3.5rem)] object-cover rounded-lg"
+                controls
+                poster="/images/visite-thumbnail.jpg"
+              >
+                <source src={logement.video} type="video/mp4" />
+              </video>
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <Lock className="text-white bg-black bg-opacity-50 rounded-full p-2" size={40} />
+              </div>
+            </div>
+          )}
+          
           <div className="flex gap-4">
-            <button
-              className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600"
-            >
+            <button className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600">
               Réserver
             </button>
-            <button
-              className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600"
-            >
+            <button className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600">
               Visite Guidée
             </button>
           </div>
         </div>
       </div>
 
-      <SectionContainer title="Description">
+      {/* Description */}
+      <section className="mb-8 bg-white p-6 rounded-xl shadow-sm">
+        <h2 className="text-xl font-bold text-gray-800 mb-4">Description</h2>
         <p className="text-gray-600 leading-relaxed text-justify">
           {logement.description}
         </p>
-      </SectionContainer>
+      </section>
 
-      <SectionContainer title="Caractéristiques">
+      {/* Caractéristiques */}
+      <section className="mb-8 bg-white p-6 rounded-xl shadow-sm">
+        <h2 className="text-xl font-bold text-gray-800 mb-4">
+          Caractéristiques
+        </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <FeatureCard icon={<BedDouble />} value={logement.rooms} label="Chambres" />
-          <FeatureCard icon={<ShowerHead />} value={logement.toilets} label="Salles de bain" />
-          <FeatureCard icon={<Utensils />} value={logement.kitchens} label="Cuisines" />
-          <FeatureCard icon={<Car />} value={logement.garage ? 1 : 0} label="Garage" />
-        </div>
-      </SectionContainer>
-
-      <SectionContainer title="Équipements">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {(logement.equipments ?? []).map((equipment, index) => (
-            <EquipmentItem key={index} label={equipment} />
-          ))}
-        </div>
-      </SectionContainer>
-
-      <SectionContainer title="Agent Immobilier">
-        <div className="flex items-center gap-4">
-          <img
-            src={logement.agentLogo || "/images/default-agent-logo.png"}
-            alt="Logo de l'agent"
-            className="w-16 h-16 rounded-full object-cover"
+          <FeatureCard 
+            icon={<BedDouble />} 
+            value={logement.nombre_de_chambres} 
+            label="Chambres" 
           />
-          <div>
-            <p className="text-lg font-bold text-gray-800">{logement.agent}</p>
-            <p className="text-gray-600">Contactez-moi pour plus d'informations</p>
+          {logement.salles_de_bain !== undefined && (
+            <FeatureCard 
+              icon={<ShowerHead />} 
+              value={logement.salles_de_bain} 
+              label="Salles de bain" 
+            />
+          )}
+          {logement.cuisines !== undefined && (
+            <FeatureCard 
+              icon={<Utensils />} 
+              value={logement.cuisines} 
+              label="Cuisines" 
+            />
+          )}
+          {logement.garage !== undefined && (
+            <FeatureCard 
+              icon={<Car />} 
+              value={logement.garage ? 1 : 0} 
+              label="Garage" 
+            />
+          )}
+        </div>
+      </section>
+
+      {/* Équipements */}
+      {equipements.length > 0 && (
+        <section className="mb-8 bg-white p-6 rounded-xl shadow-sm">
+          <h2 className="text-xl font-bold text-gray-800 mb-4">Équipements</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {equipements.map((equip, index) => (
+              <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                {getEquipmentIcon(equip)}
+                <span className="text-gray-700">
+                  {equip.charAt(0).toUpperCase() + equip.slice(1)}
+                </span>
+              </div>
+            ))}
           </div>
-        </div>
-      </SectionContainer>
+        </section>
+      )}
 
-      <SectionContainer title="Localisation précise">
+      {/* Agent Immobilier */}
+      {logement.agent && (
+        <section className="mb-8 bg-white p-6 rounded-xl shadow-sm">
+          <h2 className="text-xl font-bold text-gray-800 mb-4">Agent Immobilier</h2>
+          <div className="flex items-center gap-4">
+            <img
+              src={logement.agent.logo || "/images/default-agent-logo.png"}
+              alt="Logo de l'agent"
+              className="w-16 h-16 rounded-full object-cover"
+            />
+            <div>
+              <p className="text-lg font-bold text-gray-800">{logement.agent.nom}</p>
+              <p className="text-gray-600 flex items-center gap-2">
+                <Phone size={16} /> {logement.agent.telephone}
+              </p>
+              <p className="text-gray-600 mt-1">Contactez-moi pour plus d'informations</p>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Localisation */}
+      <section className="mb-8 bg-white p-6 rounded-xl shadow-sm">
+        <h2 className="text-xl font-bold text-gray-800 mb-4">
+          Localisation précise
+        </h2>
         <div className="h-64 rounded-lg overflow-hidden">
-          <MapComponent 
-            coordinates={logement.location} 
-            address={logement.address}
+          <MapComponent
+            coordinates={[logement.latitude, logement.longitude]}
+            address={`${logement.quartier}, ${logement.region}`}
           />
         </div>
-        {logement.address && (
-          <p className="mt-4 text-gray-600 text-sm">
-            {logement.address}
-          </p>
+        {logement.adresse && (
+          <p className="mt-2 text-gray-600">{logement.adresse}</p>
         )}
-        <p className="text-gray-500 text-xs mt-2">
-          Coordonnées GPS :{" "}
-          {logement.location[0].toFixed(6)}, {logement.location[1].toFixed(6)}
+        <p className="mt-2 text-gray-500 text-sm">
+          Coordonnées GPS : {logement.latitude.toFixed(6)},{" "}
+          {logement.longitude.toFixed(6)}
         </p>
-      </SectionContainer>
+      </section>
     </div>
   );
 }
