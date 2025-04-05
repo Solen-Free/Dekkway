@@ -6,6 +6,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useAuth } from "../context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -25,6 +27,9 @@ export default function Login() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const { login } = useAuth();
+  const router = useRouter();
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -38,7 +43,9 @@ export default function Login() {
 
       if (response.ok) {
         const data = await response.json();
-        toast.success(data.message);
+        login(data.token, data.user);
+        toast.success("Connexion réussie");
+        router.push("/");
       } else {
         const errorData = await response.json();
         toast.error(errorData.non_field_errors?.[0] || "Erreur de connexion");
