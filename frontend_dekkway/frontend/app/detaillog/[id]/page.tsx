@@ -480,12 +480,15 @@ import Image from "next/image";
 import axios from "axios";
 import {
   MapPin,
-  // Video,
+  Video,
   BedDouble,
-  // ShowerHead,
-  // Snowflake,
-  // Wifi,
-  // Ajoute d'autres icônes si nécessaire
+  ShowerHead,
+  Utensils,
+  Car,
+  Wifi,
+  Snowflake,
+  Lock,
+  Phone
 } from "lucide-react";
 
 // Import des styles nécessaires
@@ -498,11 +501,17 @@ const MapComponent = dynamic(() => import("@/components/Map"), {
   loading: () => <div className="h-64 bg-gray-100 rounded-lg animate-pulse" />,
 });
 
-// Types des données retournées par le backend
+// Types des données
 type Media = {
   fichier: string;
   type: string;
   date_ajout: string;
+};
+
+type Agent = {
+  nom: string;
+  logo: string;
+  telephone: string;
 };
 
 type Logement = {
@@ -518,7 +527,6 @@ type Logement = {
   latitude: number;
   longitude: number;
   medias: Media[];
-  video?: string;
   agent?: Agent;
   salons?: number;
   cuisines?: number;
@@ -567,6 +575,26 @@ function ImageCarousel({ images }: { images: string[] }) {
   );
 }
 
+const FeatureCard = ({ icon, value, label }: { icon: React.ReactNode; value: number; label: string }) => (
+  <div className="bg-blue-50 p-4 rounded-lg text-center hover:bg-blue-100 transition-colors">
+    <div className="text-blue-600 mx-auto mb-2">{icon}</div>
+    <p className="text-2xl font-bold text-gray-800">{value}</p>
+    <p className="text-gray-600">{label}</p>
+  </div>
+);
+
+const getEquipmentIcon = (equipment: string) => {
+  const IconComponents: Record<string, React.ComponentType<any>> = {
+    'Climatiseur': Snowflake,
+    'Wifi': Wifi,
+    'Garage': Car,
+    'Cuisine équipée': Utensils
+  };
+
+  const Icon = IconComponents[equipment] || Utensils;
+  return <Icon className="text-blue-600" size={20} />;
+};
+
 export default function DetailLog() {
   const params = useParams<{ id: string }>();
   const [logement, setLogement] = useState<Logement | null>(null);
@@ -578,14 +606,15 @@ export default function DetailLog() {
       if (!params.id) return;
       try {
         // Pour utiliser l'API Next.js locale en développement
-        const apiUrl = process.env.NODE_ENV === 'development' 
-          ? `/api/logements/${params.id}`
-          : `http://127.0.0.1:8000/details-logements/${params.id}/`;
+        // const apiUrl = process.env.NODE_ENV === 'development' 
+        //   ? /api/logements/${params.id}
+        //   : http://127.0.0.1:8000/details-logements/${params.id}/;
         
-        const response = await axios.get(apiUrl);
+        const response = await axios.get(`http://127.0.0.1:8000/details-logements/${params.id}/`);
         setLogement(response.data);
       } catch (err) {
         setError("Erreur lors du chargement des données");
+        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -594,20 +623,19 @@ export default function DetailLog() {
     fetchLogement();
   }, [params.id]);
 
-  if (loading)
-    return <p className="p-4 text-center">Chargement...</p>;
-  if (error)
-    return <p className="p-4 text-center text-red-600">{error}</p>;
-  if (!logement)
-    return <p className="p-4 text-center">Logement introuvable</p>;
+  if (loading) return <div className="p-4 text-center">Chargement...</div>;
+  if (error) return <div className="p-4 text-center text-red-600">{error}</div>;
+  if (!logement) return <div className="p-4 text-center">Logement introuvable</div>;
 
-  // Prépare le titre à partir des champs type, region et quartier
+  // Prépare les données
   const title = `${logement.type} - ${logement.region} - ${logement.quartier}`;
-
-  // Filtre les images dans le tableau de médias
   const images = logement.medias
     .filter((media) => media.type === "image")
     .map((media) => media.fichier);
+
+  // Ajoutez cette ligne pour récupérer la vidéo
+  const video = logement.medias.find((media) => media.type === "video")?.fichier;
+
   const equipements = Object.entries(logement.equipements)
     .filter(([_, value]) => value)
     .map(([key]) => key);
@@ -625,21 +653,21 @@ export default function DetailLog() {
             </div>
           )}
         </div>
+        
         <div className="flex flex-col justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              {title}
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">{title}</h1>
             <div className="flex items-center gap-2 text-blue-600 mb-2">
               <MapPin size={20} />
               <span className="text-lg">
                 {logement.quartier}, {logement.region}
+                {logement.adresse && ` - ${logement.adresse}`}
               </span>
             </div>
             <p className="text-3xl font-bold text-blue-600 mb-4">
               {logement.prix} FCFA/Mois
             </p>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-3 mb-6">
               {equipements.map((equip, index) => (
                 <div
                   key={index}
@@ -652,7 +680,8 @@ export default function DetailLog() {
           </div>
           
           {/* Visite Virtuelle */}
-          {logement.video && (
+
+          {video && (
             <div className="bg-white p-6 rounded-xl shadow-sm border h-60 relative mb-6">
               <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <Video className="text-blue-600" size={20} /> Visite Virtuelle
@@ -662,13 +691,14 @@ export default function DetailLog() {
                 controls
                 poster="/images/visite-thumbnail.jpg"
               >
-                <source src={logement.video} type="video/mp4" />
+                <source src={video} type="video/mp4" />
               </video>
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                 <Lock className="text-white bg-black bg-opacity-50 rounded-full p-2" size={40} />
               </div>
             </div>
           )}
+          
           
           <div className="flex gap-4">
             <button className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600">
@@ -731,7 +761,7 @@ export default function DetailLog() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {equipements.map((equip, index) => (
               <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                {getEquipmentIcon(equip)}
+                {/* {getEquipmentIcon(equip)} */}
                 <span className="text-gray-700">
                   {equip.charAt(0).toUpperCase() + equip.slice(1)}
                 </span>
@@ -773,7 +803,10 @@ export default function DetailLog() {
             address={`${logement.quartier}, ${logement.region}`}
           />
         </div>
-        <p className="mt-4 text-gray-600 text-sm">
+        {logement.adresse && (
+          <p className="mt-2 text-gray-600">{logement.adresse}</p>
+        )}
+        <p className="mt-2 text-gray-500 text-sm">
           Coordonnées GPS : {logement.latitude.toFixed(6)},{" "}
           {logement.longitude.toFixed(6)}
         </p>
