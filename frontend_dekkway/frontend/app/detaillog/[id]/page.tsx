@@ -488,7 +488,8 @@ import {
   Wifi,
   Snowflake,
   Lock,
-  Phone
+  Phone,
+  Droplets
 } from "lucide-react";
 
 // Import des styles nécessaires
@@ -587,8 +588,7 @@ const getEquipmentIcon = (equipment: string) => {
   const IconComponents: Record<string, React.ComponentType<any>> = {
     'Climatiseur': Snowflake,
     'Wifi': Wifi,
-    'Garage': Car,
-    'Cuisine équipée': Utensils
+    'Piscine': Droplets
   };
 
   const Icon = IconComponents[equipment] || Utensils;
@@ -761,7 +761,7 @@ export default function DetailLog() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {equipements.map((equip, index) => (
               <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                {/* {getEquipmentIcon(equip)} */}
+                {getEquipmentIcon(equip)}
                 <span className="text-gray-700">
                   {equip.charAt(0).toUpperCase() + equip.slice(1)}
                 </span>
