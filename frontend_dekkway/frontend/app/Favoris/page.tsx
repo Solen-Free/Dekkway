@@ -6,9 +6,9 @@ import Header from "@/components/header";
 
 interface Logement {
   id: string;
-  image: string;
-  title: string;
-  location: string;
+  banniere: string;
+  titre: string;
+  quartier: string;
   prix: number;
 }
 
@@ -34,7 +34,7 @@ export default function FavorisPage() {
       setError(null);
 
       try {
-        const response = await axios.get<Logement[]>("http://localhost:8000/favoris");
+        const response = await axios.get<Logement[]>("http://localhost:8000/rech-logements/");
 
         // Filtrer pour ne garder que les logements favoris
         const favoriteLogements = response.data.filter((logement) =>
@@ -52,6 +52,7 @@ export default function FavorisPage() {
     if (favorites.length > 0) {
       fetchLogements();
     } else {
+      setLogements([]); // Vider la liste des logements quand il n'y a plus de favoris
       setLoading(false); // Pas de favoris, donc on arrête le chargement
     }
   }, [favorites]);
@@ -89,9 +90,9 @@ export default function FavorisPage() {
               <Card
                 key={logement.id}
                 id={logement.id}
-                image={logement.image}
-                title={logement.title}
-                location={logement.location}
+                banniere={logement.banniere}
+                titre={logement.titre}
+                quartier={logement.quartier}
                 prix={logement.prix}
                 isOnFavoritesPage={true}
                 onRemove={handleRemove}

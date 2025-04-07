@@ -54,8 +54,13 @@ const Card: React.FC<CardProps> = ({
     const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
     const updatedFavorites = favorites.filter((favId: string) => favId !== id);
     
+    // Mettre à jour localStorage avant d'appeler onRemove
     localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
-    onRemove?.(id);
+    
+    // S'assurer que onRemove est appelé même si c'est le dernier élément
+    if (typeof onRemove === 'function') {
+      onRemove(id);
+    }
   };
 
   return (

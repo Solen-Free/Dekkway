@@ -34,7 +34,7 @@ const CompteAlert: React.FC<CompteAlertProps> = ({ onClose }) => {
   const handleLogout = () => {
     localStorage.removeItem("token"); // Suppression du token
     setIsLoggedIn(false);
-    router.push("/login"); // Rediriger vers la page de connexion
+    router.push("/"); // Rediriger vers la page de connexion
     onClose(); // Fermer le menu après la déconnexion
   };
 
