@@ -27,7 +27,7 @@ export default function ProfilePage() {
   // Fonction pour récupérer les données de l'utilisateur
   const fetchUserData = async (token: string) => {
     try {
-      const response = await fetch("http://localhost:8000/api/user/profile/", {
+      const response = await fetch("http://localhost:8000/profil-locataire/", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
