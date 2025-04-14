@@ -151,7 +151,29 @@ const Filtre = () => {
                   <div className="mb-6">
                     <h3 className="text-lg font-semibold mb-4">Type de propriété</h3>
                     <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                      {["Tout", "Maison", "Appartement", "Co-Location", "Studio", "Villa", "Longue Durée", "Courte durée"].map((type) => (
+                      {["Tout", "Maison", "Appartement", "Co-Location", "Studio", "Villa"].map((type) => (
+                        <motion.button
+                          key={type}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => setSelectedPropertyType(type)}
+                          className={`p-2 text-sm rounded-3xl transition-colors ${
+                            selectedPropertyType === type
+                              ? "bg-gradient-to-r from-[#FC9B89] to-[#FF6B6B] text-white"
+                              : "bg-[#014F86] text-white hover:bg-[#013A63]"
+                          }`}
+                        >
+                          {type}
+                        </motion.button>
+                      ))}
+                    </div>
+                  </div>
+
+               
+                  {/* Durée - Ajout de la conversion en minuscules */}
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold mb-4">Durée</h3>
+                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                      {["Longue durée", "Courte durée"].map((type) => (
                         <motion.button
                           key={type}
                           whileTap={{ scale: 0.95 }}
