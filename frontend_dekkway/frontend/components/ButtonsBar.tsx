@@ -30,13 +30,15 @@ export default function ButtonsBar({ onSelectTypeAction, onSelectDureeAction }: 
   const currentType = searchParams.get('type');
   const currentDuree = searchParams.get('duree');
   
-  // État local pour le changement de couleur immédiat
+  // États locaux pour le changement de couleur immédiat
   const [selectedDuree, setSelectedDuree] = useState<string | null>(currentDuree);
+  const [selectedType, setSelectedType] = useState<string | null>(currentType);
   
-  // Synchroniser l'état local avec les paramètres d'URL
+  // Synchroniser les états locaux avec les paramètres d'URL
   useEffect(() => {
     setSelectedDuree(currentDuree);
-  }, [currentDuree]);
+    setSelectedType(currentType);
+  }, [currentDuree, currentType]);
 
   return (
     <div className="max-w-screen-xl mx-auto px-4 sm:px-6 md:px-8">
@@ -45,17 +47,19 @@ export default function ButtonsBar({ onSelectTypeAction, onSelectDureeAction }: 
         <div className="flex flex-nowrap overflow-x-auto scrollbar-hide items-center justify-center gap-4">
           {/* Types de logement */}
           {types.map((type) => {
-            const isActive = type.value ? currentType === type.value : !currentType;
+            // Utiliser l'état local pour un changement visuel immédiat
+            const isActive = type.value ? selectedType === type.value : !selectedType;
             
             return (
               <button
                 key={type.value || "Tout"}
                 onClick={() => {
-                  if (type.value === null) {
-                    onSelectTypeAction(null);
-                  } else {
-                    onSelectTypeAction(type.value.toLowerCase());
-                  }
+                  // Mettre à jour l'état local immédiatement pour le changement visuel
+                  const newValue = type.value === null ? null : type.value.toLowerCase();
+                  setSelectedType(newValue);
+                  
+                  // Appeler la fonction de callback pour mettre à jour l'URL
+                  onSelectTypeAction(newValue);
                 }}
                 className={`
                   shrink-0
