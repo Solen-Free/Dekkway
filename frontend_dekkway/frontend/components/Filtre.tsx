@@ -61,6 +61,7 @@ const Filtre = () => {
       
       // Durée (converti en minuscules)
       if (selectedDuration) {
+        // Utiliser la valeur exacte comme dans le modèle Django
         params.append('duree', selectedDuration.toLowerCase());
       }
 

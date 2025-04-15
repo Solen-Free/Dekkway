@@ -15,8 +15,8 @@ const types = [
 
 // Options de durée
 const durees = [
-  { label: "Longue durée", value: "longuedurée" },
-  { label: "Courte durée", value: "courtedurée" },
+  { label: "Longue durée", value: "longue durée" },
+  { label: "Courte durée", value: "courte durée" },
 ];
 
 interface ButtonsBarProps {
@@ -69,7 +69,7 @@ export default function ButtonsBar({ onSelectTypeAction, onSelectDureeAction }: 
           
           {/* Options de durée */}
           {durees.map((duree) => {
-            const isActive = currentDuree === duree.value;
+            const isActive = currentDuree === duree.value.toLowerCase();
             
             return (
               <button

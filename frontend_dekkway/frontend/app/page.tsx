@@ -47,19 +47,25 @@ export default function Home() {
     const fetchLogements = async () => {
       try {
         const params = new URLSearchParams();
-        // if (searchParams.get('type')) {
-        //   params.append('type', searchParams.get('type')!);
-        // }
-
+        
         // Conversion des paramètres pour le backend Django
         if (searchParams.get('prix_min')) params.append('prix_min', searchParams.get('prix_min')!);
         if (searchParams.get('prix_max')) params.append('prix_max', searchParams.get('prix_max')!);
         if (searchParams.get('nombre_de_chambres')) params.append('nombre_de_chambres', searchParams.get('nombre_de_chambres')!);
         if (searchParams.get('equipements')) params.append('equipements', searchParams.get('equipements')!);
         if (searchParams.get('region')) params.append('region', searchParams.get('region')!);
-        if (searchParams.get('type')) params.append('type', searchParams.get('type')!.toLowerCase());
-        if (searchParams.get('duree')) params.append('duree', searchParams.get('duree')!.toLowerCase());
+        
+        // Correction pour le type et la durée
+        if (searchParams.get('type')) {
+          params.append('type', searchParams.get('type')!.toLowerCase());
+        }
+        
+        if (searchParams.get('duree')) {
+          // S'assurer que la valeur correspond exactement aux choix du modèle Django
+          params.append('duree', searchParams.get('duree')!.toLowerCase());
+        }
 
+        // Effectuer la requête même si aucun paramètre n'est défini
         const response = await fetch(`http://127.0.0.1:8000/rech-logements/?${params.toString()}`);
         
         if (!response.ok) {
@@ -67,18 +73,15 @@ export default function Home() {
           throw new Error(errorData.message || "Erreur serveur");
         }
 
-       
-      const data: Logement[] = await response.json();
+        const data: Logement[] = await response.json();
       
-      // Formatage du prix sans changer le nom de la propriété
-      const formattedData = data.map(logement => ({
-        ...logement,
-        prix: logement.prix // Conserve le nom 'prix' mais pourrait formater ici
-      }));
-  
+        // Formatage du prix sans changer le nom de la propriété
+        const formattedData = data.map(logement => ({
+          ...logement,
+          prix: logement.prix // Conserve le nom 'prix' mais pourrait formater ici
+        }));
+    
         setLogements(formattedData);
-        
-
       } catch (err: any) {
         setError(err.message);
         setTimeout(() => setError(null), 5000);
