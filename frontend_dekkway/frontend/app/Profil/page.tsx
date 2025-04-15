@@ -36,8 +36,11 @@ export default function ProfilePage() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData.message || "Une erreur est survenue.");
+        // const errorData = await response.json();
+        // setError(errorData.message || "Une erreur est survenue.");
+        // setLoading(false);
+        const data = await response.json();
+        setUserData(data); // Stocker les données dans le state
         setLoading(false);
       } else {
         const data = await response.json();
