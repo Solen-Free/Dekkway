@@ -58,6 +58,7 @@ export default function Home() {
         if (searchParams.get('equipements')) params.append('equipements', searchParams.get('equipements')!);
         if (searchParams.get('region')) params.append('region', searchParams.get('region')!);
         if (searchParams.get('type')) params.append('type', searchParams.get('type')!.toLowerCase());
+        if (searchParams.get('duree')) params.append('duree', searchParams.get('duree')!.toLowerCase());
 
         const response = await fetch(`http://127.0.0.1:8000/rech-logements/?${params.toString()}`);
         
@@ -88,13 +89,34 @@ export default function Home() {
 
     fetchLogements();
   }, [searchParams]);
-  // Conservation du fonctionnement existant pour les boutons
+  // Gestion des filtres de type et durée
   const handleSelectTypeAction = (type: string | null) => {
-    const newParams = new URLSearchParams(); // Crée des params vierges
-    if (type) newParams.set('type', type.toLowerCase());
+    const newParams = new URLSearchParams(searchParams.toString()); // Préserve les paramètres existants
+    
+    if (type) {
+      newParams.set('type', type.toLowerCase());
+    } else {
+      newParams.delete('type');
+    }
     
     // Réinitialise la pagination si nécessaire
     newParams.delete('page'); 
+    
+    router.push(`/?${newParams.toString()}`);
+  };
+
+  // Gestion du filtre de durée
+  const handleSelectDureeAction = (duree: string | null) => {
+    const newParams = new URLSearchParams(searchParams.toString()); // Préserve les paramètres existants
+    
+    if (duree) {
+      newParams.set('duree', duree.toLowerCase());
+    } else {
+      newParams.delete('duree');
+    }
+    
+    // Réinitialise la pagination si nécessaire
+    newParams.delete('page');
     
     router.push(`/?${newParams.toString()}`);
   };
@@ -105,9 +127,10 @@ export default function Home() {
       <div className="w-full">
         <Carousel />
       </div>
-      <ButtonsBar onSelectTypeAction={handleSelectTypeAction}
-                   
-       />
+      <ButtonsBar 
+        onSelectTypeAction={handleSelectTypeAction}
+        onSelectDureeAction={handleSelectDureeAction}
+      />
 
       {/* Titre principal */}
       <div className="flex flex-col items-center mt-6 px-4 sm:px-6 lg:px-8">

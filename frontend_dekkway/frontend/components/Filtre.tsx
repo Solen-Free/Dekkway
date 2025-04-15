@@ -20,6 +20,7 @@ const Filtre = () => {
   const router = useRouter();
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [selectedPropertyType, setSelectedPropertyType] = useState("");
+  const [selectedDuration, setSelectedDuration] = useState("");
   const [priceRange, setPriceRange] = useState<[number, number]>([50000, 1000000]);
   const [bedrooms, setBedrooms] = useState<number | null>(null);
   const [equipments, setEquipments] = useState<string[]>([]);
@@ -42,6 +43,7 @@ const Filtre = () => {
 
   const handleReset = () => {
     setSelectedPropertyType("");
+    setSelectedDuration("");
     setPriceRange([50000, 1000000]);
     setBedrooms(null);
     setEquipments([]);
@@ -55,6 +57,11 @@ const Filtre = () => {
       // Type de propriété (converti en minuscules)
       if (selectedPropertyType && selectedPropertyType !== 'Tout') {
         params.append('type', selectedPropertyType.toLowerCase());
+      }
+      
+      // Durée (converti en minuscules)
+      if (selectedDuration) {
+        params.append('duree', selectedDuration.toLowerCase());
       }
 
       // Prix (adaptation aux paramètres Django)
@@ -169,22 +176,22 @@ const Filtre = () => {
                   </div>
 
                
-                  {/* Durée - Ajout de la conversion en minuscules */}
+                  {/* Durée - Utilisation de la variable d'état dédiée */}
                   <div className="mb-6">
                     <h3 className="text-lg font-semibold mb-4">Durée</h3>
                     <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                      {["Longue durée", "Courte durée"].map((type) => (
+                      {["Longue durée", "Courte durée"].map((duration) => (
                         <motion.button
-                          key={type}
+                          key={duration}
                           whileTap={{ scale: 0.95 }}
-                          onClick={() => setSelectedPropertyType(type)}
+                          onClick={() => setSelectedDuration(duration)}
                           className={`p-2 text-sm rounded-3xl transition-colors ${
-                            selectedPropertyType === type
+                            selectedDuration === duration
                               ? "bg-gradient-to-r from-[#FC9B89] to-[#FF6B6B] text-white"
                               : "bg-[#014F86] text-white hover:bg-[#013A63]"
                           }`}
                         >
-                          {type}
+                          {duration}
                         </motion.button>
                       ))}
                     </div>
@@ -302,6 +309,18 @@ const Filtre = () => {
                           onClick={() => setSelectedPropertyType("")}
                         >
                           {selectedPropertyType}
+                          <IoClose className="text-[#014F86]" size={14} />
+                        </motion.span>
+                      )}
+                      
+                      {selectedDuration && (
+                        <motion.span
+                          initial={{ opacity: 0, scale: 0.5 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
+                          onClick={() => setSelectedDuration("")}
+                        >
+                          {selectedDuration}
                           <IoClose className="text-[#014F86]" size={14} />
                         </motion.span>
                       )}
