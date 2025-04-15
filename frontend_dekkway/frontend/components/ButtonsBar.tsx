@@ -1,6 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 
 // Types de logement
 const types = [
@@ -28,6 +29,14 @@ export default function ButtonsBar({ onSelectTypeAction, onSelectDureeAction }: 
   const searchParams = useSearchParams();
   const currentType = searchParams.get('type');
   const currentDuree = searchParams.get('duree');
+  
+  // État local pour le changement de couleur immédiat
+  const [selectedDuree, setSelectedDuree] = useState<string | null>(currentDuree);
+  
+  // Synchroniser l'état local avec les paramètres d'URL
+  useEffect(() => {
+    setSelectedDuree(currentDuree);
+  }, [currentDuree]);
 
   return (
     <div className="max-w-screen-xl mx-auto px-4 sm:px-6 md:px-8">
@@ -69,12 +78,18 @@ export default function ButtonsBar({ onSelectTypeAction, onSelectDureeAction }: 
           
           {/* Options de durée */}
           {durees.map((duree) => {
-            const isActive = currentDuree === duree.value.toLowerCase();
+            // Utiliser l'état local pour un changement visuel immédiat
+            const isActive = selectedDuree === duree.value.toLowerCase();
             
             return (
               <button
                 key={duree.value}
                 onClick={() => {
+                  // Mettre à jour l'état local immédiatement pour le changement visuel
+                  const newValue = isActive ? null : duree.value.toLowerCase();
+                  setSelectedDuree(newValue);
+                  
+                  // Appeler la fonction de callback pour mettre à jour l'URL
                   if (onSelectDureeAction) {
                     onSelectDureeAction(isActive ? null : duree.value);
                   }
