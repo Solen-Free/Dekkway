@@ -7,6 +7,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+
+// Chargement dynamique du sélecteur de carte pour éviter les problèmes SSR
+const MapSelector = dynamic(() => import("./MapSelector"), {
+  ssr: false,
+  loading: () => <div className="h-64 bg-gray-100 rounded-lg animate-pulse" />,
+});
+
 
 // Fonction de normalisation pour la région
 const normalizeRegion = (region: string) => {
@@ -25,6 +33,9 @@ const Filtre = () => {
   const [bedrooms, setBedrooms] = useState<number | null>(null);
   const [equipments, setEquipments] = useState<string[]>([]);
   const [city, setCity] = useState("");
+  const [coordinates, setCoordinates] = useState<[number, number]>([14.6937, -17.4441]); // Dakar par défaut
+  const [searchRadius, setSearchRadius] = useState<number>(5); // 5km par défaut
+  const [useMapFilter, setUseMapFilter] = useState<boolean>(false);
   const [deviceType, setDeviceType] = useState<"mobile" | "tablet" | "desktop">("desktop");
 
   useEffect(() => {
@@ -48,6 +59,9 @@ const Filtre = () => {
     setBedrooms(null);
     setEquipments([]);
     setCity("");
+    setUseMapFilter(false);
+    setSearchRadius(5);
+    setCoordinates([14.6937, -17.4441]);
   };
 
   const handleApply = async () => {
@@ -85,6 +99,13 @@ const Filtre = () => {
       // Ville (normalisation pour correspondre au paramètre 'region')
       if (city) {
         params.append('region', normalizeRegion(city));
+      }
+      
+      // Ajout des paramètres de localisation si le filtre par carte est activé
+      if (useMapFilter) {
+        params.append('latitude', coordinates[0].toString());
+        params.append('longitude', coordinates[1].toString());
+        params.append('rayon', searchRadius.toString());
       }
 
       router.push(`/?${params.toString()}`);
@@ -297,6 +318,35 @@ const Filtre = () => {
                       ))}
                     </select>
                   </div>
+                  
+                  {/* Filtre par carte */}
+                  <div className="mb-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold">Recherche par carte</h3>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          checked={useMapFilter} 
+                          onChange={() => setUseMapFilter(!useMapFilter)} 
+                          className="sr-only peer"
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FC9B89]"></div>
+                      </label>
+                    </div>
+                    
+                    {useMapFilter && (
+                      <div className="mt-2">
+                        <MapSelector 
+                          onLocationChange={(coords, radius) => {
+                            setCoordinates(coords);
+                            setSearchRadius(radius);
+                          }}
+                          initialCoordinates={coordinates}
+                          initialRadius={searchRadius}
+                        />
+                      </div>
+                    )}
+                  </div>
 
                   {/* Affichage des filtres actifs */}
                   <div className="mb-6">
@@ -371,6 +421,18 @@ const Filtre = () => {
                           onClick={() => setCity("")}
                         >
                           {city}
+                          <IoClose className="text-[#014F86]" size={14} />
+                        </motion.span>
+                      )}
+                      
+                      {useMapFilter && (
+                        <motion.span
+                          initial={{ opacity: 0, scale: 0.5 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
+                          onClick={() => setUseMapFilter(false)}
+                        >
+                          Recherche par carte ({searchRadius} km)
                           <IoClose className="text-[#014F86]" size={14} />
                         </motion.span>
                       )}
