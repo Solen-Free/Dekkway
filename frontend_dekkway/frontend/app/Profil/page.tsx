@@ -229,7 +229,7 @@ export default function ProfilePage() {
 
       {/* Informations utilisateur */}
       <div className="text-center mt-3">
-        <h2 className="text-xl font-semibold text-gray-900">{userData.nom} {userData.prenom}</h2>
+
         <p className="text-gray-600 text-sm">{userData.username}</p>
         <p className="text-[#FC9B89] text-lg font-medium">Locataire</p>
       </div>
