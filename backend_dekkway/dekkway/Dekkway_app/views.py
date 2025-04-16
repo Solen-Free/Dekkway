@@ -15,7 +15,7 @@ from rest_framework import viewsets
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from .models import Bailleur, Locataire, Administrateur, Logement, Location, Notification, Service, Favoris, LocataireService, Media
 from .serializers import BailleurSerializer, LocataireSerializer, AdministrateurSerializer, LocationSerializer, NotificationSerializer, ServiceSerializer, FavorisSerializer, LocataireServiceSerializer, LogementsRechercheSerializer, LogementsRechercheSerializer, LogementSerializer, InscriptionLocataireSerializer, ConnexionLocataireSerializer, MediaSerializer
-from .serializers import PasswordResetRequestSerializer, PasswordResetConfirmSerializer
+from .serializers import PasswordResetRequestSerializer, PasswordResetConfirmSerializer, PasswordChangeSerializer
 #importations mot de passe
 from django.core.mail import send_mail
 from django.urls import reverse, reverse_lazy
@@ -231,11 +231,97 @@ class ConnexionLocataireView(APIView):
     
 class ProfilLocataireView(APIView):
     permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]  # Pour gérer les uploads de fichiers
+
+    def get_user_from_token(self, request):
+        # Vérification de l'authentification
+        auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+        
+        # Log pour débogage
+        print(f"Auth header reçu: {auth_header}")
+        
+        # Si l'en-tête commence par 'Bearer' ou 'Token', on extrait le token et on l'utilise
+        if auth_header.startswith('Bearer ') or auth_header.startswith('Token '):
+            token_key = auth_header.split(' ')[1]
+            try:
+                token = Token.objects.get(key=token_key)
+                return token.user
+            except Token.DoesNotExist:
+                print(f"Token non trouvé: {token_key}")
+                return None
+        # Si l'en-tête est juste le token sans préfixe
+        elif auth_header and not auth_header.startswith('Bearer ') and not auth_header.startswith('Token '):
+            try:
+                token = Token.objects.get(key=auth_header)
+                return token.user
+            except Token.DoesNotExist:
+                print(f"Token brut non trouvé: {auth_header}")
+                return None
+        return None
 
     def get(self, request):
-        utilisateur = request.user
-        serializer = LocataireSerializer(utilisateur)
+        # Récupération de l'utilisateur à partir du token
+        user = self.get_user_from_token(request)
+        if not user:
+            return Response({'error': 'Token invalide ou manquant'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        # Utiliser l'utilisateur récupéré du token plutôt que request.user
+        serializer = LocataireSerializer(user)
         return Response(serializer.data)
+        
+    def put(self, request):
+        # Récupération de l'utilisateur à partir du token
+        user = self.get_user_from_token(request)
+        if not user:
+            return Response({'error': 'Token invalide ou manquant'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        # Vérifier si la requête contient des données de formulaire ou JSON
+        if request.content_type and 'multipart/form-data' in request.content_type:
+            # Traitement des données de formulaire (avec fichiers)
+            serializer = LocataireSerializer(user, data=request.data, partial=True)
+            if serializer.is_valid():
+                # Gestion spécifique de la photo de profil si présente dans la requête
+                if 'photo_profil' in request.FILES:
+                    user.photo_profil = request.FILES['photo_profil']
+                    user.save()  # Sauvegarder d'abord la photo
+                
+                serializer.save()  # Puis sauvegarder les autres champs
+                return Response({
+                    'message': 'Profil mis à jour avec succès',
+                    'user': serializer.data
+                })
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            # Traitement des données JSON
+            serializer = LocataireSerializer(user, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({
+                    'message': 'Profil mis à jour avec succès',
+                    'user': serializer.data
+                })
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def patch(self, request):
+        """Permet de mettre à jour partiellement le profil"""
+        # Récupération de l'utilisateur à partir du token
+        user = self.get_user_from_token(request)
+        if not user:
+            return Response({'error': 'Token invalide ou manquant'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        serializer = LocataireSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            # Gestion spécifique de la photo de profil si présente dans la requête
+            if 'photo_profil' in request.FILES:
+                user.photo_profil = request.FILES['photo_profil']
+                user.save()  # Sauvegarder d'abord la photo
+            
+            serializer.save()  # Puis sauvegarder les autres champs
+            return Response({
+                'message': 'Profil mis à jour avec succès',
+                'user': serializer.data
+            })
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -295,3 +381,20 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     def form_valid(self, form):
         response = super().form_valid(form)
         return JsonResponse({"message": "Mot de passe réinitialisé avec succès", "redirect": "http://localhost:3000/mot-de-passe-oublie/"})
+
+
+class PasswordChangeView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        serializer = PasswordChangeSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            # Générer un nouveau token après changement de mot de passe
+            Token.objects.filter(user=request.user).delete()
+            token, _ = Token.objects.get_or_create(user=request.user)
+            return Response({
+                'message': 'Mot de passe modifié avec succès',
+                'token': token.key
+            }, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

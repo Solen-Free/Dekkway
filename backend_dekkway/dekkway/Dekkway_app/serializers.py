@@ -25,7 +25,7 @@ class BailleurInfoSerializer(serializers.ModelSerializer):
 class LocataireSerializer(serializers.ModelSerializer):
     class Meta:
         model = Locataire
-        fields = ['username', 'email', 'nom', 'prenom', 'adresse', 'telephone']
+        fields = ['username', 'email', 'nom', 'prenom', 'adresse', 'telephone', 'date_de_naissance', 'photo_profil', 'date_creation', 'date_modification']
 
 class AdministrateurSerializer(serializers.ModelSerializer):
     class Meta:
@@ -274,3 +274,25 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
 
         data['user'] = user
         return data
+
+
+class PasswordChangeSerializer(serializers.Serializer):
+    old_password = serializers.CharField(write_only=True, required=True)
+    new_password = serializers.CharField(write_only=True, required=True)
+    
+    def validate_old_password(self, value):
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError("Le mot de passe actuel est incorrect.")
+        return value
+    
+    def validate(self, data):
+        if data['old_password'] == data['new_password']:
+            raise serializers.ValidationError("Le nouveau mot de passe doit être différent de l'ancien.")
+        return data
+    
+    def save(self):
+        user = self.context['request'].user
+        user.set_password(self.validated_data['new_password'])
+        user.save()
+        return user

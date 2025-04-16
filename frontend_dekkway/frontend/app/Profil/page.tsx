@@ -33,23 +33,28 @@ export default function ProfilePage() {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Token ${token}`,
         },
+        credentials: "include", // Ajouter cette ligne pour inclure les cookies
       });
+      
+      // Vérification des logs pour le débogage
+      console.log("Token envoyé:", token);
+      console.log("Authorization header:", `Token ${token}`);
+      console.log("Status de la réponse:", response.status);
 
       if (response.ok) {
         const data = await response.json();
         setUserData(data); // Stocker les données dans le state
         setLoading(false);
       } else {
-        // const errorData = await response.json();
-        // setError(errorData.message || "Une erreur est survenue.");
-        // setLoading(false);
-        const data = await response.json();
-        setUserData(data); // Stocker les données dans le state
+        const errorData = await response.json();
+        console.error("Erreur de récupération du profil:", errorData);
+        setError(errorData.error || "Une erreur est survenue.");
         setLoading(false);
       }
     } catch (error) {
+      console.error("Exception lors de la récupération du profil:", error);
       setError("Impossible de récupérer les informations.");
       setLoading(false);
     }
@@ -69,22 +74,43 @@ export default function ProfilePage() {
       const formData = new FormData();
       formData.append("photo_profil", file);
       
+      // Ne pas définir Content-Type manuellement pour FormData, le navigateur le fait automatiquement avec la boundary
       const response = await fetch("http://localhost:8000/profil-locataire/", {
-        method: "PATCH",
+        method: "PUT", // Utiliser PUT au lieu de PATCH pour être cohérent avec le backend
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Token ${token}`,
+          // Ne pas ajouter Content-Type ici pour FormData
         },
+        credentials: "include",
         body: formData,
       });
       
+      console.log("Token envoyé pour upload:", token);
+      console.log("Authorization header upload:", `Token ${token}`);
+      console.log("Status de la réponse upload:", response.status);
+      
       if (response.ok) {
         const updatedData = await response.json();
-        setUserData(updatedData);
-        toast.success("Photo de profil mise à jour avec succès");
+        console.log("Données reçues après upload:", updatedData);
+        // Vérifier si nous avons reçu des données utilisateur valides
+        if (updatedData && updatedData.user) {
+          setUserData(updatedData.user); // Utiliser updatedData.user car le backend renvoie {message, user}
+          toast.success("Photo de profil mise à jour avec succès");
+        } else if (updatedData) {
+          // Si nous recevons des données mais pas dans le format attendu, utiliser directement les données
+          setUserData(updatedData);
+          toast.success("Photo de profil mise à jour avec succès");
+        } else {
+          console.error("Format de réponse inattendu:", updatedData);
+          toast.success("Photo mise à jour, actualisation nécessaire");
+          // Recharger les données utilisateur pour s'assurer d'avoir les dernières informations
+          fetchUserData(token);
+        }
       } else {
         toast.error("Échec de la mise à jour de la photo de profil");
       }
     } catch (error) {
+      console.error("Erreur lors de l'upload:", error);
       toast.error("Une erreur s'est produite lors du téléchargement");
     } finally {
       setUploading(false);
@@ -115,11 +141,12 @@ export default function ProfilePage() {
     
     try {
       const response = await fetch("http://localhost:8000/profil-locataire/", {
-        method: "PATCH",
+        method: "PUT", // Utiliser PUT au lieu de PATCH pour être cohérent avec le backend
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Token ${token}`,
         },
+        credentials: "include",
         body: JSON.stringify({
           username: userData.username,
           email: userData.email,
@@ -128,14 +155,27 @@ export default function ProfilePage() {
         }),
       });
       
+      console.log("Token envoyé pour saveChanges:", token);
+      console.log("Authorization header saveChanges:", `Token ${token}`);
+      console.log("Status de la réponse saveChanges:", response.status);
+      
       if (response.ok) {
         const updatedData = await response.json();
-        setUserData(updatedData);
-        toast.success("Profil mis à jour avec succès");
+        // Vérifier si nous avons reçu des données utilisateur valides
+        if (updatedData && updatedData.user) {
+          setUserData(updatedData.user); // Utiliser updatedData.user car le backend renvoie {message, user}
+          toast.success("Profil mis à jour avec succès");
+        } else {
+          console.error("Format de réponse inattendu:", updatedData);
+          toast.success("Profil mis à jour, actualisation nécessaire");
+          // Recharger les données utilisateur pour s'assurer d'avoir les dernières informations
+          fetchUserData(token);
+        }
       } else {
         toast.error("Échec de la mise à jour du profil");
       }
     } catch (error) {
+      console.error("Erreur lors de la sauvegarde:", error);
       toast.error("Une erreur s'est produite lors de la sauvegarde");
     }
   };
@@ -160,7 +200,7 @@ export default function ProfilePage() {
       <div className="relative -mt-16">
         <div className="relative group">
           <Image
-            src={userData.photo_profil || "/images/profil.jpg"} // Utiliser l'image de profil récupérée ou une par défaut
+            src={userData.photo_profil ? `http://localhost:8000${userData.photo_profil}` : "/images/default-profile.png"} // Ajouter l'URL complète du backend
             alt="Profil"
             width={100}
             height={100}
