@@ -11,7 +11,6 @@ const types = [
   { label: "Studio", value: "studio" },
   { label: "Villa", value: "villa" },
   { label: "Co-location", value: "colocation" },
-  { label: "Localisation", value: "localisation" },
 ];
 
 // Options de durée
