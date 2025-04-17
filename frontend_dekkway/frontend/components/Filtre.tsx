@@ -166,8 +166,9 @@ const Filtre = () => {
             >
               <div className="flex flex-col h-full">
                 <div className="p-4 bg-gradient-to-r from-[#FC9B89] to-[#FF6B6B] flex items-center justify-between">
-                  <button onClick={handleReset} className="text-white hover:text-gray-200">
+                  <button onClick={handleReset} className="text-white hover:text-gray-200 flex items-center gap-2">
                     <GrPowerReset size={24} />
+                    <span>Enlever filtre</span>
                   </button>
                   <h2 className="text-xl font-bold text-white">Filtres</h2>
                   <button onClick={toggleFilter} className="text-white hover:text-gray-200">
@@ -175,6 +176,96 @@ const Filtre = () => {
                   </button>
                 </div>
 
+                {/* Affichage des filtres actifs en position fixe */}
+                <div className="p-3 border-b border-[#FC9B89] bg-white sticky top-0 z-10 shadow-sm">
+                  <div className="flex flex-wrap gap-2">
+                    {selectedPropertyType && selectedPropertyType !== 'Tout' && (
+                      <motion.span
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
+                        onClick={() => setSelectedPropertyType("")}
+                      >
+                        {selectedPropertyType}
+                        <IoClose className="text-[#014F86]" size={14} />
+                      </motion.span>
+                    )}
+                    
+                    {selectedDuration && (
+                      <motion.span
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
+                        onClick={() => setSelectedDuration("")}
+                      >
+                        {selectedDuration}
+                        <IoClose className="text-[#014F86]" size={14} />
+                      </motion.span>
+                    )}
+
+                    {(priceRange[0] !== 50000 || priceRange[1] !== 1000000) && (
+                      <motion.span
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
+                        onClick={() => setPriceRange([50000, 1000000])}
+                      >
+                        {priceRange[0].toLocaleString()} - {priceRange[1].toLocaleString()} FCFA
+                        <IoClose className="text-[#014F86]" size={14} />
+                      </motion.span>
+                    )}
+
+                    {bedrooms !== null && (
+                      <motion.span
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
+                        onClick={() => setBedrooms(null)}
+                      >
+                        {bedrooms} chambre{bedrooms > 1 && 's'}
+                        <IoClose className="text-[#014F86]" size={14} />
+                      </motion.span>
+                    )}
+
+                    {equipments.map((item) => (
+                      <motion.span
+                        key={item}
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
+                        onClick={() => setEquipments(equipments.filter(e => e !== item))}
+                      >
+                        {item}
+                        <IoClose className="text-[#014F86]" size={14} />
+                      </motion.span>
+                    ))}
+
+                    {city && (
+                      <motion.span
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
+                        onClick={() => setCity("")}
+                      >
+                        {city}
+                        <IoClose className="text-[#014F86]" size={14} />
+                      </motion.span>
+                    )}
+                    
+                    {useMapFilter && (
+                      <motion.span
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
+                        onClick={() => setUseMapFilter(false)}
+                      >
+                        Recherche par carte ({searchRadius} km)
+                        <IoClose className="text-[#014F86]" size={14} />
+                      </motion.span>
+                    )}
+                  </div>
+                </div>
+                
                 <div className="flex-1 overflow-y-auto p-4">
                   {/* Type de propriété - Ajout de la conversion en minuscules */}
                   <div className="mb-6">
@@ -348,96 +439,7 @@ const Filtre = () => {
                     )}
                   </div>
 
-                  {/* Affichage des filtres actifs */}
-                  <div className="mb-6">
-                    <h3 className="text-lg font-semibold mb-4">Filtres actifs :</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedPropertyType && selectedPropertyType !== 'Tout' && (
-                        <motion.span
-                          initial={{ opacity: 0, scale: 0.5 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
-                          onClick={() => setSelectedPropertyType("")}
-                        >
-                          {selectedPropertyType}
-                          <IoClose className="text-[#014F86]" size={14} />
-                        </motion.span>
-                      )}
-                      
-                      {selectedDuration && (
-                        <motion.span
-                          initial={{ opacity: 0, scale: 0.5 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
-                          onClick={() => setSelectedDuration("")}
-                        >
-                          {selectedDuration}
-                          <IoClose className="text-[#014F86]" size={14} />
-                        </motion.span>
-                      )}
-
-                      {(priceRange[0] !== 50000 || priceRange[1] !== 1000000) && (
-                        <motion.span
-                          initial={{ opacity: 0, scale: 0.5 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
-                          onClick={() => setPriceRange([50000, 1000000])}
-                        >
-                          {priceRange[0].toLocaleString()} - {priceRange[1].toLocaleString()} FCFA
-                          <IoClose className="text-[#014F86]" size={14} />
-                        </motion.span>
-                      )}
-
-                      {bedrooms !== null && (
-                        <motion.span
-                          initial={{ opacity: 0, scale: 0.5 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
-                          onClick={() => setBedrooms(null)}
-                        >
-                          {bedrooms} chambre{bedrooms > 1 && 's'}
-                          <IoClose className="text-[#014F86]" size={14} />
-                        </motion.span>
-                      )}
-
-                      {equipments.map((item) => (
-                        <motion.span
-                          key={item}
-                          initial={{ opacity: 0, scale: 0.5 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
-                          onClick={() => setEquipments(equipments.filter(e => e !== item))}
-                        >
-                          {item}
-                          <IoClose className="text-[#014F86]" size={14} />
-                        </motion.span>
-                      ))}
-
-                      {city && (
-                        <motion.span
-                          initial={{ opacity: 0, scale: 0.5 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
-                          onClick={() => setCity("")}
-                        >
-                          {city}
-                          <IoClose className="text-[#014F86]" size={14} />
-                        </motion.span>
-                      )}
-                      
-                      {useMapFilter && (
-                        <motion.span
-                          initial={{ opacity: 0, scale: 0.5 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
-                          onClick={() => setUseMapFilter(false)}
-                        >
-                          Recherche par carte ({searchRadius} km)
-                          <IoClose className="text-[#014F86]" size={14} />
-                        </motion.span>
-                      )}
-                    </div>
-                  </div>
+                  {/* La section des filtres actifs a été déplacée en haut */}
                 </div>
 
                 <div className="p-4 border-t border-[#FC9B89]">
