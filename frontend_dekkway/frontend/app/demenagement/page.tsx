@@ -1,195 +1,273 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
+import { FaMotorcycle, FaCarAlt, FaTruckPickup, FaTruck, FaCheck, FaArrowLeft, FaPhone, FaWhatsapp, FaMapMarkerAlt, FaClock } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
-const ServicePage: React.FC = () => {
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+const DemenagementPage = () => {
+  const router = useRouter();
 
-  // Animation pour les cartes
-  const cardVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-    hover: { scale: 1.05, borderColor: '#014F86', transition: { duration: 0.2 } },
+  const servicesDekkway = [
+    {
+      id: 'tricycle',
+      title: 'Tricycle Électrique Dekkway',
+      description: 'Solution écologique pour petits déménagements urbains',
+      icon: <FaMotorcycle className="text-3xl text-[#014F86]" />,
+      price: '15 000 - 25 000 FCFA',
+      image: '/images/try.png',
+      capacity: 'Jusqu\'à 50kg',
+      features: [
+        'Idéal pour studios',
+        'Livraison express',
+        'Équipe professionnelle',
+        'Déplacement rapide'
+      ],
+      coverage: 'Dakar, Thiès, Saint-Louis'
+    },
+    {
+      id: 'voiture',
+      title: 'Voiture Utilitaire Dekkway',
+      description: 'Service complet pour petits appartements',
+      icon: <FaCarAlt className="text-3xl text-[#014F86]" />,
+      price: '25 000 - 40 000 FCFA',
+      image: '/images/voit.png',
+      capacity: '3m³ maximum',
+      features: [
+        'Protection des biens',
+        '2 chargeurs inclus',
+        'Montage/démontage meubles',
+        'Assurance basique'
+      ],
+      coverage: 'Dakar, Thiès, Saint-Louis'
+    },
+    {
+      id: 'pickup',
+      title: 'Pick-up Aménagé Dekkway',
+      description: 'Solution polyvalente pour déménagements moyens',
+      icon: <FaTruckPickup className="text-3xl text-[#014F86]" />,
+      price: '45 000 - 65 000 FCFA',
+      image: '/images/petit.png',
+      capacity: '8m³ maximum',
+      features: [
+        'Bâche de protection',
+        'Équipe expérimentée',
+        'Matériel professionnel',
+        'Service régional'
+      ],
+      coverage: 'Dakar, Thiès, Saint-Louis'
+    },
+    {
+      id: 'camion',
+      title: 'Camion Dekkway Pro',
+      description: 'Service premium pour grands déménagements',
+      icon: <FaTruck className="text-3xl text-[#014F86]" />,
+      price: '75 000 - 120 000 FCFA',
+      image: '/images/gros.png',
+      capacity: '15m³ maximum',
+      features: [
+        '3 chargeurs professionnels',
+        'Assurance complète',
+        'Service clé en main',
+        'Déplacement national'
+      ],
+      coverage: 'Tout le Sénégal'
+    }
+  ];
+
+  const containerAnimation = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15
+      }
+    }
   };
 
-  // Animation pour le bouton
-  const buttonVariants = {
-    hover: { scale: 1.05, backgroundColor: '#FC9B89', transition: { duration: 0.2 } },
-  };
-
-  // Gestion du choix de l'option
-  const handleOptionSelect = (option: string) => {
-    setSelectedOption(option);
-  };
-
-  // Gestion de la réservation
-  const handleReservation = () => {
-    if (selectedOption) {
-      // Rediriger vers la page de réservation correspondante
-      window.location.href = `/reservation/${selectedOption}`;
+  const cardAnimation = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut"
+      }
+    },
+    hover: {
+      y: -8,
+      boxShadow: "0 12px 20px rgba(1, 79, 134, 0.15)",
+      transition: { duration: 0.3 }
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <motion.div
-        className="bg-white p-6 md:p-8 rounded-3xl shadow-md w-full max-w-2xl border-2 border-[#014F86]"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <h1 className="text-2xl md:text-3xl font-bold text-center mb-6 text-[#014F86]">
-          Service de déménagement
-        </h1>
-        <p className="text-gray-600 text-center mb-8 text-lg md:text-xl">
-          Choisissez une option
-        </p>
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-12 px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto">
+        <motion.div 
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h1 className="text-4xl md:text-5xl font-extrabold text-[#014F86] mb-4">
+            <span className="block">Dekkway</span>
+            <span className="text-[#FC9B89]">Déménagement</span>
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Votre partenaire de confiance pour des déménagements sans stress
+          </p>
+        </motion.div>
 
-        <div className="space-y-4 md:space-y-6">
-          {/* Option Tricycle */}
-          <motion.label
-            className={`flex flex-col md:flex-row items-center justify-between p-6 border-2 ${
-              selectedOption === 'tricycle' ? 'border-[#014F86]' : 'border-[#FC9B89]'
-            } rounded-2xl hover:shadow-md transition-shadow cursor-pointer`}
-            variants={cardVariants}
-            initial="hidden"
-            animate="visible"
-            whileHover="hover"
-          >
-            <div className="flex items-center w-full md:w-auto">
-              <input
-                type="radio"
-                name="service"
-                value="tricycle"
-                checked={selectedOption === 'tricycle'}
-                onChange={() => handleOptionSelect('tricycle')}
-                className="form-radio h-5 w-5 text-[#014F86] rounded-full border-gray-300 focus:ring-[#FC9B89]"
-              />
-              <div className="ml-4">
-                <h2 className="text-lg md:text-xl font-semibold text-[#014F86]">Tricycle</h2>
-              </div>
-            </div>
-            <div className="w-20 h-20 md:w-24 md:h-24 mt-4 md:mt-0 md:ml-4 border-2 border-[#014F86] rounded-xl overflow-hidden">
-              <img
-                src="../images/try.png" // Remplacez par le chemin de votre image
-                alt="Tricycle"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </motion.label>
+        <motion.div
+          className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8"
+          variants={containerAnimation}
+          initial="hidden"
+          animate="visible"
+        >
+          {servicesDekkway.map((service) => (
+            <motion.div
+              key={service.id}
+              className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200"
+              variants={cardAnimation}
+              whileHover="hover"
+            >
+              <div className="p-6">
+                <div className="flex items-start gap-5">
+                  <div className="bg-[#014F86] bg-opacity-10 p-4 rounded-xl">
+                    {service.icon}
+                  </div>
+                  <div className="flex-1">
+                    <h2 className="text-2xl font-bold text-[#014F86]">{service.title}</h2>
+                    <p className="text-gray-600 mt-1">{service.description}</p>
+                    <div className="mt-3 flex items-center gap-4">
+                      <span className="bg-blue-100 text-[#014F86] px-3 py-1 rounded-full text-sm font-medium">
+                        {service.price}
+                      </span>
+                      <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium flex items-center">
+                        <FaMapMarkerAlt className="mr-1" /> {service.coverage}
+                      </span>
+                    </div>
+                  </div>
+                </div>
 
-          {/* Option Voiture */}
-          <motion.label
-            className={`flex flex-col md:flex-row items-center justify-between p-6 border-2 ${
-              selectedOption === 'voiture' ? 'border-[#014F86]' : 'border-[#FC9B89]'
-            } rounded-2xl hover:shadow-md transition-shadow cursor-pointer`}
-            variants={cardVariants}
-            initial="hidden"
-            animate="visible"
-            whileHover="hover"
-          >
-            <div className="flex items-center w-full md:w-auto">
-              <input
-                type="radio"
-                name="service"
-                value="voiture"
-                checked={selectedOption === 'voiture'}
-                onChange={() => handleOptionSelect('voiture')}
-                className="form-radio h-5 w-5 text-[#014F86] rounded-full border-gray-300 focus:ring-[#FC9B89]"
-              />
-              <div className="ml-4">
-                <h2 className="text-lg md:text-xl font-semibold text-[#014F86]">Voiture</h2>
-              </div>
-            </div>
-            <div className="w-20 h-20 md:w-24 md:h-24 mt-4 md:mt-0 md:ml-4 border-2 border-[#014F86] rounded-xl overflow-hidden">
-              <img
-                src="../images/voit.png" // Remplacez par le chemin de votre image
-                alt="Voiture"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </motion.label>
+                <div className="mt-6 grid grid-cols-2 gap-4">
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h4 className="font-semibold text-gray-700 mb-2">Capacité</h4>
+                    <p className="text-sm text-gray-600">{service.capacity}</p>
+                  </div>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h4 className="font-semibold text-gray-700 mb-2">Disponibilité</h4>
+                    <p className="text-sm text-gray-600 flex items-center">
+                      <FaClock className="mr-1" /> 7j/7 • 8h-20h
+                    </p>
+                  </div>
+                </div>
 
-          {/* Option Petit Camion */}
-          <motion.label
-            className={`flex flex-col md:flex-row items-center justify-between p-6 border-2 ${
-              selectedOption === 'petit-camion' ? 'border-[#014F86]' : 'border-[#FC9B89]'
-            } rounded-2xl hover:shadow-md transition-shadow cursor-pointer`}
-            variants={cardVariants}
-            initial="hidden"
-            animate="visible"
-            whileHover="hover"
-          >
-            <div className="flex items-center w-full md:w-auto">
-              <input
-                type="radio"
-                name="service"
-                value="petit-camion"
-                checked={selectedOption === 'petit-camion'}
-                onChange={() => handleOptionSelect('petit-camion')}
-                className="form-radio h-5 w-5 text-[#014F86] rounded-full border-gray-300 focus:ring-[#FC9B89]"
-              />
-              <div className="ml-4">
-                <h2 className="text-lg md:text-xl font-semibold text-[#014F86]">Petit Camion</h2>
+                <div className="mt-6">
+                  <h4 className="font-semibold text-gray-800 mb-3">Ce service comprend :</h4>
+                  <ul className="space-y-2">
+                    {service.features.map((feature, index) => (
+                      <li key={index} className="flex items-start">
+                        <FaCheck className="text-green-500 mt-1 mr-2 flex-shrink-0" />
+                        <span className="text-gray-700">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-            </div>
-            <div className="w-20 h-20 md:w-24 md:h-24 mt-4 md:mt-0 md:ml-4 border-2 border-[#014F86] rounded-xl overflow-hidden">
-              <img
-                src="../images/petit.png" // Remplacez par le chemin de votre image
-                alt="Petit Camion"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </motion.label>
 
-          {/* Option Grand Camion */}
-          <motion.label
-            className={`flex flex-col md:flex-row items-center justify-between p-6 border-2 ${
-              selectedOption === 'grand-camion' ? 'border-[#014F86]' : 'border-[#FC9B89]'
-            } rounded-2xl hover:shadow-md transition-shadow cursor-pointer`}
-            variants={cardVariants}
-            initial="hidden"
-            animate="visible"
-            whileHover="hover"
-          >
-            <div className="flex items-center w-full md:w-auto">
-              <input
-                type="radio"
-                name="service"
-                value="grand-camion"
-                checked={selectedOption === 'grand-camion'}
-                onChange={() => handleOptionSelect('grand-camion')}
-                className="form-radio h-5 w-5 text-[#014F86] rounded-full border-gray-300 focus:ring-[#FC9B89]"
-              />
-              <div className="ml-4">
-                <h2 className="text-lg md:text-xl font-semibold text-[#014F86]">Grand Camion</h2>
+              <div className="border-t border-gray-200">
+                <div className="h-80 w-full relative overflow-hidden group">
+                  <Image
+                    src={service.image}
+                    alt={service.title}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                </div>
               </div>
-            </div>
-            <div className="w-20 h-20 md:w-24 md:h-24 mt-4 md:mt-0 md:ml-4 border-2 border-[#014F86] rounded-xl overflow-hidden">
-              <img
-                src="/images/gros.png" // Remplacez par le chemin de votre image
-                alt="Grand Camion"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </motion.label>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Bouton Retour avec largeur ajustée */}
+        <div className="flex justify-center mb-12">
+          <motion.button
+            onClick={() => router.back()}
+            className="py-3 px-8 bg-[#FC9B89] text-white font-semibold rounded-2xl hover:bg-[#014F86] transition-colors"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <FaArrowLeft className="inline mr-2" />
+            Retour
+          </motion.button>
         </div>
 
-        {/* Bouton de réservation */}
-        <motion.button
-          onClick={handleReservation}
-          disabled={!selectedOption} // Désactivé si aucune option n'est sélectionnée
-          className="w-full mt-6 bg-[#014F86] text-white py-3 px-6 rounded-xl hover:bg-[#FC9B89] focus:outline-none focus:ring-2 focus:ring-[#FC9B89] focus:ring-offset-2 disabled:opacity-50 transition-colors"
-          variants={buttonVariants}
-          whileHover="hover"
+        <motion.div 
+          className="bg-white rounded-2xl shadow-xl overflow-hidden mb-16"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
         >
-          Réserver
-        </motion.button>
-      </motion.div>
+          <div className="p-8 md:p-10">
+            <h2 className="text-3xl font-bold text-center text-[#014F86] mb-8">
+              Contactez Dekkway
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="bg-blue-50 rounded-xl p-6 text-center hover:bg-blue-100 transition-colors">
+                <a href="tel:+221774709817" className="block">
+                  <div className="bg-white w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5 shadow-md">
+                    <FaPhone className="text-3xl text-[#014F86]" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">Appel Direct</h3>
+                  <p className="text-lg text-gray-600 font-medium">+221 77 470 98 17</p>
+                  <p className="text-gray-500 mt-3">Service client 7j/7</p>
+                </a>
+              </div>
+
+              <div className="bg-green-50 rounded-xl p-6 text-center hover:bg-green-100 transition-colors">
+                <a 
+                  href="https://wa.me/221774709817" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="block"
+                >
+                  <div className="bg-white w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5 shadow-md">
+                    <FaWhatsapp className="text-3xl text-green-600" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">WhatsApp</h3>
+                  <p className="text-lg text-gray-600 font-medium">Chat instantané</p>
+                  <p className="text-gray-500 mt-3">Réponse garantie sous 1h</p>
+                </a>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          className="bg-[#FC9B89] bg-opacity-10 border border-[#014F86] border-opacity-30 rounded-2xl p-6 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <h3 className="text-lg font-bold text-[#014F86] mb-3">
+            Zones de couverture Dekkway
+          </h3>
+          <p className="text-gray-700">
+            Dakar • Thiès • Saint-Louis • Pikine • Guédiawaye • Rufisque
+          </p>
+          <p className="text-gray-600 mt-2 text-sm">
+            Autres destinations disponibles sur demande avec devis personnalisé
+          </p>
+        </motion.div>
+      </div>
     </div>
   );
 };
 
-export default ServicePage;
+export default DemenagementPage;
