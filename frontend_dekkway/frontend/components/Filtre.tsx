@@ -6,7 +6,15 @@ import { SlidersHorizontal } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import dynamic from "next/dynamic";
+
+// Chargement dynamique du sélecteur de carte pour éviter les problèmes SSR
+const MapSelector = dynamic(() => import("./MapSelector"), {
+  ssr: false,
+  loading: () => <div className="h-64 bg-gray-100 rounded-lg animate-pulse" />,
+});
+
 
 // Fonction de normalisation pour la région
 const normalizeRegion = (region: string) => {
@@ -18,13 +26,89 @@ const normalizeRegion = (region: string) => {
 
 const Filtre = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isFilterVisible, setIsFilterVisible] = useState(false);
-  const [selectedPropertyType, setSelectedPropertyType] = useState("");
+  const [selectedPropertyTypes, setSelectedPropertyTypes] = useState<string[]>([]);
+  const [selectedDuration, setSelectedDuration] = useState("");
   const [priceRange, setPriceRange] = useState<[number, number]>([50000, 1000000]);
   const [bedrooms, setBedrooms] = useState<number | null>(null);
   const [equipments, setEquipments] = useState<string[]>([]);
   const [city, setCity] = useState("");
+  const [coordinates, setCoordinates] = useState<[number, number]>([14.6937, -17.4441]); // Dakar par défaut
+  const [searchRadius, setSearchRadius] = useState<number>(5); // 5km par défaut
+  const [useMapFilter, setUseMapFilter] = useState<boolean>(false);
   const [deviceType, setDeviceType] = useState<"mobile" | "tablet" | "desktop">("desktop");
+  
+  // Récupération des filtres depuis l'URL au chargement du composant
+  useEffect(() => {
+    // Type de propriété
+    const typeParam = searchParams.get('type');
+    if (typeParam) {
+      // Gestion de plusieurs types séparés par des virgules
+      const types = typeParam.split(',');
+      const formattedTypes = types.map(type => {
+        // Première lettre en majuscule pour correspondre au format des boutons
+        return type.charAt(0).toUpperCase() + type.slice(1);
+      });
+      setSelectedPropertyTypes(formattedTypes);
+    }
+    
+    // Durée
+    const dureeParam = searchParams.get('duree');
+    if (dureeParam) {
+      // Première lettre en majuscule pour correspondre au format des boutons
+      const formattedDuree = dureeParam.charAt(0).toUpperCase() + dureeParam.slice(1);
+      setSelectedDuration(formattedDuree === 'Longue' ? 'Longue durée' : 'Courte durée');
+    }
+    
+    // Prix
+    const prixMinParam = searchParams.get('prix_min');
+    const prixMaxParam = searchParams.get('prix_max');
+    if (prixMinParam && prixMaxParam) {
+      setPriceRange([parseInt(prixMinParam), parseInt(prixMaxParam)]);
+    }
+    
+    // Nombre de chambres
+    const chambresParam = searchParams.get('nombre_de_chambres');
+    if (chambresParam) {
+      setBedrooms(parseInt(chambresParam));
+    }
+    
+    // Équipements
+    const equipementsParam = searchParams.get('equipements');
+    if (equipementsParam) {
+      const equipList = equipementsParam.split(',').map(item => {
+        const [equip] = item.split(':');
+        // Première lettre en majuscule pour correspondre au format des boutons
+        return equip.charAt(0).toUpperCase() + equip.slice(1);
+      });
+      setEquipments(equipList);
+    }
+    
+    // Région
+    const regionParam = searchParams.get('region');
+    if (regionParam) {
+      // Trouver la région correspondante dans la liste des régions disponibles
+      const regions = ["Thiès", "Dakar", "Saint-Louis", "Diourbel", "Kaolack", "Matam", "Fatick", "Kaffrine", "Kédougou", "Kolda", "Louga", "Sédhiou","Tambacounda", "Ziguinchor"];
+      const matchedRegion = regions.find(r => normalizeRegion(r) === regionParam);
+      if (matchedRegion) {
+        setCity(matchedRegion);
+      }
+    }
+    
+    // Filtre par carte
+    const latParam = searchParams.get('lat');
+    const lngParam = searchParams.get('lng');
+    const rayonParam = searchParams.get('rayon');
+    
+    if (latParam && lngParam) {
+      setUseMapFilter(true);
+      setCoordinates([parseFloat(latParam), parseFloat(lngParam)]);
+      if (rayonParam) {
+        setSearchRadius(parseInt(rayonParam));
+      }
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const checkDevice = () => {
@@ -37,24 +121,42 @@ const Filtre = () => {
     window.addEventListener('resize', checkDevice);
     return () => window.removeEventListener('resize', checkDevice);
   }, []);
+  
 
-  const toggleFilter = () => setIsFilterVisible(!isFilterVisible);
+  const toggleFilter = () => {
+    // Si le filtre est visible et qu'on va le fermer, on applique les filtres
+    if (isFilterVisible) {
+      handleApply();
+    }
+    setIsFilterVisible(!isFilterVisible);
+  };
 
   const handleReset = () => {
-    setSelectedPropertyType("");
+    setSelectedPropertyTypes([]);
+    setSelectedDuration("");
     setPriceRange([50000, 1000000]);
     setBedrooms(null);
     setEquipments([]);
     setCity("");
+    setUseMapFilter(false);
+    setSearchRadius(5);
+    setCoordinates([14.6937, -17.4441]);
   };
 
   const handleApply = async () => {
     try {
       const params = new URLSearchParams();
 
-      // Type de propriété (converti en minuscules)
-      if (selectedPropertyType && selectedPropertyType !== 'Tout') {
-        params.append('type', selectedPropertyType.toLowerCase());
+      // Types de propriété (convertis en minuscules)
+      if (selectedPropertyTypes.length > 0 && !selectedPropertyTypes.includes('Tout')) {
+        const typesParam = selectedPropertyTypes.map(type => type.toLowerCase()).join(',');
+        params.append('type', typesParam);
+      }
+      
+      // Durée (converti en minuscules)
+      if (selectedDuration) {
+        // Utiliser la valeur exacte comme dans le modèle Django
+        params.append('duree', selectedDuration.toLowerCase());
       }
 
       // Prix (adaptation aux paramètres Django)
@@ -77,6 +179,13 @@ const Filtre = () => {
       // Ville (normalisation pour correspondre au paramètre 'region')
       if (city) {
         params.append('region', normalizeRegion(city));
+      }
+      
+      // Ajout des paramètres de localisation si le filtre par carte est activé
+      if (useMapFilter) {
+        params.append('lat', coordinates[0].toString());
+        params.append('lng', coordinates[1].toString());
+        params.append('rayon', searchRadius.toString());
       }
 
       router.push(`/?${params.toString()}`);
@@ -121,7 +230,10 @@ const Filtre = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
-              onClick={toggleFilter}
+              onClick={() => {
+                handleApply();
+                setIsFilterVisible(false);
+              }}
             />
 
             <motion.div
@@ -137,27 +249,140 @@ const Filtre = () => {
             >
               <div className="flex flex-col h-full">
                 <div className="p-4 bg-gradient-to-r from-[#FC9B89] to-[#FF6B6B] flex items-center justify-between">
-                  <button onClick={handleReset} className="text-white hover:text-gray-200">
+                  <button onClick={handleReset} className="text-white hover:text-gray-200 flex items-center gap-2">
                     <GrPowerReset size={24} />
+                    <span>Enlever filtre</span>
                   </button>
                   <h2 className="text-xl font-bold text-white">Filtres</h2>
-                  <button onClick={toggleFilter} className="text-white hover:text-gray-200">
+                  <button onClick={() => {
+                    handleApply();
+                    setIsFilterVisible(false);
+                  }} className="text-white hover:text-gray-200">
                     <IoClose size={24} />
                   </button>
                 </div>
 
+                {/* Affichage des filtres actifs en position fixe */}
+                <div className="p-3 border-b border-[#FC9B89] bg-white sticky top-0 z-10 shadow-sm">
+                  <div className="flex flex-wrap gap-2">
+                    {selectedPropertyTypes.length > 0 && !selectedPropertyTypes.includes('Tout') && 
+                      selectedPropertyTypes.map((type) => (
+                        <motion.span
+                          key={type}
+                          initial={{ opacity: 0, scale: 0.5 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
+                          onClick={() => setSelectedPropertyTypes(prev => prev.filter(t => t !== type))}
+                        >
+                          {type}
+                          <IoClose className="text-[#014F86]" size={14} />
+                        </motion.span>
+                      ))
+                    }
+                    
+                    {selectedDuration && (
+                      <motion.span
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
+                        onClick={() => setSelectedDuration("")}
+                      >
+                        {selectedDuration}
+                        <IoClose className="text-[#014F86]" size={14} />
+                      </motion.span>
+                    )}
+
+                    {(priceRange[0] !== 50000 || priceRange[1] !== 1000000) && (
+                      <motion.span
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
+                        onClick={() => setPriceRange([50000, 1000000])}
+                      >
+                        {priceRange[0].toLocaleString()} - {priceRange[1].toLocaleString()} FCFA
+                        <IoClose className="text-[#014F86]" size={14} />
+                      </motion.span>
+                    )}
+
+                    {bedrooms !== null && (
+                      <motion.span
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
+                        onClick={() => setBedrooms(null)}
+                      >
+                        {bedrooms} chambre{bedrooms > 1 && 's'}
+                        <IoClose className="text-[#014F86]" size={14} />
+                      </motion.span>
+                    )}
+
+                    {equipments.map((item) => (
+                      <motion.span
+                        key={item}
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
+                        onClick={() => setEquipments(equipments.filter(e => e !== item))}
+                      >
+                        {item}
+                        <IoClose className="text-[#014F86]" size={14} />
+                      </motion.span>
+                    ))}
+
+                    {city && (
+                      <motion.span
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
+                        onClick={() => setCity("")}
+                      >
+                        {city}
+                        <IoClose className="text-[#014F86]" size={14} />
+                      </motion.span>
+                    )}
+                    
+                    {useMapFilter && (
+                      <motion.span
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
+                        onClick={() => setUseMapFilter(false)}
+                      >
+                        Recherche par carte ({searchRadius} km)
+                        <IoClose className="text-[#014F86]" size={14} />
+                      </motion.span>
+                    )}
+                  </div>
+                </div>
+                
                 <div className="flex-1 overflow-y-auto p-4">
-                  {/* Type de propriété - Ajout de la conversion en minuscules */}
+                  {/* Type de propriété - Sélection multiple */}
                   <div className="mb-6">
-                    <h3 className="text-lg font-semibold mb-4">Type de propriété</h3>
+                    <h3 className="text-lg font-semibold mb-4">Type de propriété (sélection multiple)</h3>
                     <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                       {["Tout", "Maison", "Appartement", "Co-Location", "Studio", "Villa"].map((type) => (
                         <motion.button
                           key={type}
                           whileTap={{ scale: 0.95 }}
-                          onClick={() => setSelectedPropertyType(type)}
+                          onClick={() => {
+                            if (type === "Tout") {
+                              // Si "Tout" est sélectionné, on efface les autres sélections
+                              setSelectedPropertyTypes(["Tout"]);
+                            } else {
+                              // Si on clique sur un type déjà sélectionné, on le retire
+                              if (selectedPropertyTypes.includes(type)) {
+                                setSelectedPropertyTypes(prev => prev.filter(t => t !== type));
+                              } else {
+                                // Sinon on l'ajoute, en retirant "Tout" s'il était sélectionné
+                                setSelectedPropertyTypes(prev => {
+                                  const newTypes = prev.filter(t => t !== "Tout");
+                                  return [...newTypes, type];
+                                });
+                              }
+                            }
+                          }}
                           className={`p-2 text-sm rounded-3xl transition-colors ${
-                            selectedPropertyType === type
+                            selectedPropertyTypes.includes(type)
                               ? "bg-gradient-to-r from-[#FC9B89] to-[#FF6B6B] text-white"
                               : "bg-[#014F86] text-white hover:bg-[#013A63]"
                           }`}
@@ -169,22 +394,22 @@ const Filtre = () => {
                   </div>
 
                
-                  {/* Durée - Ajout de la conversion en minuscules */}
+                  {/* Durée - Utilisation de la variable d'état dédiée */}
                   <div className="mb-6">
                     <h3 className="text-lg font-semibold mb-4">Durée</h3>
                     <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                      {["Longue durée", "Courte durée"].map((type) => (
+                      {["Longue durée", "Courte durée"].map((duration) => (
                         <motion.button
-                          key={type}
+                          key={duration}
                           whileTap={{ scale: 0.95 }}
-                          onClick={() => setSelectedPropertyType(type)}
+                          onClick={() => setSelectedDuration(duration)}
                           className={`p-2 text-sm rounded-3xl transition-colors ${
-                            selectedPropertyType === type
+                            selectedDuration === duration
                               ? "bg-gradient-to-r from-[#FC9B89] to-[#FF6B6B] text-white"
                               : "bg-[#014F86] text-white hover:bg-[#013A63]"
                           }`}
                         >
-                          {type}
+                          {duration}
                         </motion.button>
                       ))}
                     </div>
@@ -289,84 +514,42 @@ const Filtre = () => {
                       ))}
                     </select>
                   </div>
-
-                  {/* Affichage des filtres actifs */}
+                  
+                  {/* Filtre par carte */}
                   <div className="mb-6">
-                    <h3 className="text-lg font-semibold mb-4">Filtres actifs :</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedPropertyType && selectedPropertyType !== 'Tout' && (
-                        <motion.span
-                          initial={{ opacity: 0, scale: 0.5 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
-                          onClick={() => setSelectedPropertyType("")}
-                        >
-                          {selectedPropertyType}
-                          <IoClose className="text-[#014F86]" size={14} />
-                        </motion.span>
-                      )}
-
-                      {(priceRange[0] !== 50000 || priceRange[1] !== 1000000) && (
-                        <motion.span
-                          initial={{ opacity: 0, scale: 0.5 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
-                          onClick={() => setPriceRange([50000, 1000000])}
-                        >
-                          {priceRange[0].toLocaleString()} - {priceRange[1].toLocaleString()} FCFA
-                          <IoClose className="text-[#014F86]" size={14} />
-                        </motion.span>
-                      )}
-
-                      {bedrooms !== null && (
-                        <motion.span
-                          initial={{ opacity: 0, scale: 0.5 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
-                          onClick={() => setBedrooms(null)}
-                        >
-                          {bedrooms} chambre{bedrooms > 1 && 's'}
-                          <IoClose className="text-[#014F86]" size={14} />
-                        </motion.span>
-                      )}
-
-                      {equipments.map((item) => (
-                        <motion.span
-                          key={item}
-                          initial={{ opacity: 0, scale: 0.5 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
-                          onClick={() => setEquipments(equipments.filter(e => e !== item))}
-                        >
-                          {item}
-                          <IoClose className="text-[#014F86]" size={14} />
-                        </motion.span>
-                      ))}
-
-                      {city && (
-                        <motion.span
-                          initial={{ opacity: 0, scale: 0.5 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          className="bg-[#FC9B89]/20 text-[#014F86] px-3 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer hover:bg-[#FC9B89]/30 transition-colors"
-                          onClick={() => setCity("")}
-                        >
-                          {city}
-                          <IoClose className="text-[#014F86]" size={14} />
-                        </motion.span>
-                      )}
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold">Recherche par carte</h3>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          checked={useMapFilter} 
+                          onChange={() => setUseMapFilter(!useMapFilter)} 
+                          className="sr-only peer"
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FC9B89]"></div>
+                      </label>
                     </div>
+                    
+                    {useMapFilter && (
+                      <div className="mt-2">
+                        <MapSelector 
+                          onLocationChange={(coords, radius) => {
+                            setCoordinates(coords);
+                            setSearchRadius(radius);
+                          }}
+                          initialCoordinates={coordinates}
+                          initialRadius={searchRadius}
+                        />
+                      </div>
+                    )}
                   </div>
+
+                  {/* La section des filtres actifs a été déplacée en haut */}
                 </div>
 
+                {/* Le bouton d'application a été supprimé car les filtres s'appliquent automatiquement à la fermeture */}
                 <div className="p-4 border-t border-[#FC9B89]">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={handleApply}
-                    className="w-full py-3 bg-[#014F86] text-white rounded-lg font-semibold hover:bg-[#013A63] transition-colors"
-                  >
-                    Appliquer les filtres
-                  </motion.button>
+                  <p className="text-center text-sm text-gray-500">Les filtres seront appliqués automatiquement à la fermeture</p>
                 </div>
               </div>
             </motion.div>

@@ -27,11 +27,20 @@ export default function ModifierMotDePasse() {
     }
 
     try {
+      // Récupérer le token d'authentification
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setError("Vous devez être connecté pour modifier votre mot de passe");
+        setIsLoading(false);
+        return;
+      }
+
       // Envoi de la requête à l'API pour changer le mot de passe
-      const response = await fetch("/api/modifier-mot-de-passe", {
+      const response = await fetch("/password-change/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify({
           oldPassword,
@@ -39,11 +48,16 @@ export default function ModifierMotDePasse() {
         }),
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        // Si la réponse est positive, on redirige vers le profil
+        // Si la réponse est positive, on met à jour le token et on redirige vers le profil
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+        }
+        alert("Mot de passe modifié avec succès");
         router.push("/profil");
       } else {
-        const data = await response.json();
         setError(data.message || "Une erreur s'est produite.");
       }
     } catch (error) {

@@ -51,6 +51,11 @@ class Administrateur(Utilisateur):
 
 # Modèle Logement
 class Logement(models.Model):
+    DUREE_CHOICES = [
+        ('longue durée', 'Longue durée'),
+        ('courte durée', 'Courte durée'),
+    ]
+    
     bailleur = models.ForeignKey(Bailleur, on_delete=models.CASCADE, related_name="logements")
     quartier = models.CharField(max_length=255)
     titre = models.CharField(max_length=255, verbose_name="Titre du logement")
@@ -65,6 +70,7 @@ class Logement(models.Model):
     date_ajout = models.DateTimeField(auto_now_add=True)
     date_modification = models.DateTimeField(auto_now=True)
     equipements = models.JSONField(default=dict, blank=True)
+    duree = models.CharField(max_length=20, choices=DUREE_CHOICES, default='longue durée', verbose_name="Durée de location")
     
     # Nouveaux champs pour les équipements
     salons = models.IntegerField(null=True, blank=True, verbose_name="Nombre de salons")

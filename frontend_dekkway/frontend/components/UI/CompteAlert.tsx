@@ -42,6 +42,7 @@ const CompteAlert: React.FC<CompteAlertProps> = ({ onClose }) => {
     <div
       ref={menuRef}
       className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg border border-gray-200 z-50"
+      onMouseLeave={onClose}
     >
       <ul className="py-2 text-gray-800">
         {isLoggedIn ? (

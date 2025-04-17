@@ -47,18 +47,30 @@ export default function Home() {
     const fetchLogements = async () => {
       try {
         const params = new URLSearchParams();
-        // if (searchParams.get('type')) {
-        //   params.append('type', searchParams.get('type')!);
-        // }
-
+        
         // Conversion des paramètres pour le backend Django
         if (searchParams.get('prix_min')) params.append('prix_min', searchParams.get('prix_min')!);
         if (searchParams.get('prix_max')) params.append('prix_max', searchParams.get('prix_max')!);
         if (searchParams.get('nombre_de_chambres')) params.append('nombre_de_chambres', searchParams.get('nombre_de_chambres')!);
         if (searchParams.get('equipements')) params.append('equipements', searchParams.get('equipements')!);
         if (searchParams.get('region')) params.append('region', searchParams.get('region')!);
-        if (searchParams.get('type')) params.append('type', searchParams.get('type')!.toLowerCase());
+        
+        // Correction pour le type et la durée
+        if (searchParams.get('type')) {
+          params.append('type', searchParams.get('type')!.toLowerCase());
+        }
+        
+        if (searchParams.get('duree')) {
+          // S'assurer que la valeur correspond exactement aux choix du modèle Django
+          params.append('duree', searchParams.get('duree')!.toLowerCase());
+        }
 
+        // Ajout des paramètres de géolocalisation
+        if (searchParams.get('lat')) params.append('lat', searchParams.get('lat')!);
+        if (searchParams.get('lng')) params.append('lng', searchParams.get('lng')!);
+        if (searchParams.get('rayon')) params.append('rayon', searchParams.get('rayon')!);
+
+        // Effectuer la requête même si aucun paramètre n'est défini
         const response = await fetch(`http://127.0.0.1:8000/rech-logements/?${params.toString()}`);
         
         if (!response.ok) {
@@ -66,18 +78,15 @@ export default function Home() {
           throw new Error(errorData.message || "Erreur serveur");
         }
 
-       
-      const data: Logement[] = await response.json();
+        const data: Logement[] = await response.json();
       
-      // Formatage du prix sans changer le nom de la propriété
-      const formattedData = data.map(logement => ({
-        ...logement,
-        prix: logement.prix // Conserve le nom 'prix' mais pourrait formater ici
-      }));
-  
+        // Formatage du prix sans changer le nom de la propriété
+        const formattedData = data.map(logement => ({
+          ...logement,
+          prix: logement.prix // Conserve le nom 'prix' mais pourrait formater ici
+        }));
+    
         setLogements(formattedData);
-        
-
       } catch (err: any) {
         setError(err.message);
         setTimeout(() => setError(null), 5000);
@@ -88,13 +97,34 @@ export default function Home() {
 
     fetchLogements();
   }, [searchParams]);
-  // Conservation du fonctionnement existant pour les boutons
+  // Gestion des filtres de type et durée
   const handleSelectTypeAction = (type: string | null) => {
-    const newParams = new URLSearchParams(); // Crée des params vierges
-    if (type) newParams.set('type', type.toLowerCase());
+    const newParams = new URLSearchParams(searchParams.toString()); // Préserve les paramètres existants
+    
+    if (type) {
+      newParams.set('type', type.toLowerCase());
+    } else {
+      newParams.delete('type');
+    }
     
     // Réinitialise la pagination si nécessaire
     newParams.delete('page'); 
+    
+    router.push(`/?${newParams.toString()}`);
+  };
+
+  // Gestion du filtre de durée
+  const handleSelectDureeAction = (duree: string | null) => {
+    const newParams = new URLSearchParams(searchParams.toString()); // Préserve les paramètres existants
+    
+    if (duree) {
+      newParams.set('duree', duree.toLowerCase());
+    } else {
+      newParams.delete('duree');
+    }
+    
+    // Réinitialise la pagination si nécessaire
+    newParams.delete('page');
     
     router.push(`/?${newParams.toString()}`);
   };
@@ -105,9 +135,10 @@ export default function Home() {
       <div className="w-full">
         <Carousel />
       </div>
-      <ButtonsBar onSelectTypeAction={handleSelectTypeAction}
-                   
-       />
+      <ButtonsBar 
+        onSelectTypeAction={handleSelectTypeAction}
+        onSelectDureeAction={handleSelectDureeAction}
+      />
 
       {/* Titre principal */}
       <div className="flex flex-col items-center mt-6 px-4 sm:px-6 lg:px-8">

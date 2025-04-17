@@ -13,6 +13,13 @@ class LogementFilter(django_filters.FilterSet):
         label="Type de logement (ex: Studio, Maison)"
     )
     
+    # Filtre pour la durée de location
+    duree = django_filters.CharFilter(
+        field_name='duree',
+        lookup_expr='iexact',
+        label="Durée de location (ex: courte durée, longue durée)"
+    )
+    
     # Filtres numériques pour le prix
     prix_min = django_filters.NumberFilter(
         field_name='prix', 
@@ -151,7 +158,7 @@ class LogementFilter(django_filters.FilterSet):
 
     class Meta:
         model = Logement
-        fields = ['type', 'prix_min', 'prix_max', 'nombre_de_chambres', 'region', 'quartier']
+        fields = ['type', 'duree', 'prix_min', 'prix_max', 'nombre_de_chambres', 'region', 'quartier']
         filter_overrides = {
             models.JSONField: {
                 'filter_class': django_filters.CharFilter,
