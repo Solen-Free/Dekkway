@@ -65,6 +65,11 @@ export default function Home() {
           params.append('duree', searchParams.get('duree')!.toLowerCase());
         }
 
+        // Ajout des paramètres de géolocalisation
+        if (searchParams.get('lat')) params.append('lat', searchParams.get('lat')!);
+        if (searchParams.get('lng')) params.append('lng', searchParams.get('lng')!);
+        if (searchParams.get('rayon')) params.append('rayon', searchParams.get('rayon')!);
+
         // Effectuer la requête même si aucun paramètre n'est défini
         const response = await fetch(`http://127.0.0.1:8000/rech-logements/?${params.toString()}`);
         

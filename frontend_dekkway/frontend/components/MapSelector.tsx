@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import L from 'leaflet';
-import { OpenStreetMapProvider } from 'leaflet-geosearch';
+import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import 'leaflet/dist/leaflet.css';
@@ -29,9 +29,11 @@ const MapSelector = ({
   const mapRef = useRef<L.Map | null>(null);
   const markerRef = useRef<L.Marker | null>(null);
   const circleRef = useRef<L.Circle | null>(null);
+  const searchControlRef = useRef<any>(null);
   const [coordinates, setCoordinates] = useState<[number, number]>(initialCoordinates);
   const [radius, setRadius] = useState<number>(initialRadius);
   const [mapReady, setMapReady] = useState<boolean>(false);
+  const [searchAddress, setSearchAddress] = useState<string>("");
   
   // Initialisation de la carte
   useEffect(() => {
@@ -43,8 +45,43 @@ const MapSelector = ({
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(map);
 
-      // Ajout de la recherche
+      // Configuration du fournisseur de recherche
       const provider = new OpenStreetMapProvider();
+      
+      // Ajout du contrôle de recherche
+      const searchControl = new (GeoSearchControl as any)({
+        provider,
+        style: 'bar',
+        showMarker: false,
+        autoClose: true,
+        retainZoomLevel: false,
+        animateZoom: true,
+        searchLabel: 'Entrez une adresse',
+        keepResult: true
+      });
+      
+      map.addControl(searchControl);
+      searchControlRef.current = searchControl;
+      
+      // Gestion des résultats de recherche
+      map.on('geosearch/showlocation', function(e: any) {
+        const { location } = e;
+        const newCoords: [number, number] = [location.y, location.x];
+        setCoordinates(newCoords);
+        
+        // Mise à jour du marqueur
+        if (markerRef.current) {
+          markerRef.current.setLatLng([location.y, location.x]);
+        }
+        
+        // Mise à jour du cercle
+        if (circleRef.current) {
+          circleRef.current.setLatLng([location.y, location.x]);
+        }
+        
+        // Notification du changement
+        onLocationChange(newCoords, radius);
+      });
       
       // Création du marqueur initial
       markerRef.current = L.marker(coordinates, { icon: DefaultIcon, draggable: true })
@@ -101,6 +138,9 @@ const MapSelector = ({
 
     return () => {
       if (mapRef.current) {
+        if (searchControlRef.current) {
+          mapRef.current.removeControl(searchControlRef.current);
+        }
         mapRef.current.remove();
         mapRef.current = null;
       }
@@ -117,7 +157,19 @@ const MapSelector = ({
 
   return (
     <div className="space-y-4">
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold mb-2">Rechercher une adresse</h3>
+        <p className="text-sm text-gray-600 mb-2">Utilisez la barre de recherche sur la carte ou cliquez directement sur la carte pour sélectionner un emplacement</p>
+      </div>
+      
       <div id="location-map" className="h-64 w-full rounded-lg shadow-md"></div>
+      
+      <div className="mt-4 flex flex-col space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium">Coordonnées: </span>
+          <span className="text-sm text-gray-600">{coordinates[0].toFixed(6)}, {coordinates[1].toFixed(6)}</span>
+        </div>
+      </div>
       
       <div className="mt-4">
         <h3 className="text-lg font-semibold mb-2">Rayon de recherche: {radius} km</h3>
