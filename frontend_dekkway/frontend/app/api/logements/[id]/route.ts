@@ -223,7 +223,6 @@
 
 
 
-
 import { NextResponse } from 'next/server';
 
 interface Logement {

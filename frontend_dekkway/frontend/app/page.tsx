@@ -215,6 +215,7 @@ export default function Home() {
 
         // Journalisation des paramètres
         console.log('Fetching with params:', params.toString());
+        // const response = await fetch(`http://127.0.0.1:8000/rech-logements/?${params.toString()}`);
 
         const response = await fetch(`/api/Logement?${params.toString()}`);
         
