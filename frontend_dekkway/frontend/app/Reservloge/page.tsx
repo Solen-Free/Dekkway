@@ -11,7 +11,6 @@ import axios from 'axios';
 
 
 
-
 const ReservationPage: React.FC = () => {
   const searchParams = useSearchParams();
   const [currentStep, setCurrentStep] = useState(1);
