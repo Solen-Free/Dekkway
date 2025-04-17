@@ -533,9 +533,9 @@ const Filtre = () => {
                         <motion.button
                           key={type}
                           whileTap={{ scale: 0.95 }}
-                          onClick={() => setSelectedPropertyType(type)}
+                          onClick={() => setState(s => ({ ...s, selectedPropertyType: type }))}
                           className={`p-2 text-sm rounded-3xl transition-colors ${
-                            selectedPropertyType === type
+                            state.selectedPropertyType === type
                               ? "bg-gradient-to-r from-[#FC9B89] to-[#FF6B6B] text-white"
                               : "bg-[#014F86] text-white hover:bg-[#013A63]"
                           }`}
