@@ -139,7 +139,7 @@ export default function DetailLog() {
         //   ? /api/logements/${params.id}
         //   : http://127.0.0.1:8000/details-logements/${params.id}/;
         
-        const response = await axios.get(`http://127.0.0.1:8000/details-logements/${params.id}/`);
+        const response = await axios.get(`/api/logements/${params.id}/`);
         setLogement(response.data);
       } catch (err) {
         setError("Erreur lors du chargement des données");
