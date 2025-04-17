@@ -40,10 +40,14 @@ export default function ButtonsBar({ onSelectTypeAction, onSelectDureeAction }: 
   }, [currentDuree, currentType]);
 
   return (
-    <div className="max-w-screen-xl mx-auto px-4 sm:px-6 md:px-8">
-      <div className="my-6">
-        {/* Tous les boutons sur une seule ligne */}
-        <div className="flex flex-nowrap overflow-x-auto scrollbar-hide items-center justify-center gap-4">
+    <div className="max-w-screen-xl mx-auto px-2 sm:px-4 md:px-6">
+      <div className="my-4 sm:my-5 md:my-6 relative">
+        {/* Barre de défilement horizontale avec indicateurs */}
+        <div className="flex flex-nowrap overflow-x-auto scrollbar-hide items-center gap-2 sm:gap-3 md:gap-4 pb-2 px-1 scroll-smooth"
+          style={{
+            msOverflowStyle: 'none', /* IE and Edge */
+            scrollbarWidth: 'none', /* Firefox */
+          }}>
           {/* Types de logement */}
           {types.map((type) => {
             // Utiliser l'état local pour un changement visuel immédiat
@@ -62,10 +66,11 @@ export default function ButtonsBar({ onSelectTypeAction, onSelectDureeAction }: 
                 }}
                 className={`
                   shrink-0
-                  px-3 py-2 sm:px-4 sm:py-2 md:px-5 md:py-3 
+                  px-2.5 py-1.5 sm:px-4 sm:py-2 md:px-5 md:py-3 
                   rounded-full text-xs sm:text-sm md:text-base 
                   text-white transition-transform duration-200 
                   hover:scale-105 active:scale-95
+                  whitespace-nowrap
                   ${
                     isActive
                       ? "bg-[#FC9B89] scale-105" // Style actif
@@ -99,10 +104,11 @@ export default function ButtonsBar({ onSelectTypeAction, onSelectDureeAction }: 
                 }}
                 className={`
                   shrink-0
-                  px-3 py-2 sm:px-4 sm:py-2 md:px-5 md:py-3 
+                  px-2.5 py-1.5 sm:px-4 sm:py-2 md:px-5 md:py-3 
                   rounded-full text-xs sm:text-sm md:text-base 
                   text-white transition-transform duration-200 
                   hover:scale-105 active:scale-95
+                  whitespace-nowrap
                   ${
                     isActive
                       ? "bg-[#FC9B89] scale-105" // Style actif
