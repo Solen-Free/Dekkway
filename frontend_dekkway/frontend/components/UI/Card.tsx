@@ -71,7 +71,8 @@ const Card: React.FC<CardProps> = ({
       <div className="relative w-full h-35 aspect-[4/3] overflow-hidden rounded-t-2xl">
         <div className="relative w-full h-35">
           <img
-            src={`http://localhost:8000${banniere}`}
+            // src={`http://localhost:8000${banniere}`}
+            src={banniere}
             alt={titre}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />

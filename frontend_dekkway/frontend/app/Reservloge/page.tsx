@@ -7,6 +7,10 @@ import OptionsForm from '@/components/OptionsForm';
 import PaymentForm from '@/components/PaymentForm';
 import Confirmation from '@/components/Confirmation';
 import { ReservationDetails } from '@/types/reservation';
+import axios from 'axios';
+
+
+
 
 const ReservationPage: React.FC = () => {
   const searchParams = useSearchParams();
@@ -22,13 +26,10 @@ const ReservationPage: React.FC = () => {
     name: '',
     phone: '',
     email: '',
-    paymentMethod: '',
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
-    cardName: ''
+    paymentMethod: 'mastercard',
+    transactionId: '',
   });
-
+  
   useEffect(() => {
     const propertyParam = searchParams.get('property');
     if (propertyParam) {
@@ -62,10 +63,19 @@ const ReservationPage: React.FC = () => {
     
     if (currentStep < 4) {
       setCurrentStep(prev => prev + 1);
+      // const sendConfirmation = async () => {
+      //   try {
+      //     await axios.post('/api/reservations', reservationDetails);
+      //   } catch (error) {
+      //     console.error("Erreur d'enregistrement", error);
+      //   }
+      // };
+      // sendConfirmation();
     }
   };
 
   const renderStep = () => {
+    const totalAmount = reservationDetails.property.monthlyPrice * 3 + 2000;
     switch (currentStep) {
       case 1:
         return <ReservationForm onNext={handleNext} />;
@@ -75,11 +85,33 @@ const ReservationPage: React.FC = () => {
                  onPrevious={() => setCurrentStep(1)}
                  property={reservationDetails.property}
                />;
-      case 3:
-        return <PaymentForm 
-                 onNext={handleNext} 
-                 onPrevious={() => setCurrentStep(2)}
-               />;
+               case 3:
+                return (
+                  <PaymentForm
+                    onSuccess={(transactionId) => {
+                      handleNext({ transactionId });
+                      setCurrentStep(4);
+                    }}
+                    onError={(message) => console.error(message)}
+                    onPrevious={() => setCurrentStep(2)}
+                    paymentMethod={reservationDetails.paymentMethod}
+                    amount={totalAmount}
+                    userDetails={{
+                      name: reservationDetails.name,
+                      email: reservationDetails.email,
+                      phone: reservationDetails.phone
+                    }}
+                    propertyDetails={{
+                      id: reservationDetails.property.id,
+                      name: reservationDetails.property.name,
+                      location: reservationDetails.property.location,
+                      monthlyPrice: reservationDetails.property.monthlyPrice
+                    
+                      
+                    }}
+                  />
+                );
+  
       case 4:
         return <Confirmation reservationDetails={reservationDetails} />;
       default:
