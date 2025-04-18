@@ -15,14 +15,21 @@ const DefaultIcon = L.icon({
 L.Marker.prototype.options.icon = DefaultIcon;
 
 export default function Map({ 
-  coordinates,
+  coordinates = [14.6937, -17.4441], // Coordonnées par défaut (Dakar)
   address
 }: { 
-  coordinates: [number, number];
+  coordinates?: [number, number];
   address?: string;
 }) {
+  // Vérifier si les coordonnées sont valides
+  const validCoordinates: [number, number] = Array.isArray(coordinates) && 
+    coordinates.length === 2 && 
+    typeof coordinates[0] === 'number' && 
+    typeof coordinates[1] === 'number' 
+    ? coordinates 
+    : [14.6937, -17.4441]; // Utiliser les coordonnées par défaut si invalides
   useEffect(() => {
-    const map = L.map('map').setView(coordinates, 15);
+    const map = L.map('map').setView(validCoordinates, 15);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
@@ -39,7 +46,7 @@ export default function Map({
 
     map.addControl(searchControl);
 
-    L.marker(coordinates)
+    L.marker(validCoordinates)
       .addTo(map)
       .bindPopup(address || 'Localisation du logement')
       .openPopup();

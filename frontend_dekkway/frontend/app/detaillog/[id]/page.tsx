@@ -1,7 +1,7 @@
 
 // -------chat------
 "use client";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
@@ -126,24 +126,62 @@ const getEquipmentIcon = (equipment: string) => {
 
 export default function DetailLog() {
   const params = useParams<{ id: string }>();
+  const router = useRouter();
   const [logement, setLogement] = useState<Logement | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const handleReservation = () => {
+    if (logement) {
+      const propertyData = {
+        id: params.id,
+        nom: `${logement.type} - ${logement.region} - ${logement.quartier}`,
+        ville: `${logement.region}, ${logement.quartier}`,
+        prix: parseInt(logement.prix.replace(/[^0-9]/g, '')),
+        image: logement.medias?.find(media => media.type === "image")?.fichier || ''
+      };
+      router.push(`/Reservloge?property=${encodeURIComponent(JSON.stringify(propertyData))}`);
+    }
+  };
   useEffect(() => {
     const fetchLogement = async () => {
-      if (!params.id) return;
       try {
-        // Pour utiliser l'API Next.js locale en développement
-        // const apiUrl = process.env.NODE_ENV === 'development' 
-        //   ? /api/logements/${params.id}
-        //   : http://127.0.0.1:8000/details-logements/${params.id}/;
-        
-        const response = await axios.get(`/api/logements/${params.id}/`);
-        setLogement(response.data);
+        // Utiliser les données mockées en développement
+        if (process.env.NODE_ENV === 'development') {
+          const { mockLogement } = await import('./mockData');
+          setLogement(mockLogement);
+          setLoading(false);
+          return;
+        }
+
+        // Utiliser l'API en production
+        const response = await axios.get(`http://localhost:8000/api/logements/${params.id}/`);
+        if (response.status === 200) {
+          const data = response.data;
+          const formattedLogement: Logement = {
+            type: data.type,
+            description: data.description,
+            region: data.region,
+            quartier: data.quartier,
+            prix: data.prix.toString(),
+            nombre_de_chambres: data.nombre_de_chambres,
+            equipements: data.equipements,
+            latitude: data.latitude,
+            longitude: data.longitude,
+            medias: data.medias,
+            agent: data.agent,
+            salons: data.salons,
+            cuisines: data.cuisines,
+            salles_de_bain: data.salles_de_bain,
+            garage: data.garage,
+            adresse: data.adresse
+          };
+          setLogement(formattedLogement);
+        } else {
+          throw new Error('Erreur lors de la récupération du logement');
+        }
       } catch (err) {
-        setError("Erreur lors du chargement des données");
-        console.error(err);
+        setError(err instanceof Error ? err.message : 'Une erreur est survenue');
       } finally {
         setLoading(false);
       }
@@ -159,15 +197,19 @@ export default function DetailLog() {
   // Prépare les données
   const title = `${logement.type} - ${logement.region} - ${logement.quartier}`;
   const images = logement.medias
-    .filter((media) => media.type === "image")
-    .map((media) => media.fichier);
+    ? logement.medias
+        .filter((media) => media.type === "image")
+        .map((media) => media.fichier)
+    : [];
 
   // Ajoutez cette ligne pour récupérer la vidéo
-  const video = logement.medias.find((media) => media.type === "video")?.fichier;
+  const video = logement.medias?.find((media) => media.type === "video")?.fichier;
 
-  const equipements = Object.entries(logement.equipements)
-    .filter(([_, value]) => value)
-    .map(([key]) => key);
+  const equipements = logement.equipements
+    ? Object.entries(logement.equipements)
+        .filter(([_, value]) => value)
+        .map(([key]) => key)
+    : [];
 
   return (
     <div className="max-w-7xl mx-auto p-4 font-sans">
@@ -230,10 +272,13 @@ export default function DetailLog() {
           
           
           <div className="flex gap-4">
-            <button className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600">
+            <button 
+              onClick={handleReservation}
+              className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600 hover:bg-blue-700 transition-colors"
+            >
               Réserver
             </button>
-            <button className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600">
+            <button className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600 hover:bg-blue-700 transition-colors">
               Visite Guidée
             </button>
           </div>
@@ -336,8 +381,8 @@ export default function DetailLog() {
           <p className="mt-2 text-gray-600">{logement.adresse}</p>
         )}
         <p className="mt-2 text-gray-500 text-sm">
-          Coordonnées GPS : {logement.latitude.toFixed(6)},{" "}
-          {logement.longitude.toFixed(6)}
+          Coordonnées GPS : {logement.latitude?.toFixed(6) || 'N/A'},{" "}
+          {logement.longitude?.toFixed(6) || 'N/A'}
         </p>
       </section>
     </div>

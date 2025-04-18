@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { ReservationDetails } from '@/types/reservation';
+import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
 
 
 
@@ -12,12 +14,27 @@ const ReservationForm: React.FC<ReservationFormProps> = ({ onNext }) => {
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [accepted, setAccepted] = useState(false);
+  const [shake, setShake] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (accepted) {
-      onNext({ name, phone, email });
+    if (!accepted) {
+      setShake(true);
+      toast.error('Veuillez accepter les conditions de réservation');
+      setTimeout(() => setShake(false), 500);
+      return;
     }
+    onNext({ name, phone, email });
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^A-Za-zÀ-ÿ\s]/g, '').slice(0, 20);
+    setName(value);
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, '').slice(0, 9);
+    setPhone(value);
   };
 
   return (
@@ -28,7 +45,9 @@ const ReservationForm: React.FC<ReservationFormProps> = ({ onNext }) => {
         <input
           type="text"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={handleNameChange}
+          maxLength={20}
+          placeholder=""
           className="mt-1 bg-white/70 block w-full px-3 py-2 border-2 border-[#014F86] rounded-3xl shadow-sm"
           required
         />
@@ -38,7 +57,9 @@ const ReservationForm: React.FC<ReservationFormProps> = ({ onNext }) => {
         <input
           type="tel"
           value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          onChange={handlePhoneChange}
+          maxLength={9}
+          placeholder=""
           className="mt-1 bg-white/70 block w-full px-3 py-2 border-2 border-[#014F86] rounded-3xl shadow-sm"
           required
         />
@@ -67,12 +88,14 @@ const ReservationForm: React.FC<ReservationFormProps> = ({ onNext }) => {
           <span className="ml-2 text-sm text-gray-700">J’accepte les conditions de réservation</span>
         </label>
       </div>
-      <button
+      <motion.button
         type="submit"
+        animate={shake ? { x: [-10, 10, -10, 10, 0] } : {}}
+        transition={{ duration: 0.5 }}
         className="w-1/4 ml-auto flex justify-center py-2 px-4 border border-transparent rounded-3xl shadow-sm font-medium text-white bg-[#014F86] hover:bg-[#FC9B89]"
       >
         Continuer
-      </button>
+      </motion.button>
     </form>
   );
 };

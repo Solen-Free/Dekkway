@@ -233,13 +233,10 @@ const paymentOptions = [
 
 const OptionsForm: React.FC<OptionsFormProps> = ({ onNext, onPrevious, property }) => {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>();
-
-  // Calcul des montants
   const reservationFee = 2000;
-  const housingFee = property.monthlyPrice * 3;
+  const housingFee = property.monthlyPrice;
   const total = housingFee + reservationFee;
 
-  // Soumission du formulaire : on transmet la méthode choisie et les infos du logement
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (paymentMethod) {
@@ -263,7 +260,7 @@ const OptionsForm: React.FC<OptionsFormProps> = ({ onNext, onPrevious, property 
         <div className="flex flex-col md:flex-row gap-3">
           <div className="flex-1 space-y-3">
             <div className="space-y-2 w-40">
-              <h3 className="text-xs font-medium text-center text-gray-500 uppercase">Caution</h3>
+              <h3 className="text-xs font-medium text-center text-gray-500 uppercase">Prix mensuel</h3>
               <div className="border border-gray-200 rounded-3xl p-2 text-center bg-[#014F86]">
                 <span className="text-lg font-bold text-white">
                   {housingFee.toLocaleString('fr-FR')} XOF

@@ -74,7 +74,7 @@ const ReservationPage: React.FC = () => {
   };
 
   const renderStep = () => {
-    const totalAmount = reservationDetails.property.monthlyPrice * 3 + 2000;
+    const totalAmount = reservationDetails.property.monthlyPrice + 2000;
     switch (currentStep) {
       case 1:
         return <ReservationForm onNext={handleNext} />;
