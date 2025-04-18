@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import axios from "axios";
+import Link from "next/link";
 import {
   MapPin,
   Video,
@@ -50,6 +51,7 @@ type Logement = {
   region: string;
   quartier: string;
   prix: string;
+  video: string;
   nombre_de_chambres: number;
   equipements: {
     [key: string]: boolean;
@@ -132,13 +134,8 @@ export default function DetailLog() {
 
   useEffect(() => {
     const fetchLogement = async () => {
-      if (!params.id) return;
+      if (!params || !params.id) return;
       try {
-        // Pour utiliser l'API Next.js locale en développement
-        // const apiUrl = process.env.NODE_ENV === 'development' 
-        //   ? /api/logements/${params.id}
-        //   : http://127.0.0.1:8000/details-logements/${params.id}/;
-        
         const response = await axios.get(`http://127.0.0.1:8000/details-logements/${params.id}/`);
         setLogement(response.data);
       } catch (err) {
@@ -148,9 +145,10 @@ export default function DetailLog() {
         setLoading(false);
       }
     };
-
+  
     fetchLogement();
-  }, [params.id]);
+  }, [params]);
+  
 
   if (loading) return <div className="p-4 text-center">Chargement...</div>;
   if (error) return <div className="p-4 text-center text-red-600">{error}</div>;
@@ -233,9 +231,10 @@ export default function DetailLog() {
             <button className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600">
               Réserver
             </button>
-            <button className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600">
+            <Link href={`/VisiteGuidee?video=${encodeURIComponent(logement.video)}`}>
+<button className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600">
               Visite Guidée
-            </button>
+            </button></Link>
           </div>
         </div>
       </div>
