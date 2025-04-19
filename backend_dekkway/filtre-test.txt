@@ -52,13 +52,11 @@ GET http://127.0.0.1:8000/rech-logements/?type=Appartement&region=Dakar&nombre_d
 PUT http://127.0.0.1:8000/rech-logements/1/?type=Appartement&region=Dakar&nombre_de_chambres=3&prix_min=100000&prix_max=700000&equipements=piscine:true,climatisation:false
 
 
-<<<<<<< HEAD
+#####recherche avec filtres#####
 
-=======
 #####recherche naturel#####
 http://127.0.0.1:8000/rech-logements/?search=maison 2 chambre  à dakar  entre 100000 et 200000 avec wifi climatisation sans piscine
-http://127.0.0.1:8000rech-logements/?search=maison deux chambre  à dakar  entre 100000 et 200000 avec wifi climatisation sans piscine
->>>>>>> backend-develop-recherche
+http://127.0.0.1:8000/rech-logements/?search=maison deux chambre  à dakar  entre 100000 et 200000 avec wifi climatisation sans piscine
 
 
 from django.db.models import F, FloatField

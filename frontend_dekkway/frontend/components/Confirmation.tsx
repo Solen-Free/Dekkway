@@ -1,110 +1,113 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useRouter } from 'next/navigation';
 import { ReservationDetails } from '@/types/reservation';
+import { HomeIcon, LocationIcon, EmailIcon, PhoneIcon, UserIcon, PaymentIcon, CalendarIcon, ClockIcon } from '@/public/icons/confirmation-icons';
 
 interface ConfirmationProps {
   reservationDetails: ReservationDetails;
 }
 
 const Confirmation: React.FC<ConfirmationProps> = ({ reservationDetails }) => {
-  const [isProcessing, setIsProcessing] = useState(false);
+  const router = useRouter();
+  // Calcul du total
+  const total = reservationDetails.property.monthlyPrice + 2000;
 
-  const handlePaymentSuccess = async () => {
-    setIsProcessing(true);
-    try {
-      const response = await fetch('/api/reservation', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...reservationDetails,
-          cardNumber: '•••• •••• •••• ' + reservationDetails.cardNumber?.slice(-4), // Masquage des données sensibles
-          cvv: '•••'
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) throw new Error(data.message || 'Erreur de paiement');
-
-      alert('Paiement confirmé ! Un email de confirmation vous a été envoyé.');
-      // Redirection ou reset du formulaire ici si nécessaire
-
-    } catch (error) {
-      console.error('Erreur:', error);
-      alert(error instanceof Error ? error.message : 'Erreur inconnue');
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  // Formatage de la date
-  const paymentDate = new Date().toLocaleDateString('fr-FR', {
+  // Date et heure du paiement
+  const date = new Date();
+  const paymentDate = date.toLocaleDateString('fr-FR', {
     day: '2-digit',
     month: 'long',
-    year: 'numeric',
+    year: 'numeric'
+  });
+  const paymentTime = date.toLocaleTimeString('fr-FR', {
     hour: '2-digit',
     minute: '2-digit'
   });
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold text-[#014F86] mb-6 text-center">
-        Confirmation de réservation
-      </h2>
+    <div className="max-w-4xl mx-auto p-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 rounded-xl">
+        {/* Colonne de gauche */}
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <h2 className="text-base font-semibold text-[#014F86]">Nom du logement</h2>
+            <div className="flex items-center gap-3 text-sm text-gray-700">
+              <HomeIcon className="w-6 h-6 text-[#FC9B89]" />
+              <span className="font-normal">{reservationDetails.property.name}</span>
+            </div>
+          </div>
 
-      <div className="space-y-4 mb-8">
-        {/* Section Logement */}
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="font-semibold text-lg mb-2">Détails du logement</h3>
-          <p className="text-gray-600">
-            <span className="font-medium">Nom :</span> {reservationDetails.property.name}
-          </p>
-          <p className="text-gray-600">
-            <span className="font-medium">Localisation :</span> {reservationDetails.property.location}
-          </p>
-          <p className="text-gray-600">
-            <span className="font-medium">Prix mensuel :</span> {reservationDetails.property.monthlyPrice.toLocaleString()} FCFA
-          </p>
+          <div className="space-y-2">
+            <h2 className="text-base font-semibold text-[#014F86]">Localisation</h2>
+            <div className="flex items-center gap-3 text-sm text-gray-700">
+              <LocationIcon className="w-6 h-6 text-[#FC9B89]" />
+              <span className="font-normal">{reservationDetails.property.location}</span>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <h2 className="text-base font-semibold text-[#014F86]">Réservé par :</h2>
+            <div className="flex items-center gap-3 text-sm text-gray-700">
+              <UserIcon className="w-6 h-6 text-[#FC9B89]" />
+              <span className="font-normal">{reservationDetails.name}</span>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <h2 className="text-base font-semibold text-[#014F86]">Méthode de paiement</h2>
+            <div className="flex items-center w-full text-sm text-gray-700 mt-4">
+              <div className="flex items-center justify-between w-full gap-8">
+                <img src="/images/visa-logo.png" alt="VISA" className="h-8 flex-shrink-0" />
+                <div className="flex items-center gap-4 whitespace-nowrap">
+                  <span className="font-normal text-[#014F86]">Montant Total :</span>
+                  <span className="font-semibold text-[#014F86]">{total.toLocaleString('fr-FR')} XOF</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Section Paiement */}
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="font-semibold text-lg mb-2">Informations de paiement</h3>
-          <p className="text-gray-600">
-            <span className="font-medium">Méthode :</span> {reservationDetails.paymentMethod}
-          </p>
-          <p className="text-gray-600">
-            <span className="font-medium">Date :</span> {paymentDate}
-          </p>
-        </div>
+        {/* Colonne de droite */}
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <h2 className="text-base font-semibold text-[#014F86] whitespace-nowrap">Informations Personnelles</h2>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 text-sm text-gray-700">
+                <EmailIcon className="w-6 h-6 text-[#FC9B89]" />
+                <span className="font-normal">{reservationDetails.email}</span>
+              </div>
+              <div className="flex items-center gap-3 text-sm text-gray-700">
+                <PhoneIcon className="w-6 h-6 text-[#FC9B89]" />
+                <span className="font-normal">{reservationDetails.phone}</span>
+              </div>
+            </div>
+          </div>
 
-        {/* Section Contact */}
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="font-semibold text-lg mb-2">Coordonnées</h3>
-          <p className="text-gray-600">
-            <span className="font-medium">Nom :</span> {reservationDetails.name}
-          </p>
-          <p className="text-gray-600">
-            <span className="font-medium">Email :</span> {reservationDetails.email}
-          </p>
-          <p className="text-gray-600">
-            <span className="font-medium">Téléphone :</span> {reservationDetails.phone}
-          </p>
+          <div className="space-y-2">
+            <h2 className="text-base font-semibold text-[#014F86]">Date et Heure</h2>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 text-sm text-gray-700">
+                <CalendarIcon className="w-6 h-6 text-[#FC9B89]" />
+                <span className="font-normal">{paymentDate}</span>
+              </div>
+              <div className="flex items-center gap-3 text-sm text-gray-700">
+                <ClockIcon className="w-6 h-6 text-[#FC9B89]" />
+                <span className="font-normal">{paymentTime}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <button
-        onClick={handlePaymentSuccess}
-        disabled={isProcessing}
-        className="w-full py-3 px-6 bg-[#014F86] hover:bg-[#013A5E] text-white rounded-md transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {isProcessing ? 'Traitement en cours...' : 'Confirmer le paiement'}
-      </button>
-
-      <p className="text-sm text-gray-500 mt-4 text-center">
-        En confirmant, vous acceptez nos conditions générales de vente
-      </p>
+      {/* Bouton de retour */}
+      <div className="mt-8 text-center">
+        <button
+          onClick={() => router.push('/')}
+          className="py-2 px-6 bg-[#014F86] text-white text-sm rounded-lg font-normal hover:bg-[#FC9B89] transition-colors shadow-md hover:shadow-lg transform hover:-translate-y-0.5 duration-200"
+        >
+          Retour à l'accueil
+        </button>
+      </div>
     </div>
   );
 };
