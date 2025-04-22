@@ -14,7 +14,6 @@ interface Logement {
   banniere: string;
   titre: string;
   quartier: string;
-  price: string;
   type: string;
   prix: number;
   bedrooms?: number;
@@ -50,56 +49,75 @@ export default function Home() {
   useEffect(() => {
     const fetchLogements = async () => {
       try {
+        setLoading(true);
+        setError(null);
         const params = new URLSearchParams();
         
         // Conversion des paramètres pour le backend Django
-        if (searchParams.get('prix_min')) params.append('prix_min', searchParams.get('prix_min')!);
-        if (searchParams.get('prix_max')) params.append('prix_max', searchParams.get('prix_max')!);
-        if (searchParams.get('nombre_de_chambres')) params.append('nombre_de_chambres', searchParams.get('nombre_de_chambres')!);
-        if (searchParams.get('equipements')) params.append('equipements', searchParams.get('equipements')!);
-        if (searchParams.get('region')) params.append('region', searchParams.get('region')!);
-        
-        // Correction pour le type et la durée
-        if (searchParams.get('type')) {
-          params.append('type', searchParams.get('type')!.toLowerCase());
-        }
-        
-        if (searchParams.get('duree')) {
-          // S'assurer que la valeur correspond exactement aux choix du modèle Django
-          params.append('duree', searchParams.get('duree')!.toLowerCase());
+        const paramMapping: Record<string, string> = {
+          'prix_min': 'prix_min',
+          'prix_max': 'prix_max',
+          'nombre_de_chambres': 'nombre_de_chambres',
+          'equipements': 'equipements',
+          'region': 'region',
+          'lat': 'lat',
+          'lng': 'lng',
+          'rayon': 'rayon',
+          'search': 'search'
+        };
+
+        // Ajouter tous les paramètres valides
+        Object.entries(paramMapping).forEach(([key, value]) => {
+          const paramValue = searchParams.get(key);
+          if (paramValue && paramValue.trim() !== '') {
+            params.append(value, paramValue);
+          }
+        });
+
+        // Traitement du paramètre de recherche
+        const searchQuery = searchParams.get('search');
+        if (searchQuery && searchQuery.trim() !== '') {
+          params.append('search', searchQuery.trim());
         }
 
-        // Ajout des paramètres de géolocalisation
-        if (searchParams.get('lat')) params.append('lat', searchParams.get('lat')!);
-        if (searchParams.get('lng')) params.append('lng', searchParams.get('lng')!);
-        if (searchParams.get('rayon')) params.append('rayon', searchParams.get('rayon')!);
+        // Traitement spécial pour type et durée
+        const type = searchParams.get('type');
+        if (type) {
+          params.append('type', type.toLowerCase());
+        }
 
-        // Effectuer la requête même si aucun paramètre n'est défini
+        const duree = searchParams.get('duree');
+        if (duree) {
+          params.append('duree', duree.toLowerCase());
+        }
+
+        // Effectuer la requête vers le backend Django
         const response = await fetch(`http://127.0.0.1:8000/rech-logements/?${params.toString()}`);
         
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.message || "Erreur serveur");
+          throw new Error(errorData.message || "Une erreur est survenue lors de la récupération des logements");
         }
 
         const data: Logement[] = await response.json();
       
-        // Formatage du prix sans changer le nom de la propriété
+        // Formatage et validation des données
         const formattedData = data.map(logement => ({
           ...logement,
-          prix: logement.prix // Conserve le nom 'prix' mais pourrait formater ici
+          prix: typeof logement.prix === 'number' ? logement.prix : Number(logement.prix)
         }));
     
         setLogements(formattedData);
       } catch (err: any) {
-        setError(err.message);
-        setTimeout(() => setError(null), 5000);
+        console.error('Erreur lors de la récupération des logements:', err);
+        setError(err.message || "Une erreur est survenue lors de la récupération des logements");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchLogements();
+    const timeoutId = setTimeout(fetchLogements, 300); // Délai pour éviter les requêtes trop fréquentes
+    return () => clearTimeout(timeoutId);
   }, [searchParams]);
   // Gestion des filtres de type et durée
   const handleSelectTypeAction = (type: string | null) => {
@@ -209,7 +227,7 @@ export default function Home() {
                   banniere={logement.banniere}
                   titre={logement.titre}
                   quartier={logement.quartier}
-                  prix={logement.prix}
+                  prix={Number(logement.prix)}
                 />
               ))
             ) : (
