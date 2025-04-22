@@ -56,7 +56,7 @@ export default function Footer() {
             <div>
               <h3 className="font-bold mb-4">Navigation</h3>
               <ul className="space-y-2">
-                <li><Link href="/reservation" className="hover:underline">Réservation</Link></li>
+                <li><Link href="/Reservations" className="hover:underline">Réservations</Link></li>
                 <li><Link href="/moncompte" className="hover:underline">Mon Compte</Link></li>
               </ul>
             </div>
