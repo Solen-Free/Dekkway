@@ -1,11 +1,12 @@
 
 // -------chat------
 "use client";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import axios from "axios";
+import Link from "next/link";
 import {
   MapPin,
   Video,
@@ -50,6 +51,7 @@ type Logement = {
   region: string;
   quartier: string;
   prix: string;
+  video: string;
   nombre_de_chambres: number;
   equipements: {
     [key: string]: boolean;
@@ -72,6 +74,7 @@ function ImageCarousel({ images }: { images: string[] }) {
     setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   const nextImage = () =>
     setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  
 
   return (
     <div className="relative">
@@ -126,31 +129,44 @@ const getEquipmentIcon = (equipment: string) => {
 
 export default function DetailLog() {
   const params = useParams<{ id: string }>();
+  const router = useRouter();
   const [logement, setLogement] = useState<Logement | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const handleReservation = () => {
+    if (logement) {
+      const propertyData = {
+        id: params?.id,
+        nom: `${logement.type} - ${logement.region} - ${logement.quartier}`,
+        ville: `${logement.region}, ${logement.quartier}`,
+        prix: typeof logement.prix === 'string' ? parseInt(logement.prix.replace(/[^0-9]/g, '')) : logement.prix,
+        image: logement.medias?.find(media => media.type === "image")?.fichier || ''
+      };
+      router.push(`/Reservloge?property=${encodeURIComponent(JSON.stringify(propertyData))}`);
+    }
+  };
   useEffect(() => {
-    const fetchLogement = async () => {
-      if (!params.id) return;
-      try {
-        // Pour utiliser l'API Next.js locale en développement
-        // const apiUrl = process.env.NODE_ENV === 'development' 
-        //   ? /api/logements/${params.id}
-        //   : http://127.0.0.1:8000/details-logements/${params.id}/;
-        
-        const response = await axios.get(`http://127.0.0.1:8000/details-logements/${params.id}/`);
-        setLogement(response.data);
-      } catch (err) {
-        setError("Erreur lors du chargement des données");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchLogement = async () => {
+    if (!params?.id) {
+      setError("Identifiant du logement manquant");
+      setLoading(false);
+      return;
+    }
+    try {
+      const response = await axios.get(`http://127.0.0.1:8000/details-logements/${params.id}/`);
+      setLogement(response.data as Logement);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchLogement();
-  }, [params.id]);
+  fetchLogement();
+}, [params]);
+
+  
 
   if (loading) return <div className="p-4 text-center">Chargement...</div>;
   if (error) return <div className="p-4 text-center text-red-600">{error}</div>;
@@ -159,15 +175,19 @@ export default function DetailLog() {
   // Prépare les données
   const title = `${logement.type} - ${logement.region} - ${logement.quartier}`;
   const images = logement.medias
-    .filter((media) => media.type === "image")
-    .map((media) => media.fichier);
+    ? logement.medias
+        .filter((media) => media.type === "image")
+        .map((media) => media.fichier)
+    : [];
 
   // Ajoutez cette ligne pour récupérer la vidéo
-  const video = logement.medias.find((media) => media.type === "video")?.fichier;
+  const video = logement.medias?.find((media) => media.type === "video")?.fichier;
 
-  const equipements = Object.entries(logement.equipements)
-    .filter(([_, value]) => value)
-    .map(([key]) => key);
+  const equipements = logement.equipements
+    ? Object.entries(logement.equipements)
+        .filter(([_, value]) => value)
+        .map(([key]) => key)
+    : [];
 
   return (
     <div className="max-w-7xl mx-auto p-4 font-sans">
@@ -230,12 +250,16 @@ export default function DetailLog() {
           
           
           <div className="flex gap-4">
-            <button className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600">
+            <button 
+              onClick={handleReservation}
+              className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600 hover:bg-blue-700 transition-colors"
+            >
               Réserver
             </button>
-            <button className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600">
+            <Link href={`/VisiteGuidee?video=${encodeURIComponent(logement.video)}`}>
+<button className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600">
               Visite Guidée
-            </button>
+            </button></Link>
           </div>
         </div>
       </div>
@@ -336,8 +360,8 @@ export default function DetailLog() {
           <p className="mt-2 text-gray-600">{logement.adresse}</p>
         )}
         <p className="mt-2 text-gray-500 text-sm">
-          Coordonnées GPS : {logement.latitude.toFixed(6)},{" "}
-          {logement.longitude.toFixed(6)}
+          Coordonnées GPS : {logement.latitude?.toFixed(6) || 'N/A'},{" "}
+          {logement.longitude?.toFixed(6) || 'N/A'}
         </p>
       </section>
     </div>
