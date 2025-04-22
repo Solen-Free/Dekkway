@@ -176,23 +176,22 @@ import { FaArrowRight } from 'react-icons/fa';
 export default function PartenairesPage() {
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-[#014F86] mb-6">Nos Partenaires Officiels</h1>
+      <h1 className="text-3xl font-bold text-[#014F86] mb-6 text-center">Nos Partenaires Officiels</h1>
       
       {/* Section Principale des Partenaires */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h2 className="text-2xl font-semibold text-[#014F86] mb-4">Nos Alliés Stratégiques</h2>
-        <p className="text-gray-700 mb-6">
-          Chez Dekkway, nous sommes fiers de collaborer avec des partenaires de confiance qui partagent notre vision 
-          d'améliorer l'expérience de location immobilière au Sénégal. 
-          Ensemble, nous travaillons à offrir des services de qualité et des solutions innovantes.
+        <h2 className="text-2xl font-semibold text-[#014F86] mb-4 text-center">Alliances Stratégiques</h2>
+        <p className="text-gray-700 mb-6 text-center max-w-3xl mx-auto">
+        Chez Dekkway, nous collaborons avec des leaders innovants pour transformer l'expérience immobilière.
+        Découvrez nos partenaires qui enrichissent notre écosystème de services.
         </p>
 
         {/* Grille des Partenaires */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
           
           {/* Carte Partenaire NIAFEY */}
-          <div className="bg-gray-50 p-6 rounded-lg hover:shadow-md transition-shadow">
-            <div className="h-40 relative mb-4">
+          <div className="bg-gray-50 p-6 rounded-lg hover:shadow-md transition-shadow flex flex-col">
+            <div className="h-40 relative mb-4 flex-grow">
               <Image
                 src="/images/niafey.jpg"
                 alt="Logo NIAFEY"
@@ -202,7 +201,7 @@ export default function PartenairesPage() {
               />
             </div>
             <h3 className="text-xl font-semibold text-[#014F86] mb-2">NIAFEY</h3>
-            <p className="text-gray-700 mb-4">Service de nettoyage professionnel et solutions d'entretien écologique.</p>
+            <p className="text-gray-700 mb-4 flex-grow">Service de nettoyage professionnel et solutions d'entretien écologique.</p>
             <a 
               href="https://niafey.com/" 
               target="_blank" 
@@ -213,9 +212,32 @@ export default function PartenairesPage() {
             </a>
           </div>
 
+          {/* Nouveau Partenaire AGS Déménagement */}
+          <div className="bg-gray-50 p-6 rounded-lg hover:shadow-md transition-shadow flex flex-col">
+            <div className="h-40 relative mb-4 flex-grow">
+              <Image
+                src="/images/demenage.jpg"
+                alt="Logo AGS Déménagement"
+                fill
+                className="object-contain p-4"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+            </div>
+            <h3 className="text-xl font-semibold text-[#014F86] mb-2">AGS Déménagement</h3>
+            <p className="text-gray-700 mb-4 flex-grow">Services de déménagement professionnel et logistique intégrée.</p>
+            <a 
+              href="https://www.ags-demenagement.com/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-[#FC9B89] hover:underline flex items-center"
+            >
+              Visiter le site <FaArrowRight className="ml-2" />
+            </a>
+          </div>
+
           {/* Carte Partenaire Yassir */}
-          <div className="bg-gray-50 p-6 rounded-lg hover:shadow-md transition-shadow">
-            <div className="h-40 relative mb-4">
+          <div className="bg-gray-50 p-6 rounded-lg hover:shadow-md transition-shadow flex flex-col">
+            <div className="h-40 relative mb-4 flex-grow">
               <Image
                 src="/images/yassir.jpg"
                 alt="Logo Yassir"
@@ -225,7 +247,7 @@ export default function PartenairesPage() {
               />
             </div>
             <h3 className="text-xl font-semibold text-[#014F86] mb-2">Yassir</h3>
-            <p className="text-gray-700 mb-4">Super application de services du quotidien : transport, livraison et paiements.</p>
+            <p className="text-gray-700 mb-4 flex-grow">Super application de services du quotidien : transport, livraison et paiements.</p>
             <a 
               href="https://yassir.com/fr" 
               target="_blank" 
@@ -237,8 +259,8 @@ export default function PartenairesPage() {
           </div>
 
           {/* Carte Partenaire Yango */}
-          <div className="bg-gray-50 p-6 rounded-lg hover:shadow-md transition-shadow">
-            <div className="h-40 relative mb-4">
+          <div className="bg-gray-50 p-6 rounded-lg hover:shadow-md transition-shadow flex flex-col">
+            <div className="h-40 relative mb-4 flex-grow">
               <Image
                 src="/images/yango.png"
                 alt="Logo Yango"
@@ -248,7 +270,7 @@ export default function PartenairesPage() {
               />
             </div>
             <h3 className="text-xl font-semibold text-[#014F86] mb-2">Yango</h3>
-            <p className="text-gray-700 mb-4">Solutions de mobilité intelligente et services de livraison innovants.</p>
+            <p className="text-gray-700 mb-4 flex-grow">Solutions de mobilité intelligente et services de livraison innovants.</p>
             <a 
               href="https://yango.com/fr_ci/" 
               target="_blank" 
@@ -263,55 +285,60 @@ export default function PartenairesPage() {
 
       {/* Section Partenariat */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h2 className="text-2xl font-semibold text-[#014F86] mb-4">Devenir Partenaire</h2>
-        <p className="text-gray-700 mb-6">
-          Vous souhaitez rejoindre notre réseau de partenaires ? Nous sommes toujours à la recherche de nouvelles collaborations 
-          qui peuvent apporter de la valeur à nos utilisateurs et contribuer à améliorer l'expérience de location immobilière.
+        <h2 className="text-2xl font-semibold text-[#014F86] mb-4 text-center">Devenir Partenaire Privilégié</h2>
+        <p className="text-gray-700 mb-6 text-center max-w-2xl mx-auto">
+          Rejoignez notre écosystème d'entreprises innovantes et bénéficiez d'une visibilité ciblée 
+          auprès de notre communauté engagée.
         </p>
         
-        <div className="bg-gray-50 p-6 rounded-lg">
-          <h3 className="text-xl font-semibold text-[#014F86] mb-4">Avantages du Programme</h3>
-          <ul className="space-y-3 text-gray-700 mb-6">
-            <li className="flex items-start">
-              <span className="text-[#FC9B89] mr-2">✓</span>
-              <span>Visibilité sur notre plateforme à fort trafic</span>
-            </li>
-            <li className="flex items-start">
-              <span className="text-[#FC9B89] mr-2">✓</span>
-              <span>Accès à un réseau d'experts immobiliers</span>
-            </li>
-            <li className="flex items-start">
-              <span className="text-[#FC9B89] mr-2">✓</span>
-              <span>Campagnes marketing conjointes</span>
-            </li>
-            <li className="flex items-start">
-              <span className="text-[#FC9B89] mr-2">✓</span>
-              <span>Support technique dédié</span>
-            </li>
-          </ul>
+        <div className="bg-gray-50 p-6 rounded-lg max-w-4xl mx-auto">
+          <h3 className="text-xl font-semibold text-[#014F86] mb-4">Avantages Exclusifs</h3>
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
+            <ul className="space-y-3 text-gray-700">
+              <li className="flex items-start">
+                <span className="text-[#FC9B89] mr-2">✓</span>
+                <span>Accès à notre base de clients qualifiés</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-[#FC9B89] mr-2">✓</span>
+                <span>Co-branding sur nos supports marketing</span>
+              </li>
+            </ul>
+            <ul className="space-y-3 text-gray-700">
+              <li className="flex items-start">
+                <span className="text-[#FC9B89] mr-2">✓</span>
+                <span>Analytics détaillés de performance</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-[#FC9B89] mr-2">✓</span>
+                <span>Accès prioritaire aux nouveautés</span>
+              </li>
+            </ul>
+          </div>
           
-          <Link 
-            href="/contact" 
-            className="bg-[#014F86] text-white px-6 py-3 rounded-md hover:bg-[#013a63] transition-colors inline-block"
-          >
-            Proposer un partenariat
-          </Link>
+          <div className="text-center">
+            <Link 
+              href="/contact" 
+              className="bg-[#014F86] text-white px-8 py-3 rounded-lg hover:bg-[#013a63] transition-colors inline-block font-medium"
+            >
+              Devenir Partenaire
+            </Link>
+          </div>
         </div>
       </div>
 
       {/* Section Témoignages */}
       <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-semibold text-[#014F86] mb-6">Ils Nous Font Confiance</h2>
+        <h2 className="text-2xl font-semibold text-[#014F86] mb-6 text-center">Témoignages de Confiance</h2>
         
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           <div className="bg-[#F8F9FA] p-6 rounded-lg">
             <blockquote>
               <p className="text-gray-700 italic mb-4">
-                "Une collaboration fluide et des résultats concrets. Dekkway a su valoriser notre expertise 
-                auprès de sa communauté avec professionnalisme."
+                "Une synergie parfaite entre innovation et professionnalisme. Dekkway a su amplifier notre portée client."
               </p>
               <footer className="text-[#014F86] font-semibold">
-                — Directeur Marketing, NIAFEY
+                — Responsable Partenariats, AGS Déménagement
               </footer>
             </blockquote>
           </div>
@@ -319,11 +346,10 @@ export default function PartenairesPage() {
           <div className="bg-[#F8F9FA] p-6 rounded-lg">
             <blockquote>
               <p className="text-gray-700 italic mb-4">
-                "L'approche innovante de Dekkway dans le secteur immobilier correspond parfaitement 
-                à nos valeurs d'excellence opérationnelle."
+                "Collaborer avec Dekkway nous a permis de toucher une audience qualifiée et engagée."
               </p>
               <footer className="text-[#014F86] font-semibold">
-                — Chef de Projet Partenariats, Yassir
+                — Directeur Marketing, Yango Sénégal
               </footer>
             </blockquote>
           </div>
@@ -332,10 +358,10 @@ export default function PartenairesPage() {
         <div className="mt-8 text-center border-t pt-8">
           <Link 
             href="/contact" 
-            className="text-[#014F86] hover:text-[#FC9B89] font-medium inline-flex items-center"
+            className="text-[#014F86] hover:text-[#FC9B89] font-medium inline-flex items-center group"
           >
-            <span>En savoir plus sur nos collaborations</span>
-            <FaArrowRight className="ml-2" />
+            <span>Découvrir toutes nos collaborations</span>
+            <FaArrowRight className="ml-2 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
       </div>
