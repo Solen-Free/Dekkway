@@ -7,6 +7,7 @@ import ButtonsBar from "@/components/ButtonsBar";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface Logement {
   id: string;
@@ -32,10 +33,13 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(true);
   const searchParams = useSearchParams();
   const router = useRouter();
- 
 
+  useEffect(() => {
+    setShowModal(true);
+  }, []);
 
   // Filtrage client-side existant pour les types
   const filteredLogements = selectedType 
@@ -131,70 +135,91 @@ export default function Home() {
 
   return (
     <div className="w-full min-h-screen">
-      {/* Section Carousel */}
-      <div className="w-full">
-        <Carousel />
-      </div>
-      <ButtonsBar 
-        onSelectTypeAction={handleSelectTypeAction}
-        onSelectDureeAction={handleSelectDureeAction}
-      />
-
-      {/* Titre principal */}
-      <div className="flex flex-col items-center mt-6 px-4 sm:px-6 lg:px-8">
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl text-[#FC9B89] font-bold text-center">
-          Rechercher votre logement dès maintenant !
-        </h1>
-      </div>
-
-      {/* Section pour les bailleurs */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-start px-4 sm:px-6 lg:px-8 mt-8 gap-4">
-        <Buttons 
-          text="Devenir Bailleur" 
-          fontWeight="font-bold" 
-          textSize="text-xl sm:text-2xl"  
-          href="/InscriptionBailleur"
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg shadow-lg p-4 max-w-xs w-full flex flex-col items-center relative">
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl font-bold focus:outline-none"
+              onClick={() => setShowModal(false)}
+              aria-label="Fermer la modale"
+            >
+              ×
+            </button>
+            <Image
+              src="/images/pop.jpg"
+              alt="Pop-up"
+              width={300}
+              height={300}
+              className="w-full h-auto rounded"
+              priority
+            />
+          </div>
+        </div>
+      )}
+      <div className={`w-full min-h-screen transition-all duration-300 ${showModal ? 'blur-sm pointer-events-none select-none' : ''}`}>
+        {/* Section Carousel */}
+        <div className="w-full">
+          <Carousel />
+        </div>
+        <ButtonsBar 
+          onSelectTypeAction={handleSelectTypeAction}
+          onSelectDureeAction={handleSelectDureeAction}
         />
-        <h1 className="text-lg sm:text-xl font-bold text-black">
-          <span className="animate-typewriter block">
-            Vous avez la possibilité de vendre vos propriétés sur notre plateforme !
-          </span>
-        </h1>
-      </div>
 
-      {/* Section des logements récents */}
-      <div className="flex flex-col w-full px-4 sm:px-6 lg:px-8 mt-8">
-        <h1 className="font-bold text-[#014F86] text-lg sm:text-xl mb-6">
-          {searchParams.toString() ? "Résultats de recherche" : "Les plus récents"}
-        </h1>
+        {/* Titre principal */}
+        <div className="flex flex-col items-center mt-6 px-4 sm:px-6 lg:px-8">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl text-[#FC9B89] font-bold text-center">
+            Rechercher votre logement dès maintenant !
+          </h1>
+        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {loading ? (
-            <Loader />
-          ) : error ? (
-            <div className="col-span-full text-center text-red-500">
-              {error}
-            </div>
-          ) : logements.length > 0 ? (
-            logements.map((logement) => (
-              <Card 
-                key={logement.id}
-                id={logement.id}
-                banniere={logement.banniere}
-                titre={logement.titre}
-                quartier={logement.quartier}
-                prix={logement.prix}
-              />
-            ))
-          ) : (
-            <div className="col-span-full text-center text-gray-500">
-              Aucun logement ne correspond à vos critères
-            </div>
-          )}
+        {/* Section pour les bailleurs */}
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-start px-4 sm:px-6 lg:px-8 mt-8 gap-4">
+          <Buttons 
+            text="Devenir Bailleur" 
+            fontWeight="font-bold" 
+            textSize="text-xl sm:text-2xl"  
+            href="/InscriptionBailleur"
+          />
+          <h1 className="text-lg sm:text-xl font-bold text-black">
+            <span className="animate-typewriter block">
+              Vous avez la possibilité de vendre vos propriétés sur notre plateforme !
+            </span>
+          </h1>
+        </div>
+
+        {/* Section des logements récents */}
+        <div className="flex flex-col w-full px-4 sm:px-6 lg:px-8 mt-8">
+          <h1 className="font-bold text-[#014F86] text-lg sm:text-xl mb-6">
+            {searchParams.toString() ? "Résultats de recherche" : "Les plus récents"}
+          </h1>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {loading ? (
+              <Loader />
+            ) : error ? (
+              <div className="col-span-full text-center text-red-500">
+                {error}
+              </div>
+            ) : logements.length > 0 ? (
+              logements.map((logement) => (
+                <Card 
+                  key={logement.id}
+                  id={logement.id}
+                  banniere={logement.banniere}
+                  titre={logement.titre}
+                  quartier={logement.quartier}
+                  prix={logement.prix}
+                />
+              ))
+            ) : (
+              <div className="col-span-full text-center text-gray-500">
+                Aucun logement ne correspond à vos critères
+              </div>
+            )}
+          </div>
         </div>
       </div>
-
-     
     </div>
   );
 }
