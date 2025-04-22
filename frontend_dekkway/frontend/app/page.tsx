@@ -174,14 +174,14 @@ export default function Home() {
         </div>
 
         {/* Section pour les bailleurs */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-start px-4 sm:px-6 lg:px-8 mt-8 gap-4">
+        <div className="flex flex-col md:flex-row items-center justify-start px-4 sm:px-6 lg:px-8 mt-8 gap-4 md:gap-6">
           <Buttons 
             text="Devenir Bailleur" 
             fontWeight="font-bold" 
-            textSize="text-xl sm:text-2xl"  
+            textSize="text-lg sm:text-xl md:text-2xl"  
             href="/InscriptionBailleur"
           />
-          <h1 className="text-lg sm:text-xl font-bold text-black">
+          <h1 className="text-base sm:text-lg md:text-xl font-bold text-black text-center md:text-left w-full">
             <span className="animate-typewriter block">
               Vous avez la possibilité de vendre vos propriétés sur notre plateforme !
             </span>
