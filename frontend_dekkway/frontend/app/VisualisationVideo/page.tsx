@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from 'react';
 import { ReservationDetails } from '@/types/reservation';
 import Link from "next/link";
