@@ -3,9 +3,10 @@ import * as React from "react";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 import { FaUser } from 'react-icons/fa';
 import { Menu, Search, Heart, Bell, FolderEdit as UserEdit, X } from "lucide-react";
-import Filtre from "./Filtre"; // Importez votre composant Filtre
+import Filtre from "./Filtre";
 import CompteAlert from "@/components/UI/CompteAlert";
 
 export default function Header() {
@@ -13,7 +14,17 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [isCompteOpen, setIsCompteOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Simule l'état de connexion
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (search.trim()) {
+      const params = new URLSearchParams();
+      params.append('search', search.trim());
+      router.push(`/?${params.toString()}`);
+    }
+  };
 
   return (
     <header className="bg-white shadow-md w-full fixed top-0 left-0 z-50">
@@ -42,21 +53,25 @@ export default function Header() {
 
           {/* Desktop Search Bar */}
           <div className="hidden md:flex flex-1 max-w-md mx-6">
-            <div className="relative w-full flex items-center">
+            <form onSubmit={handleSearch} className="relative w-full flex items-center">
               <input
                 type="text"
-                placeholder="Que cherchez-vous ?"
+                placeholder="Que cherchez-vous ? (ex: maison à thiès)"
                 className="w-full h-10 text-[#014F86] border-2 border-[#014F86] rounded-full py-3 px-4 pl-10 pr-12
                          focus:outline-none focus:border-[#FC9B89] focus:ring-1 focus:ring-[#FC9B89] transition-colors"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#FC9B89]" />
-              {/* Ajoutez le composant Filtre ici */}
+              <button
+                type="submit"
+                className="absolute left-3 top-1/2 -translate-y-1/2 p-1 hover:text-[#014F86] transition-colors"
+              >
+                <Search className="h-5 w-5 text-[#FC9B89]" />
+              </button>
               <div className="absolute right-1 top-0 bottom-0 flex items-center">
                 <Filtre />
               </div>
-            </div>
+            </form>
           </div>
 
           {/* Desktop Navigation */}
@@ -105,21 +120,25 @@ export default function Header() {
         {/* Mobile Search Bar */}
         {isMobileSearchOpen && (
           <div className="md:hidden px-4 py-3 border-t border-gray-200">
-            <div className="relative">
+            <form onSubmit={handleSearch} className="relative">
               <input
                 type="text"
-                placeholder="Que cherchez-vous ?"
+                placeholder="Que cherchez-vous ? (ex: maison à thiès)"
                 className="w-full h-10 text-[#014F86] border-2 border-[#014F86] rounded-full py-2 px-4 pl-10 pr-12
                          focus:outline-none focus:border-[#FC9B89] focus:ring-1 focus:ring-[#FC9B89] transition-colors"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#FC9B89]" />
-              {/* Ajoutez le composant Filtre ici pour la version mobile */}
+              <button
+                type="submit"
+                className="absolute left-3 top-1/2 -translate-y-1/2 p-1 hover:text-[#014F86] transition-colors"
+              >
+                <Search className="h-5 w-5 text-[#FC9B89]" />
+              </button>
               <div className="absolute right-1 top-0 bottom-0 flex items-center">
                 <Filtre />
               </div>
-            </div>
+            </form>
           </div>
         )}
 

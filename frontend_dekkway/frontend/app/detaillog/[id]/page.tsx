@@ -140,7 +140,7 @@ export default function DetailLog() {
         id: params?.id,
         nom: `${logement.type} - ${logement.region} - ${logement.quartier}`,
         ville: `${logement.region}, ${logement.quartier}`,
-        prix: parseInt(logement.prix.replace(/[^0-9]/g, '')),
+        prix: typeof logement.prix === 'string' ? parseInt(logement.prix.replace(/[^0-9]/g, '')) : logement.prix,
         image: logement.medias?.find(media => media.type === "image")?.fichier || ''
       };
       router.push(`/Reservloge?property=${encodeURIComponent(JSON.stringify(propertyData))}`);
@@ -155,7 +155,7 @@ export default function DetailLog() {
     }
     try {
       const response = await axios.get(`http://127.0.0.1:8000/details-logements/${params.id}/`);
-      setLogement(response.data);
+      setLogement(response.data as Logement);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Une erreur est survenue');
     } finally {
