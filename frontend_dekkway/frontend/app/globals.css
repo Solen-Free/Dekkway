@@ -55,14 +55,17 @@ body {
   }
   100% {
     width: 100%;
+    white-space: normal;
   }
 }
 
 .animate-typewriter {
-  display: inline-block;
+  display: block;
   overflow: hidden; 
-  white-space: nowrap; 
+  word-wrap: break-word;
+  word-break: break-word;
   width: 0;
+  max-width: 100%;
   animation: typewriter 2s steps(44) 1s forwards;
 }
 

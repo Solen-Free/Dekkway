@@ -181,7 +181,7 @@ export default function Home() {
             textSize="text-lg sm:text-xl md:text-2xl"  
             href="/InscriptionBailleur"
           />
-          <h1 className="text-base sm:text-lg md:text-xl font-bold text-black text-center md:text-left w-full">
+          <h1 className="text-base sm:text-lg md:text-xl font-bold text-black text-center md:text-left w-full break-words text-wrap">
             <span className="animate-typewriter block">
               Vous avez la possibilité de vendre vos propriétés sur notre plateforme !
             </span>
