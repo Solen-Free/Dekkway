@@ -508,7 +508,7 @@ const DemenagementPage = () => {
 
               <div className="bg-green-50 rounded-xl p-6 text-center hover:bg-green-100 transition-colors">
                 <a 
-                  href="https://wa.me/221774709817" 
+                  href="https://wa.me/221338365234" 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="block"
