@@ -23,7 +23,25 @@ export default function Header() {
       const params = new URLSearchParams();
       params.append('search', search.trim());
       router.push(`/?${params.toString()}`);
+    } else {
+      // Si le champ de recherche est vide, rediriger vers la page d'accueil sans paramètres
+      router.push('/');
     }
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setSearch(newValue);
+    
+    // Si l'utilisateur efface complètement le champ, réinitialiser la recherche
+    if (newValue === '') {
+      router.push('/');
+    }
+  };
+
+  const clearSearch = () => {
+    setSearch('');
+    router.push('/');
   };
 
   return (
@@ -60,8 +78,18 @@ export default function Header() {
                 className="w-full h-10 text-[#014F86] border-2 border-[#014F86] rounded-full py-3 px-4 pl-10 pr-12
                          focus:outline-none focus:border-[#FC9B89] focus:ring-1 focus:ring-[#FC9B89] transition-colors"
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={handleSearchChange}
               />
+              {search && (
+                <button
+                  type="button"
+                  onClick={clearSearch}
+                  className="absolute right-12 top-1/2 -translate-y-1/2 p-1 bg-white rounded-full border border-[#FC9B89] hover:bg-[#FC9B89] hover:text-white transition-colors"
+                  aria-label="Effacer la recherche"
+                >
+                  <X className="h-4 w-4 text-[#014F86]" />
+                </button>
+              )}
               <button
                 type="submit"
                 className="absolute left-3 top-1/2 -translate-y-1/2 p-1 hover:text-[#014F86] transition-colors"
@@ -127,8 +155,18 @@ export default function Header() {
                 className="w-full h-10 text-[#014F86] border-2 border-[#014F86] rounded-full py-2 px-4 pl-10 pr-12
                          focus:outline-none focus:border-[#FC9B89] focus:ring-1 focus:ring-[#FC9B89] transition-colors"
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={handleSearchChange}
               />
+              {search && (
+                <button
+                  type="button"
+                  onClick={clearSearch}
+                  className="absolute right-12 top-1/2 -translate-y-1/2 p-1 bg-white rounded-full border border-[#FC9B89] hover:bg-[#FC9B89] hover:text-white transition-colors"
+                  aria-label="Effacer la recherche"
+                >
+                  <X className="h-4 w-4 text-[#014F86]" />
+                </button>
+              )}
               <button
                 type="submit"
                 className="absolute left-3 top-1/2 -translate-y-1/2 p-1 hover:text-[#014F86] transition-colors"
