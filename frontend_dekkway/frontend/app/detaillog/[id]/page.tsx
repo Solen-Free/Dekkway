@@ -77,14 +77,14 @@ function ImageCarousel({ images }: { images: string[] }) {
   
 
   return (
-    <div className="relative h-[600px]">
-      <div className="overflow-hidden rounded-lg h-full">
+    <div className="relative">
+      <div className="overflow-hidden rounded-lg">
         <Image
           src={images[currentIndex]}
           alt={`Image ${currentIndex + 1}`}
           width={800}
           height={600}
-          className="w-full h-full object-contain"
+          className="w-full h-96 object-cover"
           priority
         />
       </div>
@@ -252,15 +252,14 @@ export default function DetailLog() {
           <div className="flex gap-4">
             <button 
               onClick={handleReservation}
-              className="flex-1 py-3 px-4 rounded-lg text-white font-semibold bg-blue-600 hover:bg-blue-700 transition-colors text-center"
+              className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600 hover:bg-blue-700 transition-colors"
             >
               Réserver
             </button>
-            <Link href={`/VisiteGuidee?video=${encodeURIComponent(logement.video)}`} className="flex-1">
-              <button className="w-full py-3 px-4 rounded-lg text-white font-semibold bg-blue-600 hover:bg-blue-700 transition-colors text-center">
-                Visite Guidée
-              </button>
-            </Link>
+            <Link href={`/VisiteGuidee?video=${encodeURIComponent(logement.video)}`}>
+<button className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600">
+              Visite Guidée
+            </button></Link>
           </div>
         </div>
       </div>
