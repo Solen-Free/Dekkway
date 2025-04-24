@@ -77,14 +77,14 @@ function ImageCarousel({ images }: { images: string[] }) {
   
 
   return (
-    <div className="relative">
-      <div className="overflow-hidden rounded-lg">
+    <div className="relative h-[600px]">
+      <div className="overflow-hidden rounded-lg h-full">
         <Image
           src={images[currentIndex]}
           alt={`Image ${currentIndex + 1}`}
           width={800}
           height={600}
-          className="w-full h-96 object-cover"
+          className="w-full h-full object-contain"
           priority
         />
       </div>
@@ -252,14 +252,15 @@ export default function DetailLog() {
           <div className="flex gap-4">
             <button 
               onClick={handleReservation}
-              className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600 hover:bg-blue-700 transition-colors"
+              className="flex-1 py-3 px-4 rounded-lg text-white font-semibold bg-blue-600 hover:bg-blue-700 transition-colors text-center"
             >
               Réserver
             </button>
-            <Link href={`/VisiteGuidee?video=${encodeURIComponent(logement.video)}`}>
-<button className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600">
-              Visite Guidée
-            </button></Link>
+            <Link href={`/VisiteGuidee?video=${encodeURIComponent(logement.video)}`} className="flex-1">
+              <button className="w-full py-3 px-4 rounded-lg text-white font-semibold bg-blue-600 hover:bg-blue-700 transition-colors text-center">
+                Visite Guidée
+              </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -336,10 +337,10 @@ export default function DetailLog() {
             />
             <div>
               <p className="text-lg font-bold text-gray-800">{logement.agent.prenom} {logement.agent.nom}</p>
-              <p className="text-gray-600 flex items-center gap-2">
+              {/* <p className="text-gray-600 flex items-center gap-2">
                 <Phone size={16} /> {logement.agent.telephone}
-              </p>
-              <p className="text-gray-600 mt-1">Contactez-moi pour plus d&apos;informations</p>
+              </p> */}
+              {/* <p className="text-gray-600 mt-1">Contactez-moi pour plus d&apos;informations</p> */}
             </div>
           </div>
         </section>
