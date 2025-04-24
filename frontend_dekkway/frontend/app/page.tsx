@@ -32,13 +32,26 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false); // Initialiser à false par défaut
   const searchParams = useSearchParams();
   const router = useRouter();
 
   useEffect(() => {
-    setShowModal(true);
+    // Vérifier si c'est la première visite de l'utilisateur
+    const hasVisitedBefore = localStorage.getItem("hasVisitedBefore");
+    
+    if (!hasVisitedBefore) {
+      // Si c'est la première visite, afficher la modale
+      setShowModal(true);
+      // Marquer que l'utilisateur a déjà visité le site
+      localStorage.setItem("hasVisitedBefore", "true");
+    }
   }, []);
+
+  const handleCloseModal = () => {
+    // Ferme la modale
+    setShowModal(false);
+  };
 
   // Filtrage client-side existant pour les types
   const filteredLogements = selectedType 
@@ -154,11 +167,17 @@ export default function Home() {
   return (
     <div className="w-full min-h-screen">
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="bg-white rounded-lg shadow-lg p-4 max-w-xs w-full flex flex-col items-center relative">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-white/30"
+          onClick={handleCloseModal} // Ferme la modale quand on clique sur l'overlay
+        >
+          <div 
+            className="bg-white rounded-lg shadow-lg p-4 max-w-xs w-full flex flex-col items-center relative"
+            onClick={(e) => e.stopPropagation()} // Empêche la fermeture quand on clique sur la modale elle-même
+          >
             <button
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl font-bold focus:outline-none"
-              onClick={() => setShowModal(false)}
+              onClick={handleCloseModal}
               aria-label="Fermer la modale"
             >
               ×
@@ -174,7 +193,9 @@ export default function Home() {
           </div>
         </div>
       )}
-      <div className={`w-full min-h-screen transition-all duration-300 ${showModal ? 'blur-sm pointer-events-none select-none' : ''}`}>
+      <div className={`transition-all duration-300 ${showModal ? 'blur-sm pointer-events-none select-none' : ''}`}>
+        {/* Header */}
+        <header />
         {/* Section Carousel */}
         <div className="w-full">
           <Carousel />
@@ -196,7 +217,7 @@ export default function Home() {
           <Buttons 
             text="Devenir Bailleur" 
             fontWeight="font-bold" 
-            textSize="text-lg sm:text-xl md:text-2xl"  
+            textSize="text-lg sm:text-lg md:text-2xl"  
             href="/InscriptionBailleur"
           />
           <h1 className="text-base sm:text-lg md:text-xl font-bold text-black text-center md:text-left w-full break-words text-wrap">
@@ -237,6 +258,8 @@ export default function Home() {
             )}
           </div>
         </div>
+        {/* Footer */}
+        <footer />
       </div>
     </div>
   );

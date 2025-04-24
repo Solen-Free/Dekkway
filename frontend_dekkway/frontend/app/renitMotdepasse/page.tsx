@@ -56,10 +56,10 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-8 px-2 sm:px-6 lg:px-8">
+      <div className="w-full max-w-sm sm:max-w-md space-y-8 animate-extraModal">
         <div>
-          <h2 className="mt-6 text-center text-2xl sm:text-3xl font-bold text-gray-900">
+          <h2 className="mt-6 text-center text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
             Réinitialiser votre mot de passe
           </h2>
         </div>
@@ -77,7 +77,7 @@ export default function ResetPassword() {
               required
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-[#014F86] focus:border-[#014F86] focus:z-10 sm:text-sm"
+              className="appearance-none rounded-t-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#014F86] focus:border-[#014F86] focus:z-10 text-sm sm:text-base"
               placeholder="Nouveau mot de passe"
               disabled={isLoading}
             />
@@ -107,7 +107,7 @@ export default function ResetPassword() {
               required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-[#014F86] focus:border-[#014F86] focus:z-10 sm:text-sm"
+              className="appearance-none rounded-b-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#014F86] focus:border-[#014F86] focus:z-10 text-sm sm:text-base"
               placeholder="Confirmer le mot de passe"
               disabled={isLoading}
             />

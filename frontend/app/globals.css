@@ -1,0 +1,39 @@
+@keyframes extraModal {
+  0% {
+    opacity: 0;
+    transform: scale(0.7) rotate(-8deg) translateY(80px);
+    filter: blur(8px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.05) rotate(2deg) translateY(-10px);
+    filter: blur(0);
+  }
+  80% {
+    transform: scale(0.97) rotate(-1deg) translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg) translateY(0);
+    filter: blur(0);
+  }
+}
+
+.animate-extraModal {
+  animation: extraModal 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes extraModalHome {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-extraModalHome {
+  animation: extraModalHome 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
