@@ -237,7 +237,6 @@ export default function DetailLog() {
               </h3>
               <video 
                 className="w-full h-[calc(100%-3.5rem)] object-cover rounded-lg"
-                controls
                 poster="/images/visite-thumbnail.jpg"
               >
                 <source src={video} type="video/mp4" />
@@ -256,7 +255,7 @@ export default function DetailLog() {
             >
               Réserver
             </button>
-            <Link href={`/VisiteGuidee?video=${encodeURIComponent(logement.video)}`}>
+            <Link href={`/VisiteGuidee?video=${encodeURIComponent(video)}`}>
 <button className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600">
               Visite Guidée
             </button></Link>

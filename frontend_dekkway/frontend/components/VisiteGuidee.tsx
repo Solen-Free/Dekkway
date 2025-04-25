@@ -18,8 +18,8 @@ export default function VisiteGuidee() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-2xl self-start mb-4">
+    <div className="bg-white flex flex-col items-center p-4 pt-8 pb-8">
+      <div className="w-full max-w-2xl text-center mb-2">
         <h1 className="text-2xl font-semibold">Visite Guidée</h1>
         <p className="text-sm text-gray-500">Toute visite virtuelle est payante</p>
       </div>
@@ -51,7 +51,7 @@ export default function VisiteGuidee() {
           <div className="flex flex-col items-center justify-center">
             <span className="text-sm text-gray-600 mb-1">Frais</span>
             <div className="bg-[#fb7185] text-white font-bold py-2 px-4 rounded-xl text-sm shadow">
-              xxxx XOF
+              1000 XOF
             </div>
           </div>
         </div>

@@ -6,25 +6,17 @@ import PaymentForm from '@/components/PaymentForm';
 
 export default function PaiementVisaPage() {
   const router = useRouter();
-
-  // const handleNext = (data: any) => {
-  //   console.log('Infos Carte:', data);
-  //   alert('Paiement simulé avec succès !');
-  //   // Redirection après paiement (tu peux retirer cette ligne si ce n'est pas encore nécessaire)
-  //   router.push('/VisualisationVideo');
-  // };
-
+   
   const handleNext = (data: any) => {
     console.log('Infos Carte:', data);
-    alert('Paiement simulé avec succès !');
-  
-    // Exemple d’infos à récupérer dynamiquement ou passer manuellement
+    
+    // Exemple d'infos à récupérer dynamiquement ou passer manuellement
     const videoUrl = '/videos/visite.mp4';
     const title = 'Studio Meublé Confortable';
     const location = 'Dakar, Point E';
     const price = 120000;
   
-    // Redirection avec infos dans l’URL
+    // Redirection avec infos dans l'URL
     router.push(`/VisualisationVideo?videoUrl=${encodeURIComponent(videoUrl)}&title=${encodeURIComponent(title)}&location=${encodeURIComponent(location)}&price=${price}`);
   };
   
@@ -46,7 +38,22 @@ export default function PaiementVisaPage() {
         </h2>
         <PaymentForm 
           onNext={handleNext} 
-          onPrevious={handlePrevious} 
+          onPrevious={handlePrevious}
+          onSuccess={(transactionId) => handleNext({ transactionId })}
+          onError={(message) => console.error(message)}
+          paymentMethod="visa"
+          amount={1000}
+          userDetails={{
+            name: "",
+            email: "",
+            phone: ""
+          }}
+          propertyDetails={{
+            id: 0,
+            name: "Visite Guidée",
+            location: "",
+            monthlyPrice: 1000
+          }}
         />
       </div>
     </div>

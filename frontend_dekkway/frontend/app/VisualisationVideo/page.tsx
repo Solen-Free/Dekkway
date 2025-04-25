@@ -38,7 +38,7 @@ const PaymentVideo: React.FC<PaymentFormProps> = ({ onNext, onPrevious }) => {
             value={cardNumber}
             onChange={(e) => setCardNumber(e.target.value)}
             className="w-full px-4 py-2 bg-white/70 border-2 border-[#014F86] rounded-3xl"
-            placeholder="4242-4242-4242-4242"
+            placeholder="xxx-xxx-xxx-xxx"
             required
           />
         </div>
