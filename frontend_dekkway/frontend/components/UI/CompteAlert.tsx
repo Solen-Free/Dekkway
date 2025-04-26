@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/context/AuthContext";
 
 interface CompteAlertProps {
   onClose: () => void;
@@ -24,9 +25,12 @@ const CompteAlert: React.FC<CompteAlertProps> = ({ onClose, isLoggedIn }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [onClose]);
 
+  // Utilisation du contexte d'authentification
+  const { logout } = useAuth();
+
   // Déconnexion de l'utilisateur
   const handleLogout = () => {
-    localStorage.removeItem("token"); // Suppression du token
+    logout(); // Utilisation de la fonction logout du contexte
     router.push("/"); // Rediriger vers la page de connexion
     onClose(); // Fermer le menu après la déconnexion
   };

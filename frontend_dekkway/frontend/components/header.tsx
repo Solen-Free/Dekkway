@@ -8,13 +8,14 @@ import { FaUser } from 'react-icons/fa';
 import { Menu, Search, Heart, Bell, FolderEdit as UserEdit, X } from "lucide-react";
 import Filtre from "./Filtre";
 import CompteAlert from "@/components/UI/CompteAlert";
+import { useAuth } from "@/app/context/AuthContext";
 
 export default function Header() {
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [isCompteOpen, setIsCompteOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isAuthenticated } = useAuth();
   const router = useRouter();
 
   const handleSearch = (e: React.FormEvent) => {
@@ -124,7 +125,7 @@ export default function Header() {
               </button>
 
               {/* Menu déroulant Mon Compte */}
-              {isCompteOpen && <CompteAlert onClose={() => setIsCompteOpen(false)} isLoggedIn={isLoggedIn} />}
+              {isCompteOpen && <CompteAlert onClose={() => setIsCompteOpen(false)} isLoggedIn={isAuthenticated} />}
             </div>
           </nav>
 
@@ -206,7 +207,7 @@ export default function Header() {
                 </button>
 
                 {/* Menu déroulant Mon Compte */}
-                {isCompteOpen && <CompteAlert onClose={() => setIsCompteOpen(false)} isLoggedIn={isLoggedIn} />}
+                {isCompteOpen && <CompteAlert onClose={() => setIsCompteOpen(false)} isLoggedIn={isAuthenticated} />}
               </div>
             </div>
           </nav>
