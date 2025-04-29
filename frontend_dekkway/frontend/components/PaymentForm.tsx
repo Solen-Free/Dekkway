@@ -352,7 +352,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="text-center mb-6">
         <h3 className="text-xl font-semibold text-[#014F86]">
-          Total à payer : {amount.toLocaleString('fr-FR')} XOF
+          Total à payer : {amount ? amount.toLocaleString('fr-FR') : '0'} XOF
         </h3>
       </div>
 
@@ -401,3 +401,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
 };
 
 export default PaymentForm;
+
+// Note: Make sure to handle null values when using toLocaleString()
+// Example: amount ? amount.toLocaleString() : '0'

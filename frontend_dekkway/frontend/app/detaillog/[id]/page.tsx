@@ -255,10 +255,11 @@ export default function DetailLog() {
             >
               Réserver
             </button>
-            <Link href={`/VisiteGuidee?video=${encodeURIComponent(video)}`}>
-<button className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600">
-              Visite Guidée
-            </button></Link>
+            <Link href={`/VisiteGuidee?id=${params.id}`}>
+              <button className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600">
+                Visite Guidée
+              </button>
+            </Link>
           </div>
         </div>
       </div>

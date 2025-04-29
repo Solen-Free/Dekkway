@@ -1,28 +1,51 @@
 "use client";
 
-import React from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import PaymentForm from '@/components/PaymentForm';
 
 export default function PaiementVisaPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [propertyId, setPropertyId] = useState<string | null>(null);
+  const [propertyDetails, setPropertyDetails] = useState<any>(null);
+  
+  useEffect(() => {
+    // Récupérer l'ID du logement depuis les paramètres d'URL ou localStorage
+    const id = searchParams.get('id') || localStorage.getItem('currentPropertyId');
+    setPropertyId(id);
+    
+    // Récupérer les détails du logement depuis localStorage
+    const storedPropertyData = localStorage.getItem('propertyDetails');
+    if (storedPropertyData) {
+      try {
+        const parsedData = JSON.parse(storedPropertyData);
+        setPropertyDetails(parsedData);
+      } catch (e) {
+        console.error("Erreur lors du parsing des données stockées:", e);
+      }
+    }
+  }, [searchParams]);
    
   const handleNext = (data: any) => {
     console.log('Infos Carte:', data);
     
-    // Exemple d'infos à récupérer dynamiquement ou passer manuellement
-    const videoUrl = '/videos/visite.mp4';
-    const title = 'Studio Meublé Confortable';
-    const location = 'Dakar, Point E';
-    const price = 120000;
-  
-    // Redirection avec infos dans l'URL
-    router.push(`/VisualisationVideo?videoUrl=${encodeURIComponent(videoUrl)}&title=${encodeURIComponent(title)}&location=${encodeURIComponent(location)}&price=${price}`);
+    // Rediriger vers VisualisationVideo en transmettant l'ID du logement
+    if (propertyId) {
+      router.push(`/VisualisationVideo?id=${propertyId}`);
+    } else {
+      console.log("Aucun ID de logement disponible pour la redirection");
+      router.push('/VisualisationVideo'); // La page utilisera les données par défaut
+    }
   };
   
-
   const handlePrevious = () => {
-    router.push('/VisiteGuidee'); // Redirige vers VisiteGuidee
+    // Rediriger vers VisiteGuidee en conservant l'ID du logement
+    if (propertyId) {
+      router.push(`/VisiteGuidee?id=${propertyId}`);
+    } else {
+      router.push('/VisiteGuidee');
+    }
   };
 
   return (
@@ -42,17 +65,17 @@ export default function PaiementVisaPage() {
           onSuccess={(transactionId) => handleNext({ transactionId })}
           onError={(message) => console.error(message)}
           paymentMethod="visa"
-          amount={1000}
+          amount={propertyDetails?.price || 1000}
           userDetails={{
             name: "",
             email: "",
             phone: ""
           }}
           propertyDetails={{
-            id: 0,
-            name: "Visite Guidée",
-            location: "",
-            monthlyPrice: 1000
+            id: propertyId ? parseInt(propertyId) : 0,
+            name: propertyDetails?.title || "Visite Guidée",
+            location: propertyDetails?.location || "",
+            monthlyPrice: propertyDetails?.price || 1000
           }}
         />
       </div>
