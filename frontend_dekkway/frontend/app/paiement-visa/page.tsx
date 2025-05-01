@@ -9,6 +9,7 @@ export default function PaiementVisaPage() {
   const searchParams = useSearchParams();
   const [propertyId, setPropertyId] = useState<string | null>(null);
   const [propertyDetails, setPropertyDetails] = useState<any>(null);
+  const [visitPrice] = useState<number>(1000); // Prix fixe de la visite virtuelle
   
   useEffect(() => {
     // Récupérer l'ID du logement depuis les paramètres d'URL ou localStorage
@@ -59,23 +60,35 @@ export default function PaiementVisaPage() {
         <h2 className="text-center text-lg font-semibold mb-6">
           Renseignez vos informations
         </h2>
-        <PaymentForm 
-          onNext={handleNext} 
+        
+        {/* Affichage du montant de la visite virtuelle
+        <div className="mb-6 p-4 bg-white rounded-xl shadow-sm">
+          <div className="flex justify-between items-center">
+            <span className="text-gray-700">Visite virtuelle :</span>
+            <span className="font-semibold">{visitPrice.toLocaleString()} XOF</span>
+          </div>
+          <div className="mt-2 pt-2 border-t border-gray-200 flex justify-between items-center">
+            <span className="font-medium text-gray-800">Total à payer :</span>
+            <span className="font-bold text-blue-700 text-lg">{visitPrice.toLocaleString()} XOF</span>
+          </div>
+        </div> */}
+        
+        <PaymentForm
+          onSuccess={handleNext}
+          onError={(msg) => console.error(msg)}
           onPrevious={handlePrevious}
-          onSuccess={(transactionId) => handleNext({ transactionId })}
-          onError={(message) => console.error(message)}
           paymentMethod="visa"
-          amount={propertyDetails?.price || 1000}
+          amount={visitPrice}
           userDetails={{
-            name: "",
-            email: "",
-            phone: ""
+            name: propertyDetails?.userName || 'Utilisateur',
+            email: propertyDetails?.userEmail || 'utilisateur@example.com',
+            phone: propertyDetails?.userPhone || ''
           }}
           propertyDetails={{
-            id: propertyId ? parseInt(propertyId) : 0,
-            name: propertyDetails?.title || "Visite Guidée",
-            location: propertyDetails?.location || "",
-            monthlyPrice: propertyDetails?.price || 1000
+            id: parseInt(propertyId || '0'),
+            name: propertyDetails?.title || 'Logement',
+            location: propertyDetails?.location || 'Emplacement non spécifié',
+            monthlyPrice: propertyDetails?.price || 0
           }}
         />
       </div>

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Lock } from 'lucide-react';
+import { Lock, ArrowLeft, CreditCard, Shield } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -82,11 +82,16 @@ const VisiteGuidee = () => {
     fetchPropertyDetails();
   }, []);
   
-  const handlePayment = () => {
+  const handlePayment = (paymentMethod: string) => {
     const propertyId = localStorage.getItem('currentPropertyId');
     
     if (propertyId) {
-      router.push(`/paiement-visa?id=${propertyId}`);
+      if (paymentMethod === 'visa') {
+        router.push(`/paiement-visa?id=${propertyId}`);
+      } else {
+        // Pour les autres méthodes de paiement, vous pouvez ajouter des routes spécifiques
+        router.push(`/paiement-${paymentMethod}?id=${propertyId}`);
+      }
     } else {
       console.log("Aucun ID de logement disponible pour la redirection");
       router.push('/paiement-visa');
@@ -123,29 +128,31 @@ const VisiteGuidee = () => {
   }
   
   return (
-    <div className="bg-white flex flex-col items-center p-4 pt-8 pb-8">
-      <div className="w-full max-w-2xl text-center mb-2">
-        <h1 className="text-2xl font-semibold">Visite Guidée</h1>
-        <p className="text-sm text-gray-500">Toute visite virtuelle est payante</p>
+    <div className="min-h-screen bg-gradient-to-b from-white to-blue-50 flex flex-col items-center justify-center p-6">
+      <div className="w-full max-w-3xl mb-6">
+        <h1 className="text-3xl font-bold text-gray-800 mb-1">Visite Guidée</h1>
+        <div className="h-1 w-20 bg-blue-600 rounded-full mb-2"></div>
+        <p className="text-gray-600">Découvrez votre futur logement en détail</p>
       </div>
 
-      <div className="bg-[#fef2f2] border border-blue-300 rounded-2xl p-6 w-full max-w-2xl shadow-lg">
-        <h2 className="text-center text-lg font-medium mb-2">Démarrer la visite guidée</h2>
-        <div className="h-[2px] w-32 mx-auto bg-red-500 mb-4 rounded" />
-
-        <div className="flex items-center justify-between mb-6 gap-6">
-          {/* Vidéo floutée avec cadenas */}
-          <div className="flex-1 border border-blue-300 rounded-xl overflow-hidden">
-            <div className="relative w-full h-56 bg-gray-100">
+      <div className="bg-white border border-gray-200 rounded-2xl p-8 w-full max-w-3xl shadow-lg hover:shadow-xl transition-shadow">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-8">
+          {/* Vidéo floutée avec design moderne */}
+          <div className="w-full md:w-3/5 rounded-xl overflow-hidden shadow-md">
+            <div className="relative w-full h-64 bg-gray-100">
               {videoUrl ? (
                 <>
                   <video
                     src={videoUrl}
                     className="w-full h-full object-cover blur-sm"
-                    poster="/images/visite-thumbnail.jpg"
+                    muted
+                    autoPlay
+                    loop
                   />
-                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                    <Lock className="text-white bg-black bg-opacity-50 rounded-full p-2" size={40} />
+                  <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+                    <div className="bg-white bg-opacity-90 rounded-full p-4 shadow-lg transform transition-transform hover:scale-105">
+                      <Lock size={36} className="text-blue-600" />
+                    </div>
                   </div>
                 </>
               ) : (
@@ -155,35 +162,95 @@ const VisiteGuidee = () => {
               )}
             </div>
           </div>
-          
-          <div className="flex-1">
-            <h3 className="text-lg font-medium mb-2">Accédez à la visite virtuelle</h3>
-            <p className="text-sm text-gray-600 mb-4">
-              Découvrez ce logement en détail grâce à notre visite virtuelle immersive.
+
+          {/* Informations de paiement avec design moderne */}
+          <div className="w-full md:w-2/5 space-y-4">
+            <h2 className="text-xl font-semibold text-gray-800">Accès Premium</h2>
+            <p className="text-gray-600 text-sm">
+              Débloquez l'accès complet à la visite virtuelle de ce logement et explorez chaque pièce en détail.
             </p>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-4 h-4 rounded-full bg-green-500"></div>
-              <span className="text-sm">Visite disponible</span>
+            
+            <div className="flex items-center gap-2 text-sm text-gray-700">
+              <Shield size={16} className="text-green-600" />
+              <span>Paiement sécurisé</span>
             </div>
-            <p className="text-sm font-medium mb-2">Prix: 1000 FCFA</p>
+            
+            <div className="bg-blue-50 p-4 rounded-xl">
+              <p className="text-sm text-gray-600 mb-1">Prix de la visite</p>
+              <p className="text-2xl font-bold text-blue-700">1000 XOF</p>
+            </div>
           </div>
         </div>
 
-        <div className="flex gap-4">
+        {/* Moyens de paiement avec design moderne */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-medium text-gray-800">Choisissez votre moyen de paiement</h3>
+            <CreditCard size={20} className="text-blue-600" />
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div 
+              className="bg-white border border-gray-200 hover:border-blue-400 rounded-xl p-3 flex items-center justify-center cursor-pointer transition-all hover:shadow-md"
+              onClick={() => handlePayment('wave')}
+            >
+              <img
+                src="/images/wave-logo.png"
+                alt="Wave"
+                className="h-10"
+              />
+            </div>
+            
+            <div 
+              className="bg-white border border-gray-200 hover:border-blue-400 rounded-xl p-3 flex items-center justify-center cursor-pointer transition-all hover:shadow-md"
+              onClick={() => handlePayment('orange')}
+            >
+              <img
+                src="/images/orange-money-logo.png"
+                alt="Orange Money"
+                className="h-10"
+              />
+            </div>
+            
+            <div 
+              className="bg-white border border-gray-200 hover:border-blue-400 rounded-xl p-3 flex items-center justify-center cursor-pointer transition-all hover:shadow-md"
+              onClick={() => handlePayment('visa')}
+            >
+              <img
+                src="/images/visa-logo.png"
+                alt="Visa"
+                className="h-10"
+              />
+            </div>
+            
+            <div 
+              className="bg-white border border-gray-200 hover:border-blue-400 rounded-xl p-3 flex items-center justify-center cursor-pointer transition-all hover:shadow-md"
+              onClick={() => handlePayment('mastercard')}
+            >
+              <img
+                src="/images/mastercard-logo.png"
+                alt="Mastercard"
+                className="h-10"
+              />
+            </div>
+          </div>
+        </div>
+        
+        <div className="mt-8">
           <button 
             onClick={() => router.back()}
-            className="flex-1 py-2 rounded-lg text-gray-700 font-semibold bg-gray-200 hover:bg-gray-300 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-700 font-medium bg-gray-100 hover:bg-gray-200 transition-colors"
           >
+            <ArrowLeft size={16} />
             Retour
-          </button>
-          <button 
-            onClick={handlePayment}
-            className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600 hover:bg-blue-700 transition-colors"
-          >
-            Payer pour accéder
           </button>
         </div>
       </div>
+      
+      <p className="mt-6 text-sm text-gray-500 text-center max-w-xl">
+        En effectuant ce paiement, vous acceptez nos conditions d'utilisation et notre politique de confidentialité. 
+        La visite virtuelle sera disponible pendant 24 heures après l'achat.
+      </p>
     </div>
   );
 };
