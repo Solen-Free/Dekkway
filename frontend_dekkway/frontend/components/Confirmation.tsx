@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ReservationDetails } from '@/types/reservation';
 import { HomeIcon, LocationIcon, EmailIcon, PhoneIcon, UserIcon, PaymentIcon, CalendarIcon, ClockIcon } from '@/public/icons/confirmation-icons';
@@ -23,6 +23,34 @@ const Confirmation: React.FC<ConfirmationProps> = ({ reservationDetails }) => {
     hour: '2-digit',
     minute: '2-digit'
   });
+
+  // Sauvegarder la réservation dans localStorage
+  useEffect(() => {
+    // Récupérer les réservations existantes
+    const existingReservations = JSON.parse(localStorage.getItem('reservations') || '[]');
+    
+    // Générer un ID de transaction vraiment unique
+    const uniqueId = `TR-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
+    
+    // Créer un nouvel objet de réservation avec toutes les propriétés nécessaires
+    const newReservation = {
+      id: reservationDetails.property.id.toString(),
+      name: reservationDetails.property.name,
+      location: reservationDetails.property.location,
+      price: reservationDetails.property.monthlyPrice,
+      image: reservationDetails.property.image,
+      date: paymentDate,
+      time: paymentTime,
+      transactionId: uniqueId,
+      reservationDate: new Date().toISOString()
+    };
+    
+    // Ajouter la nouvelle réservation à la liste
+    const updatedReservations = [newReservation, ...existingReservations];
+    
+    // Sauvegarder dans localStorage
+    localStorage.setItem('reservations', JSON.stringify(updatedReservations));
+  }, []);
 
   return (
     <div className="max-w-4xl mx-auto p-2">
