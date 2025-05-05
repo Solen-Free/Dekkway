@@ -20,7 +20,7 @@ class BailleurSerializer(serializers.ModelSerializer):
 class BailleurInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bailleur
-        fields = ['nom', 'prenom', 'telephone', 'photo_profil']
+        fields = ['nom', 'prenom', 'email', 'adresse', 'telephone', 'photo_profil']
 
 class LocataireSerializer(serializers.ModelSerializer):
     class Meta:

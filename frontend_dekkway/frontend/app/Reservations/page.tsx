@@ -240,7 +240,7 @@ const Reservations = () => {
         <div className="bg-white shadow-md rounded-lg p-8 text-center">
           <div className="flex flex-col items-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
             <p className="text-gray-600 text-lg font-medium mb-2">
               Aucune réservation pour le moment
@@ -263,7 +263,8 @@ const Reservations = () => {
                 title={reservation.name}
                 location={reservation.location}
                 price={`${reservation.price.toLocaleString('fr-FR')} FCFA`}
-                onViewDetails={() => handleViewDetails(reservation)}
+                id={reservation.id}
+                transactionId={reservation.transactionId}
               />
             </div>
           ))}

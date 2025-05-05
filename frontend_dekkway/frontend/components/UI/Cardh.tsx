@@ -1,14 +1,22 @@
 import React from "react";
 import { MapPin } from "lucide-react";
+import Link from "next/link";
 
 interface CardhProps {
   image: string;
   title: string;
   location: string;
   price: string;
+  id?: string;
+  transactionId?: string;
 }
 
-const Cardh: React.FC<CardhProps> = ({ image, title, location, price }) => {
+const Cardh: React.FC<CardhProps> = ({ image, title, location, price, id, transactionId }) => {
+  // Construire l'URL pour la page de détails
+  const detailsUrl = id && transactionId 
+    ? `/Reservations/details/${id}?transactionId=${transactionId}` 
+    : `/properties/${id}`;
+
   return (
     <div className="flex w-full max-w-[550px] p-3 border border-red-300 rounded-xl shadow-md bg-white">
       {/* Image */}
@@ -32,9 +40,11 @@ const Cardh: React.FC<CardhProps> = ({ image, title, location, price }) => {
 
       {/* Bouton Voir */}
       <div className="flex items-end">
-        <button className="bg-[#003366] text-white px-10 py-[4px] rounded-full font-semibold text-sm hover:bg-blue-900 transition">
-          Voir
-        </button>
+        <Link href={detailsUrl}>
+          <button className="bg-[#003366] text-white px-10 py-[4px] rounded-full font-semibold text-sm hover:bg-blue-900 transition">
+            Voir
+          </button>
+        </Link>
       </div>
     </div>
   );
