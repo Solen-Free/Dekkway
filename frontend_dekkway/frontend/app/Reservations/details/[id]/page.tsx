@@ -5,6 +5,7 @@ import { useParams, useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
 import Header from "@/components/header";
+import { FaHome, FaMapMarkerAlt, FaCalendarAlt, FaClock, FaFileAlt, FaEnvelope, FaPhone } from "react-icons/fa";
 
 interface Reservation {
   id: string;
@@ -37,6 +38,7 @@ export default function ReservationDetails() {
   const [reservation, setReservation] = useState<Reservation | null>(null);
   const [bailleur, setBailleur] = useState<Bailleur | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     // Récupérer les réservations depuis localStorage
@@ -57,29 +59,27 @@ export default function ReservationDetails() {
             const response = await axios.get(`http://127.0.0.1:8000/details-logements/${id}/`);
             const data = response.data;
             
-            console.log("Données reçues de l'API:", data); // Ajout d'un log pour déboguer
+            console.log("Données reçues de l'API:", data);
             
             // Vérifier si les données du bailleur existent et sont accessibles
             if (data && data.bailleur) {
               setBailleur({
-                nom: data.bailleur.nom || "non definit",
-                prenom: data.bailleur.prenom || "non definit",
-                email: data.bailleur.email || "non definit",
-                telephone: data.bailleur.telephone || "non definit",
+                nom: data.bailleur.nom || "Diop",
+                prenom: data.bailleur.prenom || "Amadou",
+                email: data.bailleur.email || "agent@dekkway.com",
+                telephone: data.bailleur.telephone || "77 675 46 78",
                 photo_profil: data.bailleur.photo_profil || "/images/agent-default.jpg",
-                adresse: data.bailleur.adresse || "non definit",
-                description: data.bailleur.description || "non definit"
+                adresse: data.bailleur.adresse || "Dakar, Sénégal"
               });
             } else if (data && data.agent) {
               // Alternative si les données sont sous "agent" au lieu de "bailleur"
               setBailleur({
-                nom: data.agent.nom || "non definit",
-                prenom: data.agent.prenom || "non definit",
-                email: data.agent.email || "non definit",
-                telephone: data.agent.telephone || "non definit",
+                nom: data.agent.nom || "Diop",
+                prenom: data.agent.prenom || "Amadou",
+                email: data.agent.email || "agent@dekkway.com",
+                telephone: data.agent.telephone || "77 675 46 78",
                 photo_profil: data.agent.photo_profil || "/images/agent-default.jpg",
-                adresse: data.agent.adresse || "non definit",
-                description: data.agent.description || "non definit"
+                adresse: data.agent.adresse || "Dakar, Sénégal"
               });
             } else {
               // Valeurs par défaut si les informations du bailleur ne sont pas disponibles
@@ -87,24 +87,23 @@ export default function ReservationDetails() {
               setBailleur({
                 nom: "Diop",
                 prenom: "Amadou",
-                email: "agent@example.com",
-                telephone: "77675467",
+                email: "agent@dekkway.com",
+                telephone: "77 675 46 78",
                 photo_profil: "/images/agent-default.jpg",
-                adresse: "Dakar, Sénégal",
-                description: "Agent immobilier professionnel avec plusieurs années d'expérience."
+                adresse: "Dakar, Sénégal"
               });
             }
           } catch (apiError) {
             console.error("Erreur lors de la récupération des détails du logement:", apiError);
+            setError("Impossible de récupérer les informations du bailleur. Veuillez réessayer plus tard.");
             // Utiliser des valeurs par défaut en cas d'erreur
             setBailleur({
               nom: "Diop",
               prenom: "Amadou",
-              email: "agent@example.com",
-              telephone: "77675467",
+              email: "agent@dekkway.com",
+              telephone: "77 675 46 78",
               photo_profil: "/images/agent-default.jpg",
-              adresse: "Dakar, Sénégal",
-              description: "Agent immobilier professionnel avec plusieurs années d'expérience."
+              adresse: "Dakar, Sénégal"
             });
           }
         } else {
@@ -113,6 +112,7 @@ export default function ReservationDetails() {
         }
       } catch (error) {
         console.error("Erreur lors de la récupération de la réservation:", error);
+        setError("Impossible de récupérer les détails de la réservation. Veuillez réessayer plus tard.");
       } finally {
         setLoading(false);
       }
@@ -132,11 +132,31 @@ export default function ReservationDetails() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="max-w-4xl mx-auto p-8 text-center pt-24">
+          <div className="bg-red-50 p-4 rounded-lg border border-red-200 mb-6">
+            <h1 className="text-xl font-bold text-red-600 mb-2">Erreur</h1>
+            <p className="text-red-500">{error}</p>
+          </div>
+          <Link 
+            href="/Reservations" 
+            className="py-2 px-6 bg-[#014F86] text-white rounded-lg hover:bg-[#FC9B89] transition-colors"
+          >
+            Retour aux réservations
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   if (!reservation) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
-        <div className="max-w-4xl mx-auto p-8 text-center">
+        <div className="max-w-4xl mx-auto p-8 text-center pt-24">
           <h1 className="text-2xl font-bold text-[#014F86] mb-4">Réservation non trouvée</h1>
           <p className="mb-6">La réservation que vous recherchez n'existe pas ou a été supprimée.</p>
           <Link 
@@ -150,10 +170,20 @@ export default function ReservationDetails() {
     );
   }
 
+  // Formater la date pour un affichage plus convivial
+  const formatDate = (dateString: string) => {
+    const options: Intl.DateTimeFormatOptions = { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    };
+    return new Date(dateString).toLocaleDateString('fr-FR', options);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      <div className="max-w-4xl mx-auto p-4 pt-24">
+      <div className="max-w-4xl mx-auto p-4 pt-24 pb-12">
         <div className="bg-white shadow-lg rounded-xl overflow-hidden">
           {/* En-tête */}
           <div className="bg-[#014F86] text-white p-4 text-center">
@@ -161,62 +191,85 @@ export default function ReservationDetails() {
           </div>
           
           <div className="p-6">
-            {/* Image du logement */}
-            <div className="relative h-64 w-full mb-6 overflow-hidden rounded-lg">
+            {/* Image du logement avec badge de prix */}
+            <div className="relative h-72 w-full mb-6 overflow-hidden rounded-lg">
               <img 
                 src={reservation.image} 
                 alt={reservation.name} 
                 className="w-full h-full object-cover"
               />
+              <div className="absolute top-4 right-4 bg-[#FC9B89] text-white px-4 py-2 rounded-lg font-bold shadow-md">
+                {reservation.price.toLocaleString('fr-FR')} XOF
+              </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Colonne gauche */}
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <h2 className="text-base font-semibold text-[#014F86]">Nom du logement</h2>
-                  <div className="flex items-center gap-3 text-sm text-gray-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#FC9B89]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
+                  <h2 className="text-lg font-semibold text-[#014F86] border-b border-gray-200 pb-2">Informations du Logement</h2>
+                  <div className="flex items-center gap-3 text-sm text-gray-700 mt-4">
+                    <FaHome className="h-5 w-5 text-[#FC9B89]" />
+                    <span className="font-medium">Nom:</span>
                     <span className="font-normal">{reservation.name}</span>
                   </div>
-                </div>
-
-                <div className="space-y-2">
-                  <h2 className="text-base font-semibold text-[#014F86]">Localisation</h2>
-                  <div className="flex items-center gap-3 text-sm text-gray-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#FC9B89]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
+                  
+                  <div className="flex items-center gap-3 text-sm text-gray-700 mt-3">
+                    <FaMapMarkerAlt className="h-5 w-5 text-[#FC9B89]" />
+                    <span className="font-medium">Localisation:</span>
                     <span className="font-normal">{reservation.location}</span>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <h2 className="text-base font-semibold text-[#014F86]">Réservé par :</h2>
-                  <div className="flex items-center gap-3 text-sm text-gray-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#FC9B89]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    <span className="font-normal">Mohamed Fall</span>
+                  <h2 className="text-lg font-semibold text-[#014F86] border-b border-gray-200 pb-2">Détails de la Réservation</h2>
+                  <div className="space-y-3 mt-4">
+                    <div className="flex items-center gap-3 text-sm text-gray-700">
+                      <FaCalendarAlt className="h-5 w-5 text-[#FC9B89]" />
+                      <span className="font-medium">Date:</span>
+                      <span className="font-normal">{formatDate(reservation.date)}</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 text-sm text-gray-700">
+                      <FaClock className="h-5 w-5 text-[#FC9B89]" />
+                      <span className="font-medium">Heure:</span>
+                      <span className="font-normal">{reservation.time}</span>
+                    </div>
+                    
+                    <div className="flex items-start gap-3 text-sm text-gray-700">
+                      <FaFileAlt className="h-5 w-5 text-[#FC9B89] mt-0.5" />
+                      <span className="font-medium">ID Transaction:</span>
+                      <span className="font-normal break-all">{reservation.transactionId}</span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <h2 className="text-base font-semibold text-[#014F86]">Méthode de paiement</h2>
-                  <div className="flex items-center w-full text-sm text-gray-700 mt-4">
-                    <div className="flex items-center justify-between w-full gap-8">
+                {/* Statut de la réservation - Déplacé ici */}
+                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                  <h2 className="text-base font-semibold text-green-700 mb-2">Statut de la Réservation</h2>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                    <span className="text-green-700 font-medium">Confirmée</span>
+                  </div>
+                  <p className="text-sm text-green-600 mt-2">
+                    Votre réservation a été confirmée. Vous recevrez un email de confirmation avec tous les détails.
+                  </p>
+                </div>
+
+                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-6">
+                  <h2 className="text-base font-semibold text-[#014F86] mb-3">Paiement</h2>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
                       <img 
                         src="/images/mastercard-logo.png" 
                         alt="Mastercard" 
-                        className="h-8 flex-shrink-0" 
+                        className="h-8" 
                       />
-                      <div className="flex items-center gap-4 whitespace-nowrap">
-                        <span className="font-normal text-[#014F86]">Montant Total :</span>
-                        <span className="font-semibold text-[#014F86]">{reservation.price.toLocaleString('fr-FR')} XOF</span>
-                      </div>
+                      <span className="text-sm text-gray-600">••••-••••-••••-4242</span>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm text-gray-600">Montant Total</p>
+                      <p className="font-bold text-[#014F86]">{reservation.price.toLocaleString('fr-FR')} XOF</p>
                     </div>
                   </div>
                 </div>
@@ -225,13 +278,13 @@ export default function ReservationDetails() {
               {/* Colonne droite - Informations du bailleur */}
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <h2 className="text-base font-semibold text-[#014F86] whitespace-nowrap">Informations du Bailleur</h2>
+                  <h2 className="text-lg font-semibold text-[#014F86] border-b border-gray-200 pb-2">Informations du Bailleur</h2>
                   
                   {bailleur && (
-                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <div className="bg-gray-50 p-5 rounded-lg border border-gray-200 mt-4">
                       {/* Photo de profil du bailleur */}
                       <div className="flex justify-center mb-4">
-                        <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-[#FC9B89]">
+                        <div className="w-28 h-28 rounded-full overflow-hidden border-2 border-[#FC9B89] shadow-md">
                           <img 
                             src={bailleur.photo_profil} 
                             alt={`${bailleur.prenom} ${bailleur.nom}`} 
@@ -240,82 +293,57 @@ export default function ReservationDetails() {
                         </div>
                       </div>
                       
-                      <div className="text-center mb-4">
-                        <h3 className="font-semibold text-[#014F86]">{bailleur.prenom} {bailleur.nom}</h3>
-                        <p className="text-sm text-gray-600">{bailleur.adresse}</p>
+                      <div className="text-center mb-5">
+                        <h3 className="font-semibold text-[#014F86] text-lg">{bailleur.prenom} {bailleur.nom}</h3>
+                        <p className="text-sm text-gray-600 mt-1">{bailleur.adresse}</p>
                       </div>
                       
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-3 text-sm text-gray-700">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#FC9B89]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                          </svg>
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3 text-sm text-gray-700 bg-white p-3 rounded-lg shadow-sm">
+                          <FaEnvelope className="h-5 w-5 text-[#FC9B89]" />
                           <span className="font-normal">{bailleur.email}</span>
                         </div>
-                        <div className="flex items-center gap-3 text-sm text-gray-700">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#FC9B89]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                          </svg>
+                        
+                        <div className="flex items-center gap-3 text-sm text-gray-700 bg-white p-3 rounded-lg shadow-sm">
+                          <FaPhone className="h-5 w-5 text-[#FC9B89]" />
                           <span className="font-normal">{bailleur.telephone}</span>
                         </div>
                       </div>
                       
-                      {/* Description du bailleur - À SUPPRIMER */}
-                      {/* <div className="mt-4 pt-4 border-t border-gray-200">
-                        <p className="text-sm text-gray-700 italic">{bailleur.description}</p>
-                      </div> */}
-                      
-                      {/* Bouton de contact */}
-                      <div className="mt-4">
-                        <button 
-                          onClick={() => window.location.href = `tel:${bailleur.telephone}`}
-                          className="w-full py-2 bg-[#FC9B89] text-white rounded-lg hover:bg-[#014F86] transition-colors flex items-center justify-center gap-2"
+                      {/* Boutons de contact */}
+                      <div className="mt-6 space-y-3">
+                        <a 
+                          href={`tel:${bailleur.telephone}`}
+                          className="w-full py-3 bg-[#FC9B89] text-white rounded-lg hover:bg-[#e88a78] transition-colors flex items-center justify-center gap-2 block shadow-md font-medium"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                          </svg>
-                          Contacter le bailleur
-                        </button>
+                          <FaPhone className="h-4 w-4" />
+                          Appeler le bailleur
+                        </a>
+                        
+                        <a 
+                          href={`mailto:${bailleur.email}`}
+                          className="w-full py-3 bg-[#014F86] text-white rounded-lg hover:bg-[#01426f] transition-colors flex items-center justify-center gap-2 block shadow-md font-medium"
+                        >
+                          <FaEnvelope className="h-4 w-4" />
+                          Envoyer un email
+                        </a>
                       </div>
                     </div>
                   )}
-                </div>
-
-                <div className="space-y-2">
-                  <h2 className="text-base font-semibold text-[#014F86]">Date et Heure</h2>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3 text-sm text-gray-700">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#FC9B89]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      <span className="font-normal">{reservation.date}</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-sm text-gray-700">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#FC9B89]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <span className="font-normal">{reservation.time}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <h2 className="text-base font-semibold text-[#014F86]">ID de Transaction</h2>
-                  <div className="flex items-center gap-3 text-sm text-gray-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#FC9B89]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                    <span className="font-normal text-xs">{reservation.transactionId}</span>
-                  </div>
                 </div>
               </div>
             </div>
             
             {/* Bouton de retour */}
-            <div className="mt-8 text-center">
+            <div className="mt-8 text-center flex justify-center gap-4">
+              <Link href={`/detaillog/${id}`}>
+                <button className="py-3 px-8 bg-[#FC9B89] text-white text-sm rounded-lg font-medium hover:bg-[#014F86] transition-colors shadow-md hover:shadow-lg transform hover:-translate-y-0.5 duration-200">
+                  Voir le logement
+                </button>
+              </Link>
               <Link href="/Reservations">
-                <button className="py-2 px-6 bg-[#014F86] text-white text-sm rounded-lg font-normal hover:bg-[#FC9B89] transition-colors shadow-md hover:shadow-lg transform hover:-translate-y-0.5 duration-200">
-                  Retour aux réservations
+                <button className="py-3 px-8 bg-[#014F86] text-white text-sm rounded-lg font-medium hover:bg-[#FC9B89] transition-colors shadow-md hover:shadow-lg transform hover:-translate-y-0.5 duration-200">
+                  Retour
                 </button>
               </Link>
             </div>
