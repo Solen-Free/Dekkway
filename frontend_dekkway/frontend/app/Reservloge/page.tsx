@@ -1,5 +1,7 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+
+import { useEffect, useState } from "react";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import { useSearchParams } from 'next/navigation';
 import ProgressBar from '@/components/ProgressBar';
 import ReservationForm from '@/components/ReservationForm';
@@ -127,4 +129,39 @@ const ReservationPage: React.FC = () => {
   );
 };
 
-export default ReservationPage;
+// Regular function (not exported)
+function Reservloge() {
+  const searchParams = useSearchParams();
+  const [currentStep, setCurrentStep] = useState(1); // Add this line to define currentStep
+  const [reservationDetails, setReservationDetails] = useState<ReservationDetails>({
+    property: {
+      id: 0,
+      name: '',
+      location: '',
+      monthlyPrice: 0,
+      image: ''
+    },
+    name: '',
+    phone: '',
+    email: '',
+    paymentMethod: 'visa'
+  });
+  return (
+    <div className="max-w-6xl mx-auto px-4 py-8">
+      <ProgressBar currentStep={currentStep} />
+      {renderStep()}
+    </div>
+  );
+}
+
+// Only one default export that wraps the component with ProtectedRoute
+export default function ProtectedReservloge() {
+  return (
+    <ProtectedRoute>
+      <Reservloge />
+    </ProtectedRoute>
+  );
+}
+
+// Remove this line:
+// export default ReservationPage;

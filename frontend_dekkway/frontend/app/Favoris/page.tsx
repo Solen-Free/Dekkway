@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Card from "@/components/UI/Card";
 import Header from "@/components/header";
+import Loader from "@/components/UI/Loader";
 
 interface Logement {
   id: string;
@@ -74,7 +75,7 @@ export default function FavorisPage() {
         </h1>
 
         {loading ? (
-          <p className="text-center text-lg text-gray-600">Chargement des favoris...</p>
+          <Loader />
         ) : error ? (
           <p className="text-center text-red-500">{error}</p>
         ) : logements.length === 0 ? (
@@ -104,3 +105,7 @@ export default function FavorisPage() {
     </div>
   );
 }
+
+// Utilisation dans d'autres pages
+
+// Vous pouvez également utiliser ce Loader dans d'autres pages, comme la page des favoris :

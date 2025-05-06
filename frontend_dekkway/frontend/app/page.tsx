@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Loader from "@/components/UI/Loader";
 
 interface Logement {
   id: string;
@@ -21,15 +22,11 @@ interface Logement {
   city?: string;
 }
 
-const Loader = () => (
-  <div className="flex justify-center py-8">
-    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#FC9B89]"></div>
-  </div>
-);
+// Remove the local Loader component since you're already importing it
 
 export default function Home() {
   const [logements, setLogements] = useState<Logement[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false); // Initialiser à false par défaut
@@ -235,7 +232,9 @@ export default function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {loading ? (
-              <Loader />
+              <div className="col-span-full">
+                <Loader />
+              </div>
             ) : error ? (
               <div className="col-span-full text-center text-red-500">
                 {error}

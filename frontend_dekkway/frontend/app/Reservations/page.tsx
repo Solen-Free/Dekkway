@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Header from "@/components/header";
 import Cardh from "@/components/UI/Cardh";
 import Link from "next/link";
 import Image from "next/image";
+// Make sure the import path is correct
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 interface Reservation {
   id: string;
@@ -17,7 +20,7 @@ interface Reservation {
   reservationDate: string;
 }
 
-const Reservations = () => {
+function Reservations() {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
@@ -274,4 +277,11 @@ const Reservations = () => {
   );
 };
 
-export default Reservations;
+// Wrap the component with ProtectedRoute
+export default function ProtectedReservations() {
+  return (
+    <ProtectedRoute>
+      <Reservations />
+    </ProtectedRoute>
+  );
+}
