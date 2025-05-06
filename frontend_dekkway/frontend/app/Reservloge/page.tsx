@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import ProgressBar from '@/components/ProgressBar';
 import ReservationForm from '@/components/ReservationForm';
 import OptionsForm from '@/components/OptionsForm';
@@ -10,7 +11,6 @@ import PaymentForm from '@/components/PaymentForm';
 import Confirmation from '@/components/Confirmation';
 import { ReservationDetails } from '@/types/reservation';
 import axios from 'axios';
-
 
 
 
@@ -132,7 +132,8 @@ const ReservationPage: React.FC = () => {
 // Regular function (not exported)
 function Reservloge() {
   const searchParams = useSearchParams();
-  const [currentStep, setCurrentStep] = useState(1); // Add this line to define currentStep
+  const router = useRouter();
+  const [currentStep, setCurrentStep] = useState(1);
   const [reservationDetails, setReservationDetails] = useState<ReservationDetails>({
     property: {
       id: 0,
@@ -146,8 +147,99 @@ function Reservloge() {
     email: '',
     paymentMethod: 'visa'
   });
+
+  useEffect(() => {
+    const propertyParam = searchParams.get('property');
+    if (propertyParam) {
+      try {
+        const apiData = JSON.parse(propertyParam);
+        setReservationDetails(prev => ({
+          ...prev,
+          property: {
+            id: Number(apiData.id),
+            name: apiData.nom,
+            location: apiData.ville,
+            monthlyPrice: apiData.prix,
+            image: apiData.image
+          }
+        }));
+      } catch (error) {
+        console.error('Erreur de conversion des données:', error);
+        // Rediriger vers la page d'accueil en cas d'erreur
+        router.push('/');
+      }
+    } else {
+      // Si aucune donnée de propriété n'est disponible, rediriger vers la page d'accueil
+      router.push('/');
+    }
+  }, [searchParams, router]);
+
+  const handleNext = (data: Partial<ReservationDetails>) => {
+    setReservationDetails(prev => ({
+      ...prev,
+      ...data,
+      property: {
+        ...prev.property,
+        ...(data.property || {})
+      }
+    }));
+    
+    if (currentStep < 4) {
+      setCurrentStep(prev => prev + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentStep > 1) {
+      setCurrentStep(prev => prev - 1);
+    }
+  };
+
+  // Define renderStep function here
+  const renderStep = () => {
+    const totalAmount = reservationDetails.property.monthlyPrice + 2000; // Frais de réservation de 2000 XOF
+    switch (currentStep) {
+      case 1:
+        return <ReservationForm onNext={handleNext} />;
+      case 2:
+        return <OptionsForm 
+                 onNext={handleNext} 
+                 onPrevious={handlePrevious}
+                 property={reservationDetails.property}
+               />;
+      case 3:
+        return (
+          <PaymentForm
+            onSuccess={(transactionId) => {
+              handleNext({ transactionId });
+              setCurrentStep(4);
+            }}
+            onError={(message) => console.error(message)}
+            onPrevious={handlePrevious}
+            paymentMethod={reservationDetails.paymentMethod}
+            amount={totalAmount}
+            userDetails={{
+              name: reservationDetails.name,
+              email: reservationDetails.email,
+              phone: reservationDetails.phone
+            }}
+            propertyDetails={{
+              id: reservationDetails.property.id,
+              name: reservationDetails.property.name,
+              location: reservationDetails.property.location,
+              monthlyPrice: reservationDetails.property.monthlyPrice
+            }}
+          />
+        );
+      case 4:
+        return <Confirmation reservationDetails={reservationDetails} />;
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="container mx-auto p-7 max-w-lg bg-[#FC9B89]/10 border-2 border-[#014F86] rounded-xl">
       <ProgressBar currentStep={currentStep} />
       {renderStep()}
     </div>
