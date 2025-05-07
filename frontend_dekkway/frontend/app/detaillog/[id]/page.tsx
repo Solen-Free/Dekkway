@@ -248,15 +248,15 @@ export default function DetailLog() {
           )}
           
           
-          <div className="flex gap-4">
+          <div className="flex gap-4 w-full">
             <button 
               onClick={handleReservation}
-              className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600 hover:bg-blue-700 transition-colors"
+              className="flex-1 py-3 rounded-lg text-white font-semibold bg-blue-600 hover:bg-blue-700 transition-colors"
             >
               Réserver
             </button>
-            <Link href={`/VisiteGuidee?id=${params.id}`}>
-              <button className="flex-1 py-2 rounded-lg text-white font-semibold bg-blue-600">
+            <Link href={`/VisiteGuidee?id=${params.id}`} className="flex-1">
+              <button className="w-full py-3 rounded-lg text-white font-semibold bg-blue-600 hover:bg-blue-700 transition-colors">
                 Visite Guidée
               </button>
             </Link>
