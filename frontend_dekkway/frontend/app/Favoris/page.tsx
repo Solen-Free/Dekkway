@@ -35,7 +35,7 @@ export default function FavorisPage() {
       setError(null);
 
       try {
-        const response = await axios.get<Logement[]>("http://localhost:8000/rech-logements/");
+        const response = await axios.get<Logement[]>(`${process.env.NEXT_PUBLIC_API_URL}/rech-logements/`);
 
         // Filtrer pour ne garder que les logements favoris
         const favoriteLogements = response.data.filter((logement) =>

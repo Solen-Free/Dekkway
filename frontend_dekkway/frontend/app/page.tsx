@@ -102,7 +102,7 @@ export default function Home() {
         }
 
         // Effectuer la requête vers le backend Django
-        const response = await fetch(`http://127.0.0.1:8000/rech-logements/?${params.toString()}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/rech-logements/?${params.toString()}`);
         
         if (!response.ok) {
           const errorData = await response.json();

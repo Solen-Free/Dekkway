@@ -33,7 +33,7 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:8000/loca-connexion/", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/loca-connexion/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

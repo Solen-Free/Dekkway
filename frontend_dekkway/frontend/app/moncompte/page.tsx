@@ -1,11 +1,34 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FaUser, FaHeart, FaCalendarAlt, FaBell, FaSignOutAlt, FaCog } from 'react-icons/fa';
+import axios from 'axios';
 
 export default function MonComptePage() {
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // Utilisation de la clé API depuis .env.local
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/user-profile`, {
+          headers: {
+            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`
+          }
+        });
+        setUserData(response.data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des données utilisateur:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, []);
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-[#014F86] mb-6">Mon Compte</h1>

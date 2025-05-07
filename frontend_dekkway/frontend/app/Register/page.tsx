@@ -75,34 +75,18 @@ export default function Register() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (formData.password !== formData.confirmPassword) {
+    if (formData.password !== confirmPassword) {
       toast.error("Les mots de passe ne correspondent pas");
       return;
     }
-
-    if (!acceptConditions) {
-      toast.error("Veuillez accepter les conditions d'utilisation.");
-      return;
-    }
-
-    // Mapping des champs pour correspondre au serializer du backend
-    const dataToSend = {
-      username: formData.username,
-      email: formData.email,
-      password: formData.password,
-      nom: formData.nom,
-      prenom: formData.prenom,
-      telephone: formData.phone,
-      date_de_naissance: formData.birthDate,
-    };
-
+    
     try {
-      const response = await fetch("http://localhost:8000/loca-inscription/", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/loca-inscription/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(dataToSend),
+        body: JSON.stringify(formData),
       });
 
       if (response.ok) {
@@ -114,7 +98,7 @@ export default function Register() {
         toast.error("Erreur lors de l'inscription : " + JSON.stringify(errorData));
       }
     } catch (error) {
-      toast.error("Erreur lors de la requête. Vérifiez que le backend est en cours d'exécution et que l'URL est correcte.");
+      toast.error("Le serveur ne répond pas");
     }
   };
 

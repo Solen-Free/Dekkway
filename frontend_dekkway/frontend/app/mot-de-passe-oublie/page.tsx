@@ -17,7 +17,7 @@ export default function MotDePasseOublie() {
 
     try {
       // Envoi de la requête à l'API de réinitialisation du mot de passe
-      const response = await fetch("/api/mot-de-passe-oublie", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/mot-de-passe-oublie`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -29,7 +29,7 @@ export default function ProfilePage() {
   // Fonction pour récupérer les données de l'utilisateur
   const fetchUserData = async (token: string) => {
     try {
-      const response = await fetch("http://localhost:8000/profil-locataire/", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/profil-locataire/`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -75,7 +75,7 @@ export default function ProfilePage() {
       formData.append("photo_profil", file);
       
       // Ne pas définir Content-Type manuellement pour FormData, le navigateur le fait automatiquement avec la boundary
-      const response = await fetch("http://localhost:8000/profil-locataire/", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/profil-locataire/`, {
         method: "PUT", // Utiliser PUT au lieu de PATCH pour être cohérent avec le backend
         headers: {
           Authorization: `Token ${token}`,
@@ -140,7 +140,7 @@ export default function ProfilePage() {
     if (!token) return;
     
     try {
-      const response = await fetch("http://localhost:8000/profil-locataire/", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/profil-locataire/`, {
         method: "PUT", // Utiliser PUT au lieu de PATCH pour être cohérent avec le backend
         headers: {
           "Content-Type": "application/json",
@@ -200,7 +200,7 @@ export default function ProfilePage() {
       <div className="relative -mt-16">
         <div className="relative group">
           <Image
-            src={userData.photo_profil ? `http://localhost:8000${userData.photo_profil}` : "/images/default-profile.png"} // Ajouter l'URL complète du backend
+            src={userData.photo_profil ? `${process.env.NEXT_PUBLIC_API_URL}${userData.photo_profil}` : "/images/default-profile.png"} // Ajouter l'URL complète du backend
             alt="Profil"
             width={100}
             height={100}
