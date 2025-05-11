@@ -7,6 +7,7 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import IA_bouton from "@/components/UI/IA_bouton";
 import { AuthProvider } from './context/AuthContext';
+import CookieConsent from '../components/UI/CookieConsent';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,18 +21,17 @@ const geistMono = Geist_Mono({
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="fr">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <AuthProvider>
           <Header />
           <main className="flex-1 mt-16">
             {children}
+            <CookieConsent />
           </main>
           <div className="w-full mt-20">
             <IA_bouton/>

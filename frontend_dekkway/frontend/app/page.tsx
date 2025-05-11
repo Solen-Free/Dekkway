@@ -9,6 +9,8 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Loader from "@/components/UI/Loader";
+import { migrateCommonData } from '../utils/migrateToCookies';
+import { getCookie, setCookie } from '../utils/cookies';
 
 interface Logement {
   id: string;
@@ -34,13 +36,17 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
+    // Migrer les données de localStorage vers les cookies
+    migrateCommonData();
+    
     // Vérifier si c'est la première visite de l'utilisateur
-    const hasVisitedBefore = localStorage.getItem("hasVisitedBefore");
+    const hasVisitedBefore = localStorage.getItem("hasVisitedBefore") || getCookie("hasVisitedBefore");
     
     if (!hasVisitedBefore) {
       // Si c'est la première visite, afficher la modale
       setShowModal(true);
       // Marquer que l'utilisateur a déjà visité le site
+      setCookie("hasVisitedBefore", "true");
       localStorage.setItem("hasVisitedBefore", "true");
     }
   }, []);
