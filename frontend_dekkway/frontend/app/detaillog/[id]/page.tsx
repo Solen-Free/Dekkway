@@ -140,7 +140,9 @@ export default function DetailLog() {
         id: params?.id,
         nom: `${logement.type} - ${logement.region} - ${logement.quartier}`,
         ville: `${logement.region}, ${logement.quartier}`,
-        prix: typeof logement.prix === 'string' ? parseInt(logement.prix.replace(/[^0-9]/g, '')) : logement.prix,
+        prix: typeof logement.prix === 'string' 
+          ? parseInt(logement.prix.split('.')[0]) 
+          : logement.prix,
         image: logement.medias?.find(media => media.type === "image")?.fichier || ''
       };
       router.push(`/Reservloge?property=${encodeURIComponent(JSON.stringify(propertyData))}`);
@@ -214,7 +216,9 @@ export default function DetailLog() {
               </span>
             </div>
             <p className="text-3xl font-bold text-blue-600 mb-4">
-              {logement.prix} FCFA/Mois
+              {typeof logement.prix === 'string' 
+                ? logement.prix.split('.')[0] 
+                : logement.prix} FCFA/Mois
             </p>
             <div className="flex flex-wrap gap-3 mb-6">
               {equipements.map((equip, index) => (

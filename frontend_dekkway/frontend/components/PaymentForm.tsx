@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation';
 import { ReservationDetails } from '@/types/reservation';
 
 interface PaymentFormProps {
-  
   onSuccess: (transactionId: string) => void;
   onError: (message: string) => void;
   onPrevious: () => void;
@@ -36,7 +35,6 @@ interface PaymentResponse {
 const API_URL = process.env.NEXT_PUBLIC_PAYMENT_API_URL || '/api/paiement';
 
 const PaymentForm: React.FC<PaymentFormProps> = ({
-  
   onSuccess,
   onError,
   onPrevious,

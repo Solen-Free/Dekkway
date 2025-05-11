@@ -45,11 +45,19 @@ const Confirmation: React.FC<ConfirmationProps> = ({ reservationDetails }) => {
       reservationDate: new Date().toISOString()
     };
     
-    // Ajouter la nouvelle réservation à la liste
-    const updatedReservations = [newReservation, ...existingReservations];
+    // Vérifier si cette réservation existe déjà (basé sur l'ID de propriété et la date)
+    const isDuplicate = existingReservations.some(
+      (reservation) => 
+        reservation.id === newReservation.id && 
+        reservation.date === newReservation.date &&
+        reservation.time === newReservation.time
+    );
     
-    // Sauvegarder dans localStorage
-    localStorage.setItem('reservations', JSON.stringify(updatedReservations));
+    // Ajouter la nouvelle réservation uniquement si elle n'existe pas déjà
+    if (!isDuplicate) {
+      const updatedReservations = [newReservation, ...existingReservations];
+      localStorage.setItem('reservations', JSON.stringify(updatedReservations));
+    }
   }, []);
 
   return (
@@ -133,12 +141,22 @@ const Confirmation: React.FC<ConfirmationProps> = ({ reservationDetails }) => {
 
       {/* Bouton de retour */}
       <div className="mt-8 text-center">
-        <button
-          onClick={() => router.push('/')}
-          className="py-2 px-6 bg-[#014F86] text-white text-sm rounded-lg font-normal hover:bg-[#FC9B89] transition-colors shadow-md hover:shadow-lg transform hover:-translate-y-0.5 duration-200"
-        >
-          Retour à l'accueil
-        </button>
+        {/* Boutons de navigation */}
+        <div className="mt-8 flex justify-center gap-4">
+          <button
+            onClick={() => router.push('/Reservations')}
+            className="py-2 px-6 bg-[#014F86] text-white text-sm rounded-lg font-normal hover:bg-[#FC9B89] transition-colors shadow-md hover:shadow-lg transform hover:-translate-y-0.5 duration-200"
+          >
+            Voir mes réservations
+          </button>
+          
+          <button
+            onClick={() => router.push('/servicessuplementaires')}
+            className="py-2 px-6 bg-[#FC9B89] text-white text-sm rounded-lg font-normal hover:bg-[#014F86] transition-colors shadow-md hover:shadow-lg transform hover:-translate-y-0.5 duration-200"
+          >
+            Découvrir nos services supplémentaires
+          </button>
+        </div>
       </div>
     </div>
   );

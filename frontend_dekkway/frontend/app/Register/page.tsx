@@ -75,7 +75,7 @@ export default function Register() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (formData.password !== confirmPassword) {
+    if (formData.password !== formData.confirmPassword) {
       toast.error("Les mots de passe ne correspondent pas");
       return;
     }
