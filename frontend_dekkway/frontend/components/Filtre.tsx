@@ -30,12 +30,12 @@ const Filtre = () => {
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [selectedPropertyTypes, setSelectedPropertyTypes] = useState<string[]>([]);
   const [selectedDuration, setSelectedDuration] = useState("");
-  const [priceRange, setPriceRange] = useState<[number, number]>([50000, 1000000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([25000, 1000000]);
   const [bedrooms, setBedrooms] = useState<number | null>(null);
   const [equipments, setEquipments] = useState<string[]>([]);
   const [city, setCity] = useState("");
   const [coordinates, setCoordinates] = useState<[number, number]>([14.6937, -17.4441]); // Dakar par défaut
-  const [searchRadius, setSearchRadius] = useState<number>(5); // 5km par défaut
+  const [searchRadius, setSearchRadius] = useState<number>(1); // 5km par défaut
   const [useMapFilter, setUseMapFilter] = useState<boolean>(false);
   const [deviceType, setDeviceType] = useState<"mobile" | "tablet" | "desktop">("desktop");
   
@@ -231,7 +231,7 @@ const Filtre = () => {
               exit={{ opacity: 0 }}
               className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
               onClick={() => {
-                handleApply();
+                handleApply(); // Appliquer les filtres avant de fermer
                 setIsFilterVisible(false);
               }}
             />
@@ -255,7 +255,7 @@ const Filtre = () => {
                   </button>
                   <h2 className="text-xl font-bold text-white">Filtres</h2>
                   <button onClick={() => {
-                    handleApply();
+                    handleApply(); // Appliquer les filtres avant de fermer
                     setIsFilterVisible(false);
                   }} className="text-white hover:text-gray-200">
                     <IoClose size={24} />
