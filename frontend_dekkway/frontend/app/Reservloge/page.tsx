@@ -239,9 +239,11 @@ function Reservloge() {
   };
 
   return (
-    <div className="container mx-auto p-7 max-w-lg bg-[#FC9B89]/10 border-2 border-[#014F86] rounded-xl">
-      <ProgressBar currentStep={currentStep} />
-      {renderStep()}
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+      <div className="w-full max-w-lg mx-auto p-4 sm:p-6 md:p-8 bg-[#FC9B89]/10 border-2 border-[#014F86] rounded-xl shadow-lg">
+        <ProgressBar currentStep={currentStep} totalAmount={reservationDetails.property.monthlyPrice + 2000} />
+        {renderStep()}
+      </div>
     </div>
   );
 }

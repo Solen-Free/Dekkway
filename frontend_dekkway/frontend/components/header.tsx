@@ -124,8 +124,51 @@ export default function Header() {
                 <span className="text-[#014F86] font-medium">Mon Compte</span>
               </button>
 
-              {/* Menu déroulant Mon Compte */}
-              {isCompteOpen && <CompteAlert onClose={() => setIsCompteOpen(false)} isLoggedIn={isAuthenticated} />}
+              {/* Menu déroulant Mon Compte - Version desktop */}
+              {isCompteOpen && (
+                <div className="absolute right-0 z-50 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200">
+                  {isAuthenticated ? (
+                    <>
+                      <Link 
+                        href="/Profil" 
+                        className="block px-4 py-3 text-[#014F86] hover:bg-[#FC9B89]/10 transition-colors"
+                        onClick={() => setIsCompteOpen(false)}
+                      >
+                        <UserEdit className="inline-block mr-2 h-4 w-4" />
+                        Profil
+                      </Link>
+                      <button 
+                        onClick={() => {
+                          localStorage.removeItem("token");
+                          router.push("/");
+                          setIsCompteOpen(false);
+                        }}
+                        className="block w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 transition-colors"
+                      >
+                        <X className="inline-block mr-2 h-4 w-4" />
+                        Déconnexion
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link 
+                        href="/login" 
+                        className="block px-4 py-3 text-[#014F86] hover:bg-[#FC9B89]/10 transition-colors"
+                        onClick={() => setIsCompteOpen(false)}
+                      >
+                        Connexion
+                      </Link>
+                      <Link 
+                        href="/Register" 
+                        className="block px-4 py-3 text-[#014F86] hover:bg-[#FC9B89]/10 transition-colors"
+                        onClick={() => setIsCompteOpen(false)}
+                      >
+                        Inscription
+                      </Link>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           </nav>
 
@@ -200,14 +243,67 @@ export default function Header() {
                 <button
                   onClick={() => setIsCompteOpen(!isCompteOpen)}
                   className="bg-[#FC9B89] hover:bg-white border-2 border-[#FC9B89] flex items-center space-x-2 
-                            py-2 px-4 rounded-full transition-colors duration-200"
+                            py-2 px-4 rounded-full transition-colors duration-200 w-full"
                 >
                   <FaUser className="h-5 w-5 text-[#014F86]" />
                   <span className="text-[#014F86] font-medium">Mon Compte</span>
                 </button>
 
-                {/* Menu déroulant Mon Compte */}
-                {isCompteOpen && <CompteAlert onClose={() => setIsCompteOpen(false)} isLoggedIn={isAuthenticated} />}
+                {/* Menu déroulant Mon Compte - Version mobile */}
+                {isCompteOpen && (
+                  <div className="absolute z-50 mt-2 w-full bg-white rounded-lg shadow-lg border border-gray-200">
+                    {isAuthenticated ? (
+                      <>
+                        <Link 
+                          href="/Profil" 
+                          className="block px-4 py-3 text-[#014F86] hover:bg-[#FC9B89]/10 transition-colors"
+                          onClick={() => {
+                            setIsCompteOpen(false);
+                            setIsOpen(false);
+                          }}
+                        >
+                          <UserEdit className="inline-block mr-2 h-4 w-4" />
+                          Profil
+                        </Link>
+                        <button 
+                          onClick={() => {
+                            localStorage.removeItem("token");
+                            router.push("/");
+                            setIsCompteOpen(false);
+                            setIsOpen(false);
+                          }}
+                          className="block w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 transition-colors"
+                        >
+                          <X className="inline-block mr-2 h-4 w-4" />
+                          Déconnexion
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <Link 
+                          href="/login" 
+                          className="block px-4 py-3 text-[#014F86] hover:bg-[#FC9B89]/10 transition-colors"
+                          onClick={() => {
+                            setIsCompteOpen(false);
+                            setIsOpen(false);
+                          }}
+                        >
+                          Connexion
+                        </Link>
+                        <Link 
+                          href="/Register" 
+                          className="block px-4 py-3 text-[#014F86] hover:bg-[#FC9B89]/10 transition-colors"
+                          onClick={() => {
+                            setIsCompteOpen(false);
+                            setIsOpen(false);
+                          }}
+                        >
+                          Inscription
+                        </Link>
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </nav>

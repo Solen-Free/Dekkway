@@ -61,10 +61,10 @@ const Confirmation: React.FC<ConfirmationProps> = ({ reservationDetails }) => {
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto p-2">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 rounded-xl">
+    <div className="w-full mx-auto p-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 p-3 sm:p-6 rounded-xl">
         {/* Colonne de gauche */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           <div className="space-y-2">
             <h2 className="text-base font-semibold text-[#014F86]">Nom du logement</h2>
             <div className="flex items-center gap-3 text-sm text-gray-700">
@@ -92,13 +92,13 @@ const Confirmation: React.FC<ConfirmationProps> = ({ reservationDetails }) => {
           <div className="space-y-2">
             <h2 className="text-base font-semibold text-[#014F86]">Méthode de paiement</h2>
             <div className="flex items-center w-full text-sm text-gray-700 mt-4">
-              <div className="flex items-center justify-between w-full gap-8">
+              <div className="flex items-center justify-between w-full gap-2 flex-wrap">
                 <img 
                   src={`/images/${reservationDetails.paymentMethod}-logo.png`} 
                   alt={reservationDetails.paymentMethod.toUpperCase()} 
                   className="h-8 flex-shrink-0" 
                 />
-                <div className="flex items-center gap-4 whitespace-nowrap">
+                <div className="flex items-center gap-2 whitespace-normal">
                   <span className="font-normal text-[#014F86]">Montant Total :</span>
                   <span className="font-semibold text-[#014F86]">{total.toLocaleString('fr-FR')} XOF</span>
                 </div>
@@ -108,7 +108,7 @@ const Confirmation: React.FC<ConfirmationProps> = ({ reservationDetails }) => {
         </div>
 
         {/* Colonne de droite */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           <div className="space-y-2">
             <h2 className="text-base font-semibold text-[#014F86] whitespace-nowrap">Informations Personnelles</h2>
             <div className="space-y-3">
@@ -140,19 +140,19 @@ const Confirmation: React.FC<ConfirmationProps> = ({ reservationDetails }) => {
       </div>
 
       {/* Bouton de retour */}
-      <div className="mt-8 text-center">
+      <div className="mt-6 sm:mt-8 text-center">
         {/* Boutons de navigation */}
-        <div className="mt-8 flex justify-center gap-4">
+        <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
           <button
             onClick={() => router.push('/Reservations')}
-            className="py-2 px-6 bg-[#014F86] text-white text-sm rounded-lg font-normal hover:bg-[#FC9B89] transition-colors shadow-md hover:shadow-lg transform hover:-translate-y-0.5 duration-200"
+            className="py-2 px-4 sm:px-6 bg-[#014F86] text-white text-sm rounded-lg font-normal hover:bg-[#FC9B89] transition-colors shadow-md hover:shadow-lg transform hover:-translate-y-0.5 duration-200"
           >
             Voir mes réservations
           </button>
           
           <button
             onClick={() => router.push('/servicessuplementaires')}
-            className="py-2 px-6 bg-[#FC9B89] text-white text-sm rounded-lg font-normal hover:bg-[#014F86] transition-colors shadow-md hover:shadow-lg transform hover:-translate-y-0.5 duration-200"
+            className="py-2 px-4 sm:px-6 bg-[#FC9B89] text-white text-sm rounded-lg font-normal hover:bg-[#014F86] transition-colors shadow-md hover:shadow-lg transform hover:-translate-y-0.5 duration-200"
           >
             Découvrir nos services supplémentaires
           </button>
