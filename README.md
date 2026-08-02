@@ -1,25 +1,25 @@
 # Dekkway
  Application web de recherche de logement
 
-## Salut à tous, Je suis Solen🌸✨
+## Salut à tous, Je suis Solange Lawson
 
 
 <div align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&duration=3000&pause=1000&color=FFB6C1&center=true&vCenter=true&width=450&lines=D%C3%A9veloppeuse+Web+%26+Mobile+🦄;Passionn%C3%A9e+de+Tech+cr%C3%A9ative+🌸;Cr%C3%A9atrice+d'exp%C3%A9riences+digitales+🚀" alt="Typing SVG" />
+<img width="1100" height="300" alt="bannière gitup" src="https://github.com/user-attachments/assets/950738ba-5359-459d-aa52-03c4523bb77b" />
 </div>
 
 ---
 
 ### 💖 À propos de moi
 
-* 👩‍💻 **Focus actuel :** Développement d'applications web / mobiles et Design graphique.
-* 📚 **Projets en cours :** Conception de solutions modernes et d'interfaces intuitives.
-* 🎨 **Centres d'intérêt :** UI/UX Design, développement Front-end et architecture mobile.
-* 📬 **Me contacter :** Par [Email](mailto:lawsonsolange83@gmail.com) ou sur [LinkedIn](https://www.linkedin.com/in/solange-lawson-2b01a92b2?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app).
+* **Focus actuel :** Développement d'applications web / mobiles et Design graphique.
+* **Projets en cours :** Conception de solutions modernes et d'interfaces intuitives.
+* **Centres d'intérêt :** UI/UX Design, développement Front-end et architecture mobile.
+* **Me contacter :** Par [Email](mailto:lawsonsolange83@gmail.com) ou sur [LinkedIn](https://www.linkedin.com/in/solange-lawson-2b01a92b2?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app).
 
 ---
 
-### 🔮 Mon Stack Technique
+###  Mon Stack Technique
 
 #### **Mobile & Front-end**
 ![React Native](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
@@ -32,14 +32,7 @@
 ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
 ![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)
 
----
 
-### 📊 Mes Statistiques GitHub
-
-<div align="center">
-  <img height="160em" src="https://github-readme-stats.vercel.app/api?username=ton-pseudo&show_icons=true&theme=rose_pine&include_all_commits=true&count_private=true&locale=fr"/>
-  <img height="160em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=ton-pseudo&layout=compact&theme=rose_pine&locale=fr"/>
-</div>
 
 ---
 
